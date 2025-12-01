@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Студенты ИРИТ-РТФ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #0a192f;
+            color: #e6f1ff;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(28, 175, 252, 0.1) 0%, rgba(28, 175, 252, 0) 20%),
+                radial-gradient(circle at 90% 80%, rgba(249, 57, 255, 0.1) 0%, rgba(249, 57, 255, 0) 20%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .navigation {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .nav-button {
+            display: inline-block;
+            background: #64ffda;
+            color: #0a192f;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .nav-button:hover {
+            background: #a8b2d1;
+            color: #0a192f;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #64ffda;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-family: Arial, sans-serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #64ffda;
+            text-shadow: 2px 2px 0 #0a192f;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a8b2d1;
+            margin-bottom: 20px;
+        }
+        
+        .filters-section {
+            background: rgba(23, 42, 69, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #64ffda;
+        }
+        
+        .filters-header {
+            font-family: Arial, sans-serif;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #64ffda;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        
+        .filter-label {
+            display: block;
+            color: #a8b2d1;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #64ffda;
+            border-radius: 8px;
+            background: #112240;
+            color: #e6f1ff;
+            font-size: 1rem;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #4fc3f7;
+        }
+        
+        .languages-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #112240;
+            border: 2px solid #64ffda;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .languages-toggle:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        .toggle-text {
+            color: #e6f1ff;
+            font-weight: bold;
+        }
+        
+        .toggle-icon {
+            color: #64ffda;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .checkbox-group {
+            max-height: 0;
+            overflow: hidden;
+            background: #112240;
+            border: 2px solid #64ffda;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            transition: max-height 0.3s ease;
+        }
+        
+        .checkbox-group.expanded {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .checkbox-item:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #64ffda;
+        }
+        
+        .checkbox-item label {
+            color: #e6f1ff;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .selected-languages {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .selected-language {
+            background: rgba(79, 195, 247, 0.3);
+            color: #4fc3f7;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .remove-language {
+            cursor: pointer;
+            font-weight: bold;
+            color: #ff6b6b;
+            font-size: 1rem;
+        }
+        
+        .students-table-section {
+            background: rgba(23, 42, 69, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 2px solid #64ffda;
+            overflow-x: auto;
+        }
+        
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .students-table th {
+            background: #112240;
+            color: #64ffda;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #64ffda;
+            font-weight: bold;
+        }
+        
+        .students-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.3);
+            color: #a8b2d1;
+        }
+        
+        .students-table tr:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+        
+        .student-name {
+            color: #64ffda;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .student-name:hover {
+            color: #4fc3f7;
+        }
+        
+        .student-direction {
+            background: rgba(100, 255, 218, 0.2);
+            color: #64ffda;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        
+        .student-languages {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .student-language {
+            background: rgba(79, 195, 247, 0.2);
+            color: #4fc3f7;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #a8b2d1;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #a8b2d1;
+            font-size: 0.9rem;
+            border-top: 2px solid #64ffda;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .students-table {
+                font-size: 0.9rem;
+            }
+            
+            .students-table th,
+            .students-table td {
+                padding: 10px;
+            }
+            
+            .nav-button {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+                max-width: 300px;
+            }
+            
+            .checkbox-group.expanded {
+                max-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+            <a href="index.html" class="nav-button">← Назад к статистике</a>
+            <a href="portfolio.html" class="nav-button">👤 Мое портфолио</a>
+        </div>
+        
+        <header>
+            <h1>СТУДЕНТЫ ИРИТ-РТФ</h1>
+            <p class="subtitle">База данных студентов IT-направлений</p>
+        </header>
+        
+        <section class="filters-section">
+            <h2 class="filters-header">ФИЛЬТРЫ И СОРТИРОВКА</h2>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Направление</label>
+                    <select class="filter-select" id="directionFilter">
+                        <option value="all">Все направления</option>
+                        <option value="Full-stack" selected>Full-stack разработчик</option>
+                        <option value="Frontend">Frontend разработчик</option>
+                        <option value="Backend">Backend разработчик</option>
+                        <option value="Data Science">Data Scientist</option>
+                        <option value="DevOps">DevOps инженер</option>
+                        <option value="Mobile">Mobile разработчик</option>
+                        <option value="Game">Game разработчик</option>
+                        <option value="QA">QA инженер</option>
+                        <option value="Security">Security специалист</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Языки программирования</label>
+                    <div class="languages-toggle" id="languagesToggle">
+                        <span class="toggle-text">Выбрать языки</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="checkbox-group" id="languagesCheckboxGroup">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-java" value="Java">
+                            <label for="lang-java">Java</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-python" value="Python">
+                            <label for="lang-python">Python</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-javascript" value="JavaScript">
+                            <label for="lang-javascript">JavaScript</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-typescript" value="TypeScript">
+                            <label for="lang-typescript">TypeScript</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-cpp" value="C++">
+                            <label for="lang-cpp">C++</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-csharp" value="C#">
+                            <label for="lang-csharp">C#</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-php" value="PHP">
+                            <label for="lang-php">PHP</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-ruby" value="Ruby">
+                            <label for="lang-ruby">Ruby</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-go" value="Go">
+                            <label for="lang-go">Go</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-swift" value="Swift">
+                            <label for="lang-swift">Swift</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-kotlin" value="Kotlin">
+                            <label for="lang-kotlin">Kotlin</label>
+                        </div>
+                    </div>
+                    <div class="selected-languages" id="selectedLanguages"></div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Группа</label>
+                    <select class="filter-select" id="groupFilter">
+                        <option value="all">Все группы</option>
+                        <option value="03.09">03.09</option>
+                        <option value="03.08">03.08</option>
+                        <option value="03.07">03.07</option>
+                        <option value="03.06">03.06</option>
+                        <option value="03.05">03.05</option>
+                        <option value="03.04">03.04</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Сортировка</label>
+                    <select class="filter-select" id="sortFilter">
+                        <option value="name">По имени (А-Я)</option>
+                        <option value="name-desc">По имени (Я-А)</option>
+                        <option value="group">По группе</option>
+                        <option value="level">По уровню</option>
+                        <option value="direction">По направлению</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+        
+        <section class="students-table-section">
+            <h2 class="filters-header">СПИСОК СТУДЕНТов</h2>
+            
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>Имя студента</th>
+                        <th>Группа</th>
+                        <th>Направление</th>
+                        <th>Языки программирования</th>
+                        <th>Уровень</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                    <tr>
+                        <td><a href="portfolio.html" class="student-name">Тестовый Гремлин</a></td>
+                        <td>03.09</td>
+                        <td><span class="student-direction">Full-stack разработчик</span></td>
+                        <td>
+                            <div class="student-languages">
+                                <span class="student-language">Java</span>
+                                <span class="student-language">Python</span>
+                                <span class="student-language">JavaScript</span>
+                            </div>
+                        </td>
+                        <td>42</td>
+                        <td><a href="portfolio.html" style="color: #64ffda; text-decoration: none;">👀 View</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="no-results" id="noResults" style="display: none;">
+                😔 Студентов по выбранным фильтрам не найдено
+            </div>
+        </section>
+        
+        <footer>
+            <p>ИРИТ-РТФ УрФУ | База данных студентов 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        // Данные студентов (пока только один)
+        const students = [
+            {
+                name: "Тестовый Гремлин",
+                group: "03.09",
+                direction: "Full-stack разработчик",
+                languages: ["Java", "Python", "JavaScript"],
+                level: 42,
+                profileLink: "portfolio.html"
+            }
+        ];
+
+        let selectedLanguages = [];
+        let isLanguagesExpanded = false;
+
+        // Функция переключения видимости списка языков
+        function toggleLanguages() {
+            const checkboxGroup = document.getElementById('languagesCheckboxGroup');
+            const toggleIcon = document.querySelector('.toggle-icon');
+            
+            isLanguagesExpanded = !isLanguagesExpanded;
+            
+            if (isLanguagesExpanded) {
+                checkboxGroup.classList.add('expanded');
+                toggleIcon.classList.add('expanded');
+            } else {
+                checkboxGroup.classList.remove('expanded');
+                toggleIcon.classList.remove('expanded');
+            }
+        }
+
+        // Функция обновления отображаемых выбранных языков
+        function updateSelectedLanguagesDisplay() {
+            const container = document.getElementById('selectedLanguages');
+            const toggleText = document.querySelector('.toggle-text');
+            
+            container.innerHTML = '';
+            
+            if (selectedLanguages.length === 0) {
+                toggleText.textContent = 'Выбрать языки';
+                return;
+            }
+            
+            toggleText.textContent = `Выбрано: ${selectedLanguages.length}`;
+            
+            selectedLanguages.forEach(lang => {
+                const langElement = document.createElement('span');
+                langElement.className = 'selected-language';
+                langElement.innerHTML = `
+                    ${lang}
+                    <span class="remove-language" onclick="removeLanguage('${lang}')">×</span>
+                `;
+                container.appendChild(langElement);
+            });
+        }
+
+        // Функция удаления языка из выбранных
+        function removeLanguage(lang) {
+            selectedLanguages = selectedLanguages.filter(l => l !== lang);
+            
+            // Снимаем галочку с соответствующего чекбокса
+            const checkbox = document.querySelector(`input[value="${lang}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+            
+            updateSelectedLanguagesDisplay();
+            applyFilters();
+        }
+
+        // Функции фильтрации и сортировки
+        function applyFilters() {
+            const directionFilter = document.getElementById('directionFilter').value;
+            const groupFilter = document.getElementById('groupFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            let filteredStudents = students.filter(student => {
+                const directionMatch = directionFilter === 'all' || student.direction.includes(directionFilter);
+                const groupMatch = groupFilter === 'all' || student.group === groupFilter;
+                
+                // Проверка языков: студент должен владеть ВСЕМИ выбранными языками
+                let languagesMatch = true;
+                if (selectedLanguages.length > 0) {
+                    languagesMatch = selectedLanguages.every(lang => 
+                        student.languages.includes(lang)
+                    );
+                }
+                
+                return directionMatch && groupMatch && languagesMatch;
+            });
+            
+            // Сортировка
+            filteredStudents.sort((a, b) => {
+                switch(sortFilter) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'name-desc':
+                        return b.name.localeCompare(a.name);
+                    case 'group':
+                        return a.group.localeCompare(b.group);
+                    case 'level':
+                        return b.level - a.level;
+                    case 'direction':
+                        return a.direction.localeCompare(b.direction);
+                    default:
+                        return 0;
+                }
+            });
+            
+            displayStudents(filteredStudents);
+        }
+
+        function displayStudents(studentsArray) {
+            const tableBody = document.getElementById('studentsTableBody');
+            const noResults = document.getElementById('noResults');
+            
+            tableBody.innerHTML = '';
+            
+            if (studentsArray.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            studentsArray.forEach(student => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td><a href="${student.profileLink}" class="student-name">${student.name}</a></td>
+                    <td>${student.group}</td>
+                    <td><span class="student-direction">${student.direction}</span></td>
+                    <td>
+                        <div class="student-languages">
+                            ${student.languages.map(lang => `<span class="student-language">${lang}</span>`).join('')}
+                        </div>
+                    </td>
+                    <td>${student.level}</td>
+                    <td><a href="${student.profileLink}" style="color: #64ffda; text-decoration: none;">👀 View</a></td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Инициализация фильтров
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const direction = urlParams.get('direction');
+            
+            if (direction) {
+                document.getElementById('directionFilter').value = direction;
+            }
+            
+            // Обработчик для переключения списка языков
+            document.getElementById('languagesToggle').addEventListener('click', toggleLanguages);
+            
+            // Обработчик для чекбоксов языков
+            const checkboxes = document.querySelectorAll('#languagesCheckboxGroup input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        selectedLanguages.push(this.value);
+                    } else {
+                        selectedLanguages = selectedLanguages.filter(lang => lang !== this.value);
+                    }
+                    updateSelectedLanguagesDisplay();
+                    applyFilters();
+                });
+            });
+            
+            // Навешиваем обработчики на фильтры
+            document.getElementById('directionFilter').addEventListener('change', applyFilters);
+            document.getElementById('groupFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortFilter').addEventListener('change', applyFilters);
+            
+            applyFilters();
+        });
+    </script>
+</body>
+</html>
