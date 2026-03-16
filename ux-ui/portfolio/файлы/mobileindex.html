@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Цифровое портфолио УрФУ | Мобильная версия</title>
+    <!-- Подключаем шрифт Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome для иконок (версия 6) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eef2f6;
+            color: #1e293b;
+            line-height: 1.4;
+            min-height: 100vh;
+            padding: 12px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ТЕМНАЯ ТЕМА */
+        body.dark-mode {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .portfolio-container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .portfolio-container {
+            background-color: #1e293b;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Хедер */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9eef2;
+            gap: 12px;
+        }
+
+        body.dark-mode .header {
+            border-bottom-color: #334155;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-icon {
+            background-color: #0b2b5c;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        body.dark-mode .logo-icon {
+            background-color: #3b82f6;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 16px;
+            color: #0b2b5c;
+        }
+
+        body.dark-mode .logo-text {
+            color: #ffffff;
+        }
+
+        .logo-text span {
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        body.dark-mode .logo-text span {
+            color: #94a3b8;
+        }
+
+        /* Кнопки управления */
+        .control-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            border: 1px solid #dbe0e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #475569;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .icon-btn {
+            background-color: #334155;
+            border-color: #475569;
+            color: #94a3b8;
+        }
+
+        .icon-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        body.dark-mode .icon-btn:hover {
+            background-color: #475569;
+            color: #f1f5f9;
+        }
+
+        /* Поиск - мобильная версия */
+        .search-section {
+            padding: 12px 20px;
+            border-bottom: 1px solid #e9eef2;
+        }
+
+        body.dark-mode .search-section {
+            border-bottom-color: #334155;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #f1f5f9;
+            border-radius: 40px;
+            padding: 4px 4px 4px 16px;
+            border: 1px solid #dbe0e6;
+        }
+
+        body.dark-mode .search-wrapper {
+            background-color: #0f172a;
+            border-color: #475569;
+        }
+
+        .search-wrapper i {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .search-wrapper input {
+            border: none;
+            background: transparent;
+            padding: 10px 8px;
+            flex: 1;
+            font-size: 14px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            color: inherit;
+        }
+
+        body.dark-mode .search-wrapper input {
+            color: #f1f5f9;
+        }
+
+        .search-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        .filter-btn {
+            background: white;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            border: 1px solid #dbe0e6;
+            color: #1e293b;
+        }
+
+        body.dark-mode .filter-btn {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        /* Профиль */
+        .profile-section {
+            padding: 24px 20px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #e9eef2;
+        }
+
+        body.dark-mode .profile-section {
+            border-bottom-color: #334155;
+        }
+
+        .avatar-mobile {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border: 3px solid white;
+            box-shadow: 0 8px 16px rgba(30, 58, 138, 0.2);
+        }
+
+        body.dark-mode .avatar-mobile {
+            border-color: #1e293b;
+        }
+
+        .full-name-mobile {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0b2b5c;
+            margin-bottom: 4px;
+        }
+
+        body.dark-mode .full-name-mobile {
+            color: #ffffff;
+        }
+
+        .username-mobile {
+            color: #475569;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        body.dark-mode .username-mobile {
+            color: #94a3b8;
+        }
+
+        .badge-mobile {
+            background-color: #e9eff9;
+            color: #0b2b5c;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 6px 24px;
+            border-radius: 40px;
+            border-left: 4px solid #f97316;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .badge-mobile {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-left: 4px solid #f97316;
+            border: 1px solid #475569;
+        }
+
+        .github-link-mobile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #f1f5f9;
+            padding: 12px;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 500;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 12px;
+        }
+
+        body.dark-mode .github-link-mobile {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        .github-link-mobile i {
+            font-size: 20px;
+            color: #24292e;
+        }
+
+        body.dark-mode .github-link-mobile i {
+            color: #94a3b8;
+        }
+
+        .download-resume-mobile {
+            width: 100%;
+            background-color: white;
+            border: 2px solid #0b2b5c;
+            color: #0b2b5c;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        body.dark-mode .download-resume-mobile {
+            background-color: transparent;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        /* Компактная информация об обучении */
+        .education-mobile {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px 0;
+        }
+
+        .edu-row-mobile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .edu-icon-mobile {
+            width: 20px;
+            color: #f97316;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .edu-label-mobile {
+            color: #64748b;
+            margin-right: 4px;
+        }
+
+        body.dark-mode .edu-label-mobile {
+            color: #94a3b8;
+        }
+
+        .edu-value-mobile {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        body.dark-mode .edu-value-mobile {
+            color: #e2e8f0;
+        }
+
+        .edu-highlight-mobile {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        body.dark-mode .edu-highlight-mobile {
+            color: #3b82f6;
+        }
+
+        /* Основной контент - карточки */
+        .content-section {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-mobile {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        body.dark-mode .card-mobile {
+            background-color: #0f172a;
+            border-color: #334155;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #eef2f6;
+            padding-bottom: 12px;
+        }
+
+        body.dark-mode .card-header {
+            border-bottom-color: #334155;
+        }
+
+        .card-title-mobile {
+            font-size: 17px;
+            font-weight: 600;
+            color: #0f3b7a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.dark-mode .card-title-mobile {
+            color: #ffffff;
+        }
+
+        .card-title-mobile i {
+            color: #f97316;
+            font-size: 18px;
+        }
+
+        /* Кнопка добавить */
+        .add-button-mobile {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+        }
+
+        body.dark-mode .add-button-mobile {
+            color: #3b82f6;
+        }
+
+        /* Публикации */
+        .publication-item-mobile {
+            padding: 12px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        body.dark-mode .publication-item-mobile {
+            border-bottom-color: #334155;
+        }
+
+        .publication-item-mobile:last-child {
+            border-bottom: none;
+        }
+
+        .pub-icon-mobile {
+            color: #2563eb;
+            font-size: 16px;
+            min-width: 24px;
+        }
+
+        .pub-content-mobile {
+            font-size: 14px;
+        }
+
+        .pub-title-mobile {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .pub-meta-mobile {
+            color: #64748b;
+            font-size: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        body.dark-mode .pub-meta-mobile {
+            color: #94a3b8;
+        }
+
+        /* Теги */
+        .tags-cloud-mobile {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag-mobile {
+            background-color: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e293b;
+            border: 1px solid transparent;
+        }
+
+        body.dark-mode .tag-mobile {
+            background-color: #1e293b;
+            color: #cbd5e0;
+            border: 1px solid #334155;
+        }
+
+        /* Стек в мобильной версии */
+        .stack-tag-mobile {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            color: #0369a1;
+            border-left: 3px solid #0284c7;
+            font-weight: 600;
+        }
+
+        .stack-tag-mobile i {
+            margin-right: 4px;
+            color: #0284c7;
+        }
+
+        body.dark-mode .stack-tag-mobile {
+            background: #1e2a3a;
+            color: #a0c0e0;
+            border-left: 3px solid #3b82f6;
+            border: 1px solid #334155;
+        }
+
+        body.dark-mode .stack-tag-mobile i {
+            color: #7a9bcb;
+        }
+
+        /* Футер */
+        .footer-mobile {
+            border-top: 1px solid #e9eef2;
+            padding: 16px 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        body.dark-mode .footer-mobile {
+            border-top-color: #2d3a4f;
+            color: #94a3b8;
+        }
+
+        /* Скрываем десктопные элементы */
+        .desktop-only {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="portfolio-container">
+        <!-- Хедер -->
+        <header class="header">
+            <div class="logo-area">
+                <div class="logo-icon">У</div>
+                <div class="logo-text">Цифровое портфолио <span>УрФУ</span></div>
+            </div>
+
+            <div class="control-buttons">
+                <div class="icon-btn" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="icon-btn" onclick="alert('Настройки (демо)')">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Поиск (отдельная строка) -->
+        <div class="search-section">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Поиск">
+                <button class="filter-btn">
+                    <i class="fas fa-sliders-h"></i> Фильтры
+                </button>
+            </div>
+        </div>
+
+        <!-- Профиль -->
+        <div class="profile-section">
+            <div class="avatar-mobile">ИИ</div>
+            <div class="full-name-mobile">Иванов Иван</div>
+            <div class="username-mobile">
+                <i class="fas fa-at"></i> vanok_dev
+            </div>
+            
+            <div class="badge-mobile">
+                <i class="fas fa-code" style="margin-right: 6px;"></i>Frontend / UX-разработчик
+            </div>
+
+            <a href="#" class="github-link-mobile" onclick="alert('Переход на GitHub (демо)')">
+                <i class="fab fa-github"></i> github.com/vanok_dev
+            </a>
+
+            <button class="download-resume-mobile" onclick="alert('✨ Генерация резюме в PDF')">
+                <i class="fas fa-file-pdf"></i> Создать резюме
+            </button>
+
+            <!-- Компактная информация об обучении -->
+            <div class="education-mobile">
+                <div class="edu-row-mobile">
+                    <span class="edu-icon-mobile"><i class="fas fa-university"></i></span>
+                    <span class="edu-label-mobile">Направление:</span>
+                    <span class="edu-value-mobile">Программная инженерия</span>
+                </div>
+                <div class="edu-row-mobile">
+                    <span class="edu-icon-mobile"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="edu-label-mobile">Курс:</span>
+                    <span class="edu-value-mobile">4 курс, бакалавриат</span>
+                </div>
+                <div class="edu-row-mobile">
+                    <span class="edu-icon-mobile"><i class="fas fa-star"></i></span>
+                    <span class="edu-label-mobile">Ср. балл:</span>
+                    <span class="edu-value-mobile"><span class="edu-highlight-mobile">87</span>/100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной контент - карточки -->
+        <div class="content-section">
+            <!-- Научная деятельность -->
+            <div class="card-mobile">
+                <div class="card-header">
+                    <div class="card-title-mobile">
+                        <i class="fas fa-flask"></i> Научная деятельность
+                    </div>
+                    <button class="add-button-mobile" onclick="alert('Добавить публикацию')">
+                        <i class="fas fa-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                
+                <div class="publication-item-mobile">
+                    <div class="pub-icon-mobile"><i class="fas fa-file-alt"></i></div>
+                    <div class="pub-content-mobile">
+                        <div class="pub-title-mobile">Оптимизация алгоритмов поиска в больших данных</div>
+                        <div class="pub-meta-mobile">
+                            <span><i class="far fa-calendar-alt"></i> 2024</span>
+                            <span><i class="fas fa-tag"></i> Тезисы доклада</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="publication-item-mobile">
+                    <div class="pub-icon-mobile"><i class="fas fa-scroll"></i></div>
+                    <div class="pub-content-mobile">
+                        <div class="pub-title-mobile">Применение ML в аналитике данных образовательных процессов</div>
+                        <div class="pub-meta-mobile">
+                            <span><i class="far fa-calendar-alt"></i> 2023</span>
+                            <span><i class="fas fa-tag"></i> Статья ВАК</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Специализации -->
+            <div class="card-mobile">
+                <div class="card-header">
+                    <div class="card-title-mobile">
+                        <i class="fas fa-graduation-cap"></i> Специализации
+                    </div>
+                    <button class="add-button-mobile" onclick="alert('Добавить специализацию')">
+                        <i class="fas fa-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                
+                <div class="tags-cloud-mobile">
+                    <span class="tag-mobile">Алгоритмы</span>
+                    <span class="tag-mobile">Базы данных</span>
+                    <span class="tag-mobile">ООП</span>
+                    <span class="tag-mobile">Дискретка</span>
+                    <span class="tag-mobile">Комп. сети</span>
+                    <span class="tag-mobile">Матан</span>
+                </div>
+            </div>
+
+            <!-- Текущий стек -->
+            <div class="card-mobile">
+                <div class="card-header">
+                    <div class="card-title-mobile">
+                        <i class="fas fa-cogs"></i> Текущий стек
+                    </div>
+                    <button class="add-button-mobile" onclick="alert('Добавить технологию')">
+                        <i class="fas fa-plus-circle"></i> Добавить
+                    </button>
+                </div>
+                
+                <div class="tags-cloud-mobile">
+                    <span class="tag-mobile stack-tag-mobile"><i class="fab fa-react"></i> React</span>
+                    <span class="tag-mobile stack-tag-mobile"><i class="fab fa-js"></i> TypeScript</span>
+                    <span class="tag-mobile stack-tag-mobile"><i class="fab fa-node"></i> Node.js</span>
+                    <span class="tag-mobile stack-tag-mobile"><i class="fab fa-figma"></i> Figma</span>
+                    <span class="tag-mobile stack-tag-mobile"><i class="fas fa-code"></i> C++</span>
+                    <span class="tag-mobile stack-tag-mobile"><i class="fab fa-python"></i> Python</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer-mobile">
+            © 2026 Цифровое портфолио УрФУ
+        </div>
+    </div>
+
+    <script>
+        // Логика переключения темы
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const moonIcon = themeToggle.querySelector('i');
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                moonIcon.className = 'fas fa-sun';
+            } else {
+                moonIcon.className = 'fas fa-moon';
+            }
+        });
+    </script>
+</body>
+</html>
