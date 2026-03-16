@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цифровое портфолио УрФУ | Компьютерная версия</title>
+    <!-- Подключаем шрифт Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome для иконок (версия 6) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eef2f6;
+            color: #1e293b;
+            line-height: 1.5;
+            padding: 24px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ТЕМНАЯ ТЕМА */
+        body.dark-mode {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .portfolio-container {
+            max-width: 1280px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .portfolio-container {
+            background-color: #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Хедер */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 32px;
+            border-bottom: 1px solid #e9eef2;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        body.dark-mode .header {
+            border-bottom-color: #334155;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            background-color: #0b2b5c;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        body.dark-mode .logo-icon {
+            background-color: #3b82f6;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+            color: #0b2b5c;
+        }
+
+        body.dark-mode .logo-text {
+            color: #ffffff;
+        }
+
+        .logo-text span {
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        body.dark-mode .logo-text span {
+            color: #94a3b8;
+        }
+
+        /* Поиск */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #f1f5f9;
+            border-radius: 60px;
+            padding: 4px 4px 4px 20px;
+            border: 1px solid #dbe0e6;
+            flex: 1;
+            max-width: 500px;
+            min-width: 280px;
+        }
+
+        body.dark-mode .search-wrapper {
+            background-color: #0f172a;
+            border-color: #475569;
+        }
+
+        .search-wrapper i {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        body.dark-mode .search-wrapper i {
+            color: #94a3b8;
+        }
+
+        .search-wrapper input {
+            border: none;
+            background: transparent;
+            padding: 12px 12px 12px 8px;
+            flex: 1;
+            font-size: 15px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            color: inherit;
+        }
+
+        body.dark-mode .search-wrapper input {
+            color: #f1f5f9;
+        }
+
+        .search-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .search-wrapper input::placeholder {
+            color: #64748b;
+        }
+
+        .filter-btn {
+            background: white;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 18px;
+            margin-left: 4px;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 1px solid #dbe0e6;
+            color: #1e293b;
+            transition: background 0.2s;
+        }
+
+        body.dark-mode .filter-btn {
+            background: #334155;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        .filter-btn:hover {
+            background: #e2e8f0;
+        }
+
+        body.dark-mode .filter-btn:hover {
+            background: #475569;
+        }
+
+        /* Кнопки управления (тема и настройки) */
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            border: 1px solid #dbe0e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #475569;
+            font-size: 20px;
+            transition: all 0.2s;
+        }
+
+        body.dark-mode .icon-btn {
+            background-color: #334155;
+            border-color: #475569;
+            color: #94a3b8;
+        }
+
+        .icon-btn:hover {
+            background-color: #e2e8f0;
+            transform: scale(1.05);
+        }
+
+        body.dark-mode .icon-btn:hover {
+            background-color: #475569;
+            color: #f1f5f9;
+        }
+
+        /* Основной контент - фиксированная сетка */
+        .main-content {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 32px;
+            padding: 32px;
+            min-height: auto;
+        }
+
+        /* Левая колонка — профиль с автоматической высотой */
+        .profile-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: fit-content;
+        }
+
+        body.dark-mode .profile-card {
+            background-color: #0f172a;
+            border-color: #334155;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 44px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+            border: 4px solid white;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .avatar {
+            border-color: #0f172a;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .full-name {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: #0b2b5c;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .full-name {
+            color: #ffffff;
+        }
+
+        .username {
+            text-align: center;
+            color: #475569;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: -6px;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .username {
+            color: #94a3b8;
+        }
+
+        .username i {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* Бейдж роли */
+        .role-badge {
+            display: flex;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            background-color: #e9eff9;
+            color: #0b2b5c;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 6px 24px;
+            border-radius: 40px;
+            border-left: 4px solid #f97316;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .badge {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-left: 4px solid #f97316;
+            border: 1px solid #475569;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .github-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #f1f5f9;
+            padding: 10px;
+            border-radius: 60px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 500;
+            transition: background 0.2s;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .github-link {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+        }
+
+        .github-link:hover {
+            background-color: #e2e8f0;
+        }
+
+        body.dark-mode .github-link:hover {
+            background-color: #334155;
+        }
+
+        .github-link i {
+            font-size: 20px;
+            color: #24292e;
+        }
+
+        body.dark-mode .github-link i {
+            color: #94a3b8;
+        }
+
+        .download-resume {
+            width: 100%;
+            background-color: white;
+            border: 2px solid #0b2b5c;
+            color: #0b2b5c;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .download-resume {
+            background-color: transparent;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .download-resume:hover {
+            background-color: #0b2b5c;
+            color: white;
+        }
+
+        body.dark-mode .download-resume:hover {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        /* Компактная информация об обучении */
+        .education-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 4px 0 0 0;
+            margin-top: 0;
+        }
+
+        .edu-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .edu-icon-small {
+            width: 18px;
+            color: #f97316;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .edu-label-small {
+            color: #64748b;
+            margin-right: 2px;
+        }
+
+        body.dark-mode .edu-label-small {
+            color: #94a3b8;
+        }
+
+        .edu-value-small {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        body.dark-mode .edu-value-small {
+            color: #e2e8f0;
+        }
+
+        .edu-highlight-small {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        body.dark-mode .edu-highlight-small {
+            color: #3b82f6;
+        }
+
+        /* Правая колонка - автоматическая высота */
+        .activity-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            height: fit-content;
+        }
+
+        /* Научная деятельность - автоматическая высота */
+        .science-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dark-mode .science-card {
+            background-color: #0f172a;
+            border-color: #334155;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Сетка для двух нижних карточек */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            height: fit-content;
+        }
+
+        /* Карточки специализаций и стека */
+        .skill-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.dark-mode .skill-card {
+            background-color: #0f172a;
+            border-color: #334155;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f3b7a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #eef2f6;
+            padding-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .card-title {
+            color: #ffffff;
+            border-bottom-color: #334155;
+        }
+
+        .title-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .title-left i {
+            color: #f97316;
+            font-size: 18px;
+        }
+
+        /* Кнопка "Добавить" - улучшенный дизайн */
+        .add-button {
+            background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
+            border: 1px solid #b8d1ff;
+            color: #1e4f8a;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(30, 79, 138, 0.1);
+            letter-spacing: 0.3px;
+        }
+
+        body.dark-mode .add-button {
+            background: #2d3b4f;
+            border: 1px solid #4f6a8a;
+            color: #a0c8ff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .add-button i {
+            font-size: 11px;
+            color: #2d68c4;
+            transition: transform 0.2s;
+        }
+
+        body.dark-mode .add-button i {
+            color: #7aa9ff;
+        }
+
+        .add-button:hover {
+            background: linear-gradient(135deg, #d9e8ff, #c5daff);
+            border-color: #8fb6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 79, 138, 0.2);
+        }
+
+        body.dark-mode .add-button:hover {
+            background: #35495f;
+            border-color: #6b8fc0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        .add-button:hover i {
+            transform: rotate(90deg);
+        }
+
+        .add-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 4px rgba(30, 79, 138, 0.1);
+        }
+
+        /* Публикации */
+        .publications-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .publication-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        body.dark-mode .publication-item {
+            border-bottom-color: #334155;
+        }
+
+        .publication-item:last-child {
+            border-bottom: none;
+        }
+
+        .pub-icon {
+            color: #2563eb;
+            font-size: 16px;
+            min-width: 22px;
+        }
+
+        body.dark-mode .pub-icon {
+            color: #3b82f6;
+        }
+
+        .pub-content {
+            font-size: 14px;
+        }
+
+        .pub-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        body.dark-mode .pub-title {
+            color: #f1f5f9;
+        }
+
+        .pub-meta {
+            color: #64748b;
+            font-size: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        body.dark-mode .pub-meta {
+            color: #94a3b8;
+        }
+
+        /* Теги */
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background-color: #f1f5f9;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e293b;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            height: fit-content;
+        }
+
+        body.dark-mode .tag {
+            background-color: #1e293b;
+            color: #cbd5e0;
+            border: 1px solid #334155;
+        }
+
+        .tag:hover {
+            background-color: #e2e8f0;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .tag:hover {
+            background-color: #2d3a4f;
+            border-color: #4b5563;
+        }
+
+        /* Стек */
+        .stack-tag {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            color: #0369a1;
+            border-left: 3px solid #0284c7;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(2, 132, 199, 0.15);
+        }
+
+        .stack-tag i {
+            margin-right: 4px;
+            color: #0284c7;
+        }
+
+        body.dark-mode .stack-tag {
+            background: #1e2a3a;
+            color: #a0c0e0;
+            border-left: 3px solid #3b82f6;
+            border: 1px solid #334155;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .stack-tag i {
+            color: #7a9bcb;
+        }
+
+        /* Футер */
+        .footer {
+            border-top: 1px solid #e9eef2;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        body.dark-mode .footer {
+            border-top-color: #2d3a4f;
+            color: #94a3b8;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portfolio-container">
+        <!-- Хедер -->
+        <header class="header">
+            <div class="logo-area">
+                <div class="logo-icon">У</div>
+                <div class="logo-text">Цифровое портфолио <span>УрФУ</span></div>
+            </div>
+            
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Поиск">
+                <button class="filter-btn">
+                    <i class="fas fa-sliders-h"></i> Фильтры
+                </button>
+            </div>
+
+            <div class="control-buttons">
+                <div class="icon-btn" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="icon-btn" onclick="alert('Настройки (демо)')">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основная часть -->
+        <div class="main-content">
+            <!-- Левая колонка: профиль -->
+            <div class="profile-card">
+                <div class="avatar">ИИ</div>
+                <div class="full-name">Иванов Иван</div>
+                <div class="username">
+                    <i class="fas fa-at"></i> vanok_dev
+                </div>
+                
+                <div class="role-badge">
+                    <span class="badge"><i class="fas fa-code" style="margin-right: 8px;"></i>Frontend / UX-разработчик</span>
+                </div>
+
+                <a href="#" class="github-link" onclick="alert('Переход на GitHub (демо)')">
+                    <i class="fab fa-github"></i> github.com/vanok_dev
+                </a>
+
+                <button class="download-resume" onclick="alert('✨ Генерация резюме')">
+                    <i class="fas fa-file-pdf"></i> Создать резюме
+                </button>
+
+                <!-- Компактные строки -->
+                <div class="education-compact">
+                    <div class="edu-row">
+                        <span class="edu-icon-small"><i class="fas fa-university"></i></span>
+                        <span class="edu-label-small">Направление:</span>
+                        <span class="edu-value-small">Программная инженерия</span>
+                    </div>
+                    <div class="edu-row">
+                        <span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span>
+                        <span class="edu-label-small">Курс:</span>
+                        <span class="edu-value-small">4 курс, бакалавриат</span>
+                    </div>
+                    <div class="edu-row">
+                        <span class="edu-icon-small"><i class="fas fa-star"></i></span>
+                        <span class="edu-label-small">Ср. балл:</span>
+                        <span class="edu-value-small"><span class="edu-highlight-small">87</span>/100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая колонка -->
+            <div class="activity-section">
+                <!-- Научная деятельность -->
+                <div class="science-card">
+                    <div class="card-title">
+                        <div class="title-left">
+                            <i class="fas fa-flask"></i> Научная деятельность
+                        </div>
+                        <button class="add-button" onclick="alert('Добавить публикацию')">
+                            <i class="fas fa-plus-circle"></i> Добавить
+                        </button>
+                    </div>
+                    
+                    <div class="publications-list">
+                        <div class="publication-item">
+                            <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="pub-content">
+                                <div class="pub-title">Оптимизация алгоритмов поиска</div>
+                                <div class="pub-meta">
+                                    <span><i class="far fa-calendar-alt"></i> 2024</span>
+                                    <span><i class="fas fa-tag"></i> Тезисы</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="publication-item">
+                            <div class="pub-icon"><i class="fas fa-scroll"></i></div>
+                            <div class="pub-content">
+                                <div class="pub-title">Применение ML в аналитике данных</div>
+                                <div class="pub-meta">
+                                    <span><i class="far fa-calendar-alt"></i> 2023</span>
+                                    <span><i class="fas fa-tag"></i> ВАК</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Две карточки в grid -->
+                <div class="skills-grid">
+                    <!-- Специализации -->
+                    <div class="skill-card">
+                        <div class="card-title">
+                            <div class="title-left">
+                                <i class="fas fa-graduation-cap"></i> Специализации
+                            </div>
+                            <button class="add-button" onclick="alert('Добавить специализацию')">
+                                <i class="fas fa-plus-circle"></i> Добавить
+                            </button>
+                        </div>
+                        
+                        <div class="tags-cloud">
+                            <span class="tag">Алгоритмы</span>
+                            <span class="tag">Базы данных</span>
+                            <span class="tag">ООП</span>
+                            <span class="tag">Дискретка</span>
+                            <span class="tag">Комп. сети</span>
+                            <span class="tag">Матан</span>
+                        </div>
+                    </div>
+
+                    <!-- Текущий стек -->
+                    <div class="skill-card">
+                        <div class="card-title">
+                            <div class="title-left">
+                                <i class="fas fa-cogs"></i> Текущий стек
+                            </div>
+                            <button class="add-button" onclick="alert('Добавить технологию')">
+                                <i class="fas fa-plus-circle"></i> Добавить
+                            </button>
+                        </div>
+                        
+                        <div class="tags-cloud">
+                            <span class="tag stack-tag"><i class="fab fa-react"></i> React</span>
+                            <span class="tag stack-tag"><i class="fab fa-js"></i> TypeScript</span>
+                            <span class="tag stack-tag"><i class="fab fa-node"></i> Node.js</span>
+                            <span class="tag stack-tag"><i class="fab fa-figma"></i> Figma</span>
+                            <span class="tag stack-tag"><i class="fas fa-code"></i> C++</span>
+                            <span class="tag stack-tag"><i class="fab fa-python"></i> Python</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer">
+            <span>© 2026 Цифровое портфолио УрФУ</span>
+        </div>
+    </div>
+
+    <script>
+        // Логика переключения темы
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const moonIcon = themeToggle.querySelector('i');
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                moonIcon.className = 'fas fa-sun';
+            } else {
+                moonIcon.className = 'fas fa-moon';
+            }
+        });
+    </script>
+</body>
+</html>
