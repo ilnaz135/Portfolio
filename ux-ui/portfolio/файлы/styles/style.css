@@ -1,0 +1,1532 @@
+/* ТЕМНАЯ ТЕМА */
+body.dark-mode {
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+.portfolio-container {
+    max-width: 1280px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .portfolio-container {
+    background-color: #1e293b;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== ХЕДЕР ===== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid #e9eef2;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+body.dark-mode .header {
+    border-bottom-color: #334155;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    background-color: #0b2b5c;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+body.dark-mode .logo-icon {
+    background-color: #3b82f6;
+}
+
+.logo-text {
+    font-weight: 700;
+    font-size: 18px;
+    color: #0b2b5c;
+}
+
+body.dark-mode .logo-text {
+    color: #ffffff;
+}
+
+.logo-text span {
+    font-weight: 400;
+    color: #64748b;
+}
+
+body.dark-mode .logo-text span {
+    color: #94a3b8;
+}
+
+/* ===== ПОИСК ===== */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #f1f5f9;
+    border-radius: 60px;
+    padding: 4px 4px 4px 20px;
+    border: 1px solid #dbe0e6;
+    flex: 1;
+    max-width: 500px;
+    min-width: 280px;
+}
+
+body.dark-mode .search-wrapper {
+    background-color: #0f172a;
+    border-color: #475569;
+}
+
+.search-wrapper i {
+    color: #64748b;
+    font-size: 16px;
+}
+
+body.dark-mode .search-wrapper i {
+    color: #94a3b8;
+}
+
+.search-wrapper input {
+    border: none;
+    background: transparent;
+    padding: 12px 12px 12px 8px;
+    flex: 1;
+    font-size: 15px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    color: inherit;
+}
+
+body.dark-mode .search-wrapper input {
+    color: #f1f5f9;
+}
+
+.search-wrapper input::placeholder {
+    color: #94a3b8;
+}
+
+body.dark-mode .search-wrapper input::placeholder {
+    color: #64748b;
+}
+
+.filter-btn {
+    background: white;
+    border: none;
+    border-radius: 40px;
+    padding: 8px 18px;
+    margin-left: 4px;
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: 1px solid #dbe0e6;
+    color: #1e293b;
+    transition: background 0.2s;
+}
+
+body.dark-mode .filter-btn {
+    background: #334155;
+    border-color: #475569;
+    color: #e2e8f0;
+}
+
+.filter-btn:hover {
+    background: #e2e8f0;
+}
+
+body.dark-mode .filter-btn:hover {
+    background: #475569;
+}
+
+/* ===== КНОПКИ УПРАВЛЕНИЯ ===== */
+.control-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.icon-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #f1f5f9;
+    border: 1px solid #dbe0e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #475569;
+    font-size: 20px;
+    transition: all 0.2s;
+}
+
+body.dark-mode .icon-btn {
+    background-color: #334155;
+    border-color: #475569;
+    color: #94a3b8;
+}
+
+.icon-btn:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.05);
+}
+
+body.dark-mode .icon-btn:hover {
+    background-color: #475569;
+    color: #f1f5f9;
+}
+
+/* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+.main-content {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 32px;
+    padding: 32px;
+    min-height: auto;
+}
+
+/* Левая колонка — профиль */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: fit-content;
+}
+
+body.dark-mode .profile-card {
+    background-color: #0f172a;
+    border-color: #334155;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 44px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+    border: 4px solid white;
+    flex-shrink: 0;
+}
+
+body.dark-mode .avatar {
+    border-color: #0f172a;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+}
+
+.full-name {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    color: #0b2b5c;
+    flex-shrink: 0;
+}
+
+body.dark-mode .full-name {
+    color: #ffffff;
+}
+
+.username {
+    text-align: center;
+    color: #475569;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: -6px;
+    flex-shrink: 0;
+}
+
+body.dark-mode .username {
+    color: #94a3b8;
+}
+
+.username i {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+/* Бейдж роли */
+.role-badge {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.badge {
+    background-color: #e9eff9;
+    color: #0b2b5c;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 6px 24px;
+    border-radius: 40px;
+    border-left: 4px solid #f97316;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .badge {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border-left: 4px solid #f97316;
+    border: 1px solid #475569;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: #f1f5f9;
+    padding: 10px;
+    border-radius: 60px;
+    text-decoration: none;
+    color: #1e293b;
+    font-weight: 500;
+    transition: background 0.2s;
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+body.dark-mode .github-link {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #475569;
+}
+
+.github-link:hover {
+    background-color: #e2e8f0;
+}
+
+body.dark-mode .github-link:hover {
+    background-color: #334155;
+}
+
+.github-link i {
+    font-size: 20px;
+    color: #24292e;
+}
+
+body.dark-mode .github-link i {
+    color: #94a3b8;
+}
+
+.download-resume {
+    width: 100%;
+    background-color: white;
+    border: 2px solid #0b2b5c;
+    color: #0b2b5c;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+body.dark-mode .download-resume {
+    background-color: transparent;
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+}
+
+.download-resume:hover {
+    background-color: #0b2b5c;
+    color: white;
+}
+
+body.dark-mode .download-resume:hover {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+/* Образование */
+.education-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 0 0 0;
+    margin-top: 0;
+}
+
+.edu-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.edu-icon-small {
+    width: 18px;
+    color: #f97316;
+    font-size: 13px;
+    text-align: center;
+}
+
+.edu-label-small {
+    color: #64748b;
+    margin-right: 2px;
+}
+
+body.dark-mode .edu-label-small {
+    color: #94a3b8;
+}
+
+.edu-value-small {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+body.dark-mode .edu-value-small {
+    color: #e2e8f0;
+}
+
+.edu-highlight-small {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+body.dark-mode .edu-highlight-small {
+    color: #3b82f6;
+}
+
+/* Правая колонка */
+.activity-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+}
+
+/* Научная деятельность */
+.science-card {
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+body.dark-mode .science-card {
+    background-color: #0f172a;
+    border-color: #334155;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Сетка для двух нижних карточек */
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    flex: 1;
+    min-height: 200px;
+}
+
+/* Карточки специализаций и стека */
+.skill-card {
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+body.dark-mode .skill-card {
+    background-color: #0f172a;
+    border-color: #334155;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f3b7a;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #eef2f6;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+}
+
+body.dark-mode .card-title {
+    color: #ffffff;
+    border-bottom-color: #334155;
+}
+
+.title-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.title-left i {
+    color: #f97316;
+    font-size: 18px;
+}
+
+/* Кнопка "Добавить" */
+.add-button {
+    background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
+    border: 1px solid #b8d1ff;
+    color: #1e4f8a;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 30px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(30, 79, 138, 0.1);
+    letter-spacing: 0.3px;
+}
+
+body.dark-mode .add-button {
+    background: #2d3b4f;
+    border: 1px solid #4f6a8a;
+    color: #a0c8ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.add-button i {
+    font-size: 11px;
+    color: #2d68c4;
+    transition: transform 0.2s;
+}
+
+body.dark-mode .add-button i {
+    color: #7aa9ff;
+}
+
+.add-button:hover {
+    background: linear-gradient(135deg, #d9e8ff, #c5daff);
+    border-color: #8fb6ff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30, 79, 138, 0.2);
+}
+
+body.dark-mode .add-button:hover {
+    background: #35495f;
+    border-color: #6b8fc0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.add-button:hover i {
+    transform: rotate(90deg);
+}
+
+.add-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px rgba(30, 79, 138, 0.1);
+}
+
+/* Публикации */
+.publications-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.publication-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed #e2e8f0;
+    display: flex;
+    gap: 10px;
+}
+
+body.dark-mode .publication-item {
+    border-bottom-color: #334155;
+}
+
+.publication-item:last-child {
+    border-bottom: none;
+}
+
+.pub-icon {
+    color: #2563eb;
+    font-size: 16px;
+    min-width: 22px;
+}
+
+body.dark-mode .pub-icon {
+    color: #3b82f6;
+}
+
+.pub-content {
+    font-size: 14px;
+}
+
+.pub-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+body.dark-mode .pub-title {
+    color: #f1f5f9;
+}
+
+.pub-meta {
+    color: #64748b;
+    font-size: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+body.dark-mode .pub-meta {
+    color: #94a3b8;
+}
+
+/* Теги */
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+    flex: 1;
+}
+
+.tag {
+    background-color: #f1f5f9;
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    height: fit-content;
+    display: inline-block;
+}
+
+body.dark-mode .tag {
+    background-color: #1e293b;
+    color: #cbd5e0;
+    border: 1px solid #334155;
+}
+
+.tag:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+    transform: translateY(-2px);
+}
+
+body.dark-mode .tag:hover {
+    background-color: #2d3a4f;
+    border-color: #4b5563;
+}
+
+/* Стек */
+.stack-tag {
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    color: #0369a1;
+    border-left: 3px solid #0284c7;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(2, 132, 199, 0.15);
+}
+
+.stack-tag i {
+    margin-right: 4px;
+    color: #0284c7;
+}
+
+body.dark-mode .stack-tag {
+    background: #1e2a3a;
+    color: #a0c0e0;
+    border-left: 3px solid #3b82f6;
+    border: 1px solid #334155;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .stack-tag i {
+    color: #7a9bcb;
+}
+
+/* Футер */
+.footer {
+    border-top: 1px solid #e9eef2;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    color: #64748b;
+    font-size: 13px;
+}
+
+body.dark-mode .footer {
+    border-top-color: #2d3a4f;
+    color: #94a3b8;
+}
+
+/* ===== МЕДИА-ЗАПРОСЫ (АДАПТИВНОСТЬ) ===== */
+
+/* Большие десктопы */
+@media (min-width: 1400px) {
+    .portfolio-container {
+        max-width: 1400px;
+    }
+    
+    .main-content {
+        grid-template-columns: 380px 1fr;
+        gap: 36px;
+        padding: 36px;
+    }
+}
+
+/* Десктоп - стандартный */
+@media (min-width: 1281px) and (max-width: 1399px) {
+    .main-content {
+        grid-template-columns: 360px 1fr;
+        gap: 32px;
+        padding: 32px;
+    }
+}
+
+/* Ноутбуки и большие планшеты */
+@media (min-width: 971px) and (max-width: 1280px) {
+    .main-content {
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+        padding: 28px;
+    }
+    
+    .profile-card {
+        padding: 20px;
+    }
+    
+    .avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+    }
+    
+    .full-name {
+        font-size: 22px;
+    }
+    
+    .badge {
+        font-size: 14px;
+        padding: 5px 20px;
+    }
+    
+    .header {
+        flex-wrap: wrap;
+    }
+    
+    .search-wrapper {
+        min-width: 250px;
+        max-width: 350px;
+    }
+    
+    .filter-btn {
+        white-space: nowrap;
+        padding: 8px 14px;
+    }
+}
+
+/* СРЕДНИЙ ДИАПАЗОН - планшеты в альбомной ориентации */
+@media (min-width: 771px) and (max-width: 970px) {
+    .main-content {
+        grid-template-columns: 260px 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+    
+    .profile-card {
+        padding: 14px;
+        gap: 6px;
+    }
+    
+    .avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+        border-width: 3px;
+    }
+    
+    .full-name {
+        font-size: 18px;
+    }
+    
+    .username {
+        font-size: 12px;
+        margin-top: -4px;
+    }
+    
+    .username i {
+        font-size: 12px;
+    }
+    
+    .badge {
+        font-size: 12px;
+        padding: 4px 14px;
+    }
+    
+    .badge i {
+        margin-right: 4px;
+        font-size: 12px;
+    }
+    
+    .github-link {
+        padding: 6px;
+        font-size: 12px;
+    }
+    
+    .github-link i {
+        font-size: 16px;
+    }
+    
+    .download-resume {
+        padding: 8px;
+        font-size: 12px;
+        gap: 6px;
+    }
+    
+    .download-resume i {
+        font-size: 14px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 11px;
+        gap: 4px;
+    }
+    
+    .edu-icon-small {
+        width: 16px;
+        font-size: 11px;
+    }
+    
+    .activity-section {
+        gap: 14px;
+        height: 100%;
+    }
+    
+    .science-card {
+        padding: 14px;
+    }
+    
+    .card-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+    }
+    
+    .title-left i {
+        font-size: 14px;
+    }
+    
+    .add-button {
+        padding: 4px 10px;
+        font-size: 10px;
+        gap: 4px;
+    }
+    
+    .add-button i {
+        font-size: 9px;
+    }
+    
+    .publications-list {
+        gap: 2px;
+    }
+    
+    .publication-item {
+        padding: 6px 0;
+        gap: 6px;
+    }
+    
+    .pub-icon {
+        font-size: 14px;
+        min-width: 20px;
+    }
+    
+    .pub-title {
+        font-size: 12px;
+        margin-bottom: 1px;
+    }
+    
+    .pub-meta {
+        font-size: 10px;
+        gap: 6px;
+    }
+    
+    .pub-meta i {
+        font-size: 9px;
+    }
+    
+    .skills-grid {
+        gap: 14px;
+        flex: 1;
+        min-height: 180px;
+    }
+    
+    .skill-card {
+        padding: 14px;
+        height: 100%;
+    }
+    
+    .tags-cloud {
+        gap: 6px;
+        flex: 1;
+        align-content: flex-start;
+    }
+    
+    .tag {
+        padding: 3px 10px;
+        font-size: 11px;
+    }
+    
+    .stack-tag i {
+        font-size: 10px;
+        margin-right: 3px;
+    }
+    
+    /* Хедер и поиск для этого диапазона */
+    .header {
+        flex-wrap: wrap;
+        padding: 16px 20px;
+        gap: 12px;
+    }
+    
+    .logo-area {
+        flex: 1;
+    }
+    
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .search-wrapper {
+        order: 3;
+        max-width: 100%;
+        min-width: 100%;
+        margin-top: 4px;
+        padding: 3px 3px 3px 16px;
+    }
+    
+    .search-wrapper i {
+        font-size: 14px;
+    }
+    
+    .search-wrapper input {
+        padding: 8px 8px 8px 4px;
+        font-size: 14px;
+        min-width: 120px;
+    }
+    
+    .filter-btn {
+        padding: 6px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+        background: white;
+        border: 1px solid #dbe0e6;
+        margin-left: 4px;
+        flex-shrink: 0;
+        gap: 6px;
+    }
+    
+    .filter-btn i {
+        font-size: 12px;
+    }
+    
+    .control-buttons {
+        flex-shrink: 0;
+        gap: 8px;
+    }
+    
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .footer {
+        padding: 14px 20px;
+        font-size: 12px;
+    }
+}
+
+/* Планшеты (вертикальные) */
+@media (max-width: 770px) {
+    body {
+        padding: 10px;
+    }
+    
+    .portfolio-container {
+        border-radius: 20px;
+    }
+    
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px;
+        gap: 12px;
+    }
+    
+    .logo-area {
+        justify-content: space-between;
+    }
+    
+    .logo-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .search-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        padding: 3px 3px 3px 16px;
+    }
+    
+    .search-wrapper i {
+        font-size: 14px;
+    }
+    
+    .search-wrapper input {
+        padding: 10px 8px 10px 4px;
+        font-size: 14px;
+        min-width: 100px;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        margin-left: 4px;
+        gap: 8px;
+    }
+    
+    .filter-btn i {
+        font-size: 13px;
+    }
+    
+    .control-buttons {
+        justify-content: flex-end;
+        margin-top: 4px;
+        gap: 10px;
+    }
+    
+    .icon-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+        padding: 14px;
+        gap: 14px;
+    }
+    
+    .profile-card {
+        padding: 18px;
+        gap: 10px;
+    }
+    
+    .avatar {
+        width: 85px;
+        height: 85px;
+        font-size: 34px;
+        border-width: 3px;
+    }
+    
+    .full-name {
+        font-size: 20px;
+    }
+    
+    .username {
+        font-size: 13px;
+    }
+    
+    .badge {
+        font-size: 14px;
+        padding: 5px 18px;
+    }
+    
+    .github-link {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .download-resume {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 12px;
+    }
+    
+    .activity-section {
+        height: auto;
+        gap: 14px;
+    }
+    
+    .science-card {
+        padding: 16px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+    }
+    
+    .add-button {
+        padding: 5px 12px;
+        font-size: 11px;
+    }
+    
+    .publication-item {
+        padding: 8px 0;
+    }
+    
+    .pub-title {
+        font-size: 13px;
+    }
+    
+    .pub-meta {
+        font-size: 11px;
+    }
+    
+    .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        flex: none;
+        min-height: auto;
+    }
+    
+    .skill-card {
+        height: auto;
+        padding: 16px;
+    }
+    
+    .tags-cloud {
+        flex: none;
+        gap: 8px;
+    }
+    
+    .tag {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+    
+    .footer {
+        padding: 14px 16px;
+        text-align: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+}
+
+/* Маленькие телефоны */
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    .portfolio-container {
+        border-radius: 18px;
+    }
+    
+    .header {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .logo-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    
+    .logo-text {
+        font-size: 14px;
+    }
+    
+    .search-wrapper {
+        padding: 2px 2px 2px 12px;
+    }
+    
+    .search-wrapper i {
+        font-size: 12px;
+    }
+    
+    .search-wrapper input {
+        padding: 8px 6px 8px 4px;
+        font-size: 13px;
+        min-width: 80px;
+    }
+    
+    .filter-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        gap: 4px;
+    }
+    
+    .filter-btn i {
+        font-size: 11px;
+    }
+    
+    .control-buttons {
+        gap: 6px;
+    }
+    
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .main-content {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .profile-card {
+        padding: 16px;
+        gap: 8px;
+    }
+    
+    .avatar {
+        width: 75px;
+        height: 75px;
+        font-size: 30px;
+    }
+    
+    .full-name {
+        font-size: 18px;
+    }
+    
+    .username {
+        font-size: 12px;
+    }
+    
+    .badge {
+        font-size: 12px;
+        padding: 4px 14px;
+    }
+    
+    .github-link {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .github-link i {
+        font-size: 16px;
+    }
+    
+    .download-resume {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 11px;
+        gap: 4px;
+    }
+    
+    .edu-icon-small {
+        width: 16px;
+        font-size: 11px;
+    }
+    
+    .science-card {
+        padding: 14px;
+    }
+    
+    .card-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+    }
+    
+    .title-left i {
+        font-size: 14px;
+    }
+    
+    .add-button {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+    
+    .publication-item {
+        padding: 6px 0;
+        gap: 6px;
+    }
+    
+    .pub-icon {
+        font-size: 14px;
+        min-width: 20px;
+    }
+    
+    .pub-title {
+        font-size: 12px;
+    }
+    
+    .pub-meta {
+        font-size: 10px;
+        gap: 6px;
+    }
+    
+    .skill-card {
+        padding: 14px;
+    }
+    
+    .tag {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+    
+    .footer {
+        padding: 12px;
+        font-size: 11px;
+    }
+}
+
+/* Очень маленькие телефоны */
+@media (max-width: 360px) {
+    body {
+        padding: 5px;
+    }
+    
+    .header {
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+    
+    .logo-text {
+        font-size: 12px;
+    }
+    
+    .search-wrapper {
+        flex-wrap: wrap;
+        padding: 0;
+        background: transparent;
+        border: none;
+        gap: 6px;
+    }
+    
+    .search-wrapper i {
+        display: none;
+    }
+    
+    .search-wrapper input {
+        width: 100%;
+        background-color: #f1f5f9;
+        border: 1px solid #dbe0e6;
+        border-radius: 30px;
+        padding: 10px 12px;
+        font-size: 13px;
+        min-width: 100%;
+    }
+    
+    body.dark-mode .search-wrapper input {
+        background-color: #0f172a;
+        border-color: #475569;
+    }
+    
+    .filter-btn {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .control-buttons {
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .main-content {
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .profile-card {
+        padding: 12px;
+    }
+    
+    .avatar {
+        width: 65px;
+        height: 65px;
+        font-size: 26px;
+    }
+    
+    .full-name {
+        font-size: 16px;
+    }
+    
+    .username {
+        font-size: 11px;
+    }
+    
+    .badge {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+    
+    .github-link {
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    .download-resume {
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .science-card {
+        padding: 12px;
+    }
+    
+    .card-title {
+        font-size: 13px;
+    }
+    
+    .add-button {
+        padding: 3px 8px;
+        font-size: 9px;
+    }
+    
+    .publication-item {
+        padding: 5px 0;
+    }
+    
+    .pub-title {
+        font-size: 11px;
+    }
+    
+    .pub-meta {
+        font-size: 9px;
+    }
+    
+    .skill-card {
+        padding: 12px;
+    }
+    
+    .tag {
+        padding: 3px 8px;
+        font-size: 10px;
+    }
+    
+    .footer {
+        padding: 10px;
+        font-size: 10px;
+    }
+}
+
+/* Для очень широких экранов */
+@media (min-width: 1800px) {
+    .portfolio-container {
+        max-width: 1600px;
+    }
+    
+    .main-content {
+        grid-template-columns: 400px 1fr;
+        gap: 40px;
+        padding: 40px;
+    }
+    
+    .profile-card {
+        padding: 30px;
+    }
+    
+    .avatar {
+        width: 130px;
+        height: 130px;
+        font-size: 52px;
+    }
+    
+    .full-name {
+        font-size: 28px;
+    }
+    
+    .science-card, .skill-card {
+        padding: 24px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+    }
+    
+    .tag {
+        padding: 6px 18px;
+        font-size: 14px;
+    }
+}
