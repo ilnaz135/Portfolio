@@ -1,0 +1,266 @@
+# Portfolio Backend API
+
+REST API для управления портфолио пользователей с их академическими достижениями, курсами и научными работами.
+
+## Установка
+
+### 1. Создать виртуальное окружение (опционально, но рекомендуется)
+```bash
+python -m venv venv
+venv\Scripts\activate  # На Windows
+source venv/bin/activate  # На Linux/Mac
+```
+
+### 3. Заполнить базу данных тестовыми данными (опционально)
+```bash
+python seed_data.py
+```
+
+Этот скрипт создаст 8 тестовых пользователей с академическими курсами от 1-го до 4-го, а также добавит направления, курсы и достижения для каждого пользователя.
+
+**Тестовые данные включают:**
+- **8 пользователей** с разными академическими курсами (1-4 курс)
+- **16 направлений обучения** (по 2 на пользователя)
+- **16 пройденных курсов** (по 2 на пользователя)
+- **16 научных достижений** (по 2 на пользователя)
+
+## Запуск сервера
+
+```bash
+python main.py
+```
+
+Сервер будет доступен по адресу: **http://localhost:8000**
+
+### Интерактивная документация API
+
+После запуска сервера вы можете открыть интерактивную документацию:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## Структура базы данных
+
+### Таблицы
+
+#### 1. **users** - Основная информация о пользователе
+- `id` - Уникальный идентификатор
+- `username` - Уникальное имя пользователя
+- `first_name` - Имя
+- `last_name` - Фамилия
+- `patronymic` - Отчество
+- `stack` - Технологический стек
+- `cloude_storage` - Ссылка на облачное хранилище (GitHub, GitLab и т.д.)
+- `academic_direction` - Основное направление обучения
+- `class` - Класс/группа
+- `avg_score` - Средний балл
+
+#### 2. **users_directions** - Дополнительные направления обучения
+- `id` - Уникальный идентификатор
+- `user_id` - Внешний ключ на users
+- `other_directions` - Описание дополнительного направления
+
+#### 3. **users_courses** - Пройденные курсы
+- `id` - Уникальный идентификатор
+- `user_id` - Внешний ключ на users
+- `name_course` - Название курса
+- `url_course` - Ссылка на курс или сертификат
+
+#### 4. **users_scientific_achievements** - Научные достижения
+- `id` - Уникальный идентификатор
+- `user_id` - Внешний ключ на users
+- `name` - Название достижения
+- `type` - Тип (публикация, премия, презентация и т.д.)
+- `date` - Дата достижения
+
+## API Endpoints
+
+### Инициализация
+
+#### `POST /setup`
+Создает все таблицы в БД. Вызовите один раз перед началом работы.
+
+```bash
+curl -X POST http://localhost:8000/setup
+```
+
+### Управление пользователями
+
+#### `POST /users` - Создать нового пользователя
+```bash
+curl -X POST http://localhost:8000/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "john_doe",
+    "first_name": "John",
+    "last_name": "Doe",
+    "patronymic": "Smith",
+    "stack": "Python, JavaScript, React",
+    "cloude_storage": "https://github.com/johndoe",
+    "academic_direction": "Computer Science",
+    "class": "4-1",
+    "avg_score": 4.5
+  }'
+```
+
+#### `GET /users` - Получить всех пользователей
+```bash
+curl http://localhost:8000/users
+```
+
+Возвращает пользователей, отсортированных по дате создания (сначала самые новые):
+```bash
+curl http://localhost:8000/users?limit=10  # Последние 10 пользователей
+curl http://localhost:8000/users?limit=-1  # Все пользователи
+```
+
+#### `GET /users/{user_id}` - Получить пользователя по ID
+```bash
+curl http://localhost:8000/users/1
+```
+
+#### `PUT /users/{user_id}` - Обновить пользователя
+```bash
+curl -X PUT http://localhost:8000/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Jane",
+    "avg_score": 4.7
+  }'
+```
+
+#### `DELETE /users/{user_id}` - Удалить пользователя
+```bash
+curl -X DELETE http://localhost:8000/users/1
+```
+
+### Управление направлениями обучения
+
+#### `POST /users/{user_id}/directions` - Добавить направление
+```bash
+curl -X POST http://localhost:8000/users/1/directions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "other_directions": "Machine Learning"
+  }'
+```
+
+#### `GET /users/{user_id}/directions` - Получить все направления пользователя
+```bash
+curl http://localhost:8000/users/1/directions
+```
+
+Возвращает направления, отсортированные по дате создания (сначала самые новые):
+```bash
+curl http://localhost:8000/users/1/directions?limit=5   # Последние 5 направлений
+curl http://localhost:8000/users/1/directions?limit=-1  # Все направления
+```
+
+#### `DELETE /directions/{direction_id}` - Удалить направление
+```bash
+curl -X DELETE http://localhost:8000/directions/1
+```
+
+### Управление курсами
+
+#### `POST /users/{user_id}/courses` - Добавить курс
+```bash
+curl -X POST http://localhost:8000/users/1/courses \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name_course": "Python for Beginners",
+    "url_course": "https://coursera.org/course/python-basics"
+  }'
+```
+
+#### `GET /users/{user_id}/courses` - Получить все курсы пользователя
+```bash
+curl http://localhost:8000/users/1/courses
+```
+
+Возвращает курсы, отсортированные по дате создания (сначала самые новые):
+```bash
+curl http://localhost:8000/users/1/courses?limit=5   # Последние 5 курсов
+curl http://localhost:8000/users/1/courses?limit=-1  # Все курсы
+```
+
+#### `DELETE /courses/{course_id}` - Удалить курс
+```bash
+curl -X DELETE http://localhost:8000/courses/1
+```
+
+### Управление научными достижениями
+
+#### `POST /users/{user_id}/achievements` - Добавить достижение
+```bash
+curl -X POST http://localhost:8000/users/1/achievements \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Research Paper on AI",
+    "type": "publication",
+    "date": "2024-01-15T00:00:00"
+  }'
+```
+
+#### `GET /users/{user_id}/achievements` - Получить все достижения пользователя
+```bash
+curl http://localhost:8000/users/1/achievements
+```
+
+Возвращает достижения, отсортированные по дате создания (сначала самые новые):
+```bash
+curl http://localhost:8000/users/1/achievements?limit=5   # Последние 5 достижений
+curl http://localhost:8000/users/1/achievements?limit=-1  # Все достижения
+```
+
+#### `DELETE /achievements/{achievement_id}` - Удалить достижение
+```bash
+curl -X DELETE http://localhost:8000/achievements/1
+```
+
+### Проверка здоровья сервера
+
+#### `GET /health` - Проверить статус сервера
+```bash
+curl http://localhost:8000/health
+```
+
+## Обработка ошибок
+
+API возвращает стандартные HTTP коды ошибок:
+
+- **200** - Успешно (GET)
+- **201** - Создано (POST)
+- **204** - Успешно удалено (DELETE)
+- **400** - Неверный запрос (например, дублирующееся имя пользователя)
+- **404** - Ресурс не найден
+- **500** - Внутренняя ошибка сервера
+
+Примеры ошибок:
+```json
+{
+  "detail": "User with ID 999 not found"
+}
+```
+
+```json
+{
+  "detail": "Username 'john_doe' already exists"
+}
+```
+
+## Примечания
+
+- Все даты должны быть в формате ISO 8601: `YYYY-MM-DDTHH:MM:SS`
+- Средний балл (avg_score) должен быть от 0 до 5
+- При удалении пользователя автоматически удаляются все связанные данные (каскадное удаление)
+- База данных хранится в файле `portfolio.db` (SQLite)
+- GET запросы для списков элементов возвращают данные, отсортированные по дате создания (сначала самые новые)
+- Параметр `limit=-1` в GET запросах возвращает все доступные результаты без ограничения
+
+## Файлы проекта
+
+- `main.py` - Основной файл API с FastAPI приложением
+- `seed_data.py` - Скрипт для заполнения базы данных тестовыми данными
+- `test_api.py` - Скрипт для тестирования API эндпоинтов
+- `requirements.txt` - Список зависимостей Python
+- `README.md` - Документация проекта

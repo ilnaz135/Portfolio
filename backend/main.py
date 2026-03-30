@@ -1,82 +1,72 @@
-from typing import Annotated
-from fastapi import Depends, FastAPI
-from pydantic import BaseModel
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+"""
+Portfolio Backend API - Main Application
+
+Этот модуль создает и запускает основное FastAPI приложение,
+используя модульную архитектуру.
+"""
+
 import uvicorn
+from fastapi import FastAPI
+
+from app.core.config import settings
+from app.core.logging import setup_logging
+from app.routes import api_router
 
 
-app = FastAPI()
-engine = create_async_engine("sqlite+aiosqlite:///portfolio.db", echo=True)
-new_async_session = async_sessionmaker(engine, expire_on_commit=False)
+def create_application() -> FastAPI:
+    """
+    Создать и настроить FastAPI приложение.
 
-async def get_session():
-  async with new_async_session() as session:
-    yield session
+    Returns:
+        Настроенное FastAPI приложение
+    """
+    # Настроить логирование
+    setup_logging()
 
+    # Создать приложение FastAPI
+    app = FastAPI(
+        title=settings.app_name,
+        description=settings.app_description,
+        version=settings.app_version,
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json"
+    )
 
-SessionDep = Annotated[AsyncSession, Depends(get_session)]
+    # Зарегистрировать обработчики исключений
+    from app.core.exceptions import (
+        portfolio_exception_handler,
+        sqlalchemy_exception_handler,
+        general_exception_handler,
+        PortfolioException
+    )
+    from sqlalchemy.exc import SQLAlchemyError
 
-class Base(DeclarativeBase):
-  pass
+    app.add_exception_handler(PortfolioException, portfolio_exception_handler)
+    app.add_exception_handler(SQLAlchemyError, sqlalchemy_exception_handler)
+    app.add_exception_handler(Exception, general_exception_handler)
 
+    # Включить маршруты API
+    app.include_router(api_router, prefix="/api/v1")
 
-class UserModel(Base):
-  __tablename__ = "users"
-
-  id: Mapped[int] = mapped_column(primary_key=True)
-  username: Mapped[str]
-  firstname: Mapped[str]
-  lastname: Mapped[str]
-  surname: Mapped[str]
-  direction: Mapped[str]
-  course: Mapped[str]
-  avg_score: Mapped[int]
-
-
-class UserSchema(BaseModel):
-  username: str
-  firstname: str
-  lastname: str
-  surname: str
-
-
-class UserGetSchema(BaseModel):
-  id: int
-  username: str
-  firstname: str
-  lastname: str
-  surname: str
-  direction: str
-  course: str
-  avg_score: str
-
-@app.post("/setup")
-async def setup_database():
-  async with engine.begin() as conn:
-    await conn.run_sync(Base.metadata.drop_all)
-    await conn.run_sync(Base.metadata.create_all)
-
-@app.post("/users{user_id}")
-async def add_user(user: UserSchema, session: SessionDep) -> UserSchema:
-  new_user = UserModel(
-    username = user.username,
-    firstname = user.firstname,
-    lastname = user.lastname,
-    surname = user.surname,
-  )
-  session.add(new_user)
-  await session.commit()
-
-  return {"success": True, "message": "Пользователь успешно добавлен"}
+    return app
 
 
-@app.get("/users")
-async def get_user(user_id: int, session: SessionDep) -> UserGetSchema:
-  user = session.get(UserModel, user_id)
+# Создать экземпляр приложения
+app = create_application()
 
-  return user
 
 if __name__ == "__main__":
-  uvicorn.run("main:app", reload=True)
+    """
+    Запустить FastAPI приложение с сервером Uvicorn.
+
+    Сервер будет доступен по адресу http://localhost:8000
+    Документация API автоматически доступна по адресу http://localhost:8000/docs
+    """
+    uvicorn.run(
+        "main:app",
+        host=settings.host,
+        port=settings.port,
+        reload=settings.debug,
+        log_level="info"
+    )
