@@ -7,6 +7,7 @@ Portfolio Backend API - Main Application
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.logging import setup_logging
@@ -45,6 +46,15 @@ def create_application() -> FastAPI:
     app.add_exception_handler(PortfolioException, portfolio_exception_handler)
     app.add_exception_handler(SQLAlchemyError, sqlalchemy_exception_handler)
     app.add_exception_handler(Exception, general_exception_handler)
+
+    # Разрешить CORS для сайта 127.0.0.1:5500
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # Включить маршруты API
     app.include_router(api_router, prefix="/api/v1")

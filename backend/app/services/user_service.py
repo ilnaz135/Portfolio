@@ -8,6 +8,7 @@ from typing import List, Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 
 from app.models import UserModel
 from app.schemas import UserCreateSchema, UserUpdateSchema
@@ -85,7 +86,19 @@ class UserService:
         Raises:
             UserNotFoundException: Если пользователь не найден
         """
-        user = await self.session.get(UserModel, user_id)
+        stmt = (
+            select(UserModel)
+            .options(
+                selectinload(UserModel.directions),
+                selectinload(UserModel.courses),
+                selectinload(UserModel.scientific_achievements),
+                selectinload(UserModel.stacks),
+            )
+            .where(UserModel.id == user_id)
+        )
+        result = await self.session.execute(stmt)
+        user = result.scalars().first()
+
         if not user:
             raise UserNotFoundException(user_id)
         return user
@@ -100,7 +113,16 @@ class UserService:
         Returns:
             Список пользователей
         """
-        stmt = select(UserModel).order_by(UserModel.created_at.desc())
+        stmt = (
+            select(UserModel)
+            .options(
+                selectinload(UserModel.directions),
+                selectinload(UserModel.courses),
+                selectinload(UserModel.scientific_achievements),
+                selectinload(UserModel.stacks),
+            )
+            .order_by(UserModel.created_at.desc())
+        )
         if limit != -1:
             stmt = stmt.limit(limit)
         result = await self.session.execute(stmt)
