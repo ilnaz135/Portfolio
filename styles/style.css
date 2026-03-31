@@ -40,17 +40,9 @@ body.dark-mode .header {
     gap: 8px;
 }
 
-.logo-icon {
-    background-color: #0b2b5c;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 20px;
+.logo-svg {
+    transform: scale(1/1.75);
+    fill: #ffb600;
 }
 
 body.dark-mode .logo-icon {
@@ -498,7 +490,7 @@ body.dark-mode .download-resume:hover {
 .education-compact {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 14px;
     padding: 4px 0 0 0;
     margin-top: 0;
 }
@@ -1011,7 +1003,8 @@ body.dark-mode .input-group input {
     
     .profile-card {
         padding: 14px;
-        gap: 6px;
+        gap: 14px;
+        height: 100%;
     }
     
     .avatar {
@@ -1162,12 +1155,7 @@ body.dark-mode .input-group input {
     .logo-area {
         flex: 1;
     }
-    
-    .logo-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
+
     
     .logo-text {
         font-size: 16px;
