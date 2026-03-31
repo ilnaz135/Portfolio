@@ -11,7 +11,12 @@ venv\Scripts\activate  # На Windows
 source venv/bin/activate  # На Linux/Mac
 ```
 
-### 3. Заполнить базу данных тестовыми данными (опционально)
+### 2. Установить все библиотеки для запуска программы
+```
+pip install -r backend\requirements.txt
+```
+
+### 3. Заполнить базу данных тестовыми данными (опционально, если уже есть заполненный db, то не надо)
 ```bash
 python seed_data.py
 ```
