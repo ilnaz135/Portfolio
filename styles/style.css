@@ -763,6 +763,8 @@ body.dark-mode .pub-meta {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     height: fit-content;
     display: inline-block;
+    user-select: none;
+    cursor: pointer;
 }
 
 body.dark-mode .tag {
