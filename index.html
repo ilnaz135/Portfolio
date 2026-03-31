@@ -2,68 +2,67 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Цифровое портфолио УрФУ</title>
-    <!-- Подключаем шрифт Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <!-- Font Awesome для иконок (версия 6) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Подключаем CSS -->
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/global.css">
 </head>
 <body>
     <div class="portfolio-container">
-        <!-- Хедер -->
         <header class="header">
             <div class="logo-area">
-                <div class="logo-icon">У</div>
+                <div class="logo-icon">ИИ</div>
                 <div class="logo-text">Цифровое портфолио <span>УрФУ</span></div>
             </div>
             
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Поиск">
-                <button class="filter-btn">
-                    <i class="fas fa-sliders-h"></i> Фильтры
-                </button>
-            </div>
-
-            <div class="control-buttons">
-                <div class="icon-btn" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </div>
-                <div class="icon-btn" onclick="alert('Настройки (демо)')">
-                    <i class="fas fa-cog"></i>
-                </div>
-            </div>
-        </header>
-
-        <!-- Основная часть -->
-        <div class="main-content">
-            <!-- Левая колонка: профиль -->
-            <div class="profile-card">
-                <div class="avatar">ИИ</div>
-                <div class="full-name">Иванов Иван</div>
-                <div class="username">
-                    <i class="fas fa-at"></i> vanok_dev
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Поиск">
+                    <button class="filter-btn">
+                        <i class="fas fa-sliders-h"></i> Фильтры
+                    </button>
                 </div>
                 
+                <div class="control-buttons">
+                    <div class="icon-btn" id="themeToggle"><i class="fas fa-moon"></i></div>
+                    <div class="icon-btn"><i class="fas fa-cog"></i></div>
+                    <div class="burger-menu">
+                        <div class="icon-btn"><i class="fas fa-bars"></i></div>
+                        <div class="dropdown-menu">
+                            <a href="#" class="active">Главное меню</a>
+                            <a href="#">Список студентов</a>
+                            <a href="#">Проекты</a>
+                        </div>
+                    </div>
+                </div>
+        </header>
+
+        <div class="main-content">
+            <div class="profile-card">
+                <button class="edit-profile-btn" id="openModal">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
+
+                <div class="avatar" id="profileAvatar">ИИ</div>
+                <div class="full-name">Иванов Иван</div>
+                <div class="username"><i class="fas fa-at"></i> vanok_dev</div>
+                
                 <div class="role-badge">
-                    <span class="badge"><i class="fas fa-code" style="margin-right: 8px;"></i>Frontend / UX-разработчик</span>
+                    <span class="badge" id="displayRole"><i class="fas fa-code"></i> Frontend / UX-разработчик</span>
                 </div>
 
-                <a href="#" class="github-link" onclick="alert('Переход на GitHub (демо)')">
+                <a href="#" class="github-link" id="displayCloud">
                     <i class="fab fa-github"></i> github.com/vanok_dev
                 </a>
 
-                <button class="download-resume" onclick="alert('✨ Генерация резюме')">
+                <button class="download-resume">
                     <i class="fas fa-file-pdf"></i> Создать резюме
                 </button>
 
-                <!-- Компактные строки -->
                 <div class="education-compact">
                     <div class="edu-row">
                         <span class="edu-icon-small"><i class="fas fa-university"></i></span>
@@ -73,7 +72,7 @@
                     <div class="edu-row">
                         <span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span>
                         <span class="edu-label-small">Курс:</span>
-                        <span class="edu-value-small">4 курс, бакалавриат</span>
+                        <span class="edu-value-small">4 курс</span>
                     </div>
                     <div class="edu-row">
                         <span class="edu-icon-small"><i class="fas fa-star"></i></span>
@@ -83,97 +82,116 @@
                 </div>
             </div>
 
-            <!-- Правая колонка -->
             <div class="activity-section">
-                <!-- Научная деятельность -->
-                <div class="science-card">
-                    <div class="card-title">
-                        <div class="title-left">
-                            <i class="fas fa-flask"></i> Научная деятельность
+                <div class="left-col">
+                    <div class="science-card">
+                        <div class="card-title">
+                            <div class="title-left"><i class="fas fa-flask"></i> Научная деятельность</div>
+                            <button class="add-button"><i class="fas fa-plus-circle"></i> Добавить</button>
                         </div>
-                        <button class="add-button" onclick="alert('Добавить публикацию')">
-                            <i class="fas fa-plus-circle"></i> Добавить
-                        </button>
+                        <div class="publications-list">
+                            <div class="publication-item">
+                                <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="pub-content">
+                                    <div class="pub-title">Оптимизация алгоритмов поиска</div>
+                                    <div class="pub-meta"><span>2024</span></div>
+                                </div>
+                            </div>
+                            <div class="publication-item">
+                                <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="pub-content">
+                                    <div class="pub-title">Организация учебной деятельности</div>
+                                    <div class="pub-meta"><span>2023</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="more-button">Посмотреть ещё</button>
                     </div>
-                    
-                    <div class="publications-list">
-                        <div class="publication-item">
-                            <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
-                            <div class="pub-content">
-                                <div class="pub-title">Оптимизация алгоритмов поиска в больших данных</div>
-                                <div class="pub-meta">
-                                    <span><i class="far fa-calendar-alt"></i> 2024</span>
-                                    <span><i class="fas fa-tag"></i> Тезисы доклада</span>
-                                </div>
-                            </div>
+
+                    <div class="skill-card">
+                        <div class="card-title">
+                            <div class="title-left"><i class="fas fa-graduation-cap"></i> Специализации</div>
                         </div>
-                        <div class="publication-item">
-                            <div class="pub-icon"><i class="fas fa-scroll"></i></div>
-                            <div class="pub-content">
-                                <div class="pub-title">Применение ML в аналитике данных образовательных процессов</div>
-                                <div class="pub-meta">
-                                    <span><i class="far fa-calendar-alt"></i> 2023</span>
-                                    <span><i class="fas fa-tag"></i> Статья ВАК</span>
-                                </div>
-                            </div>
+                        <div class="tags-cloud">
+                            <span class="tag">Фронтенд разработчик</span>
+                            <span class="tag">Бекенд разработчик</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Две карточки в grid -->
-                <div class="skills-grid">
-                    <!-- Специализации -->
-                    <div class="skill-card">
+                <div class="right-col">
+                    <div class="skill-card tall-card">
                         <div class="card-title">
-                            <div class="title-left">
-                                <i class="fas fa-graduation-cap"></i> Специализации
-                            </div>
-                            <button class="add-button" onclick="alert('Добавить специализацию')">
-                                <i class="fas fa-plus-circle"></i> Добавить
-                            </button>
+                            <div class="title-left"><i class="fas fa-book"></i> Курсы / дисциплины</div>
                         </div>
-                        
                         <div class="tags-cloud">
-                            <span class="tag">Алгоритмы</span>
-                            <span class="tag">Базы данных</span>
-                            <span class="tag">ООП</span>
-                            <span class="tag">Дискретка</span>
-                            <span class="tag">Комп. сети</span>
-                            <span class="tag">Матан</span>
-                        </div>
-                    </div>
-
-                    <!-- Текущий стек -->
-                    <div class="skill-card">
-                        <div class="card-title">
-                            <div class="title-left">
-                                <i class="fas fa-cogs"></i> Текущий стек
-                            </div>
-                            <button class="add-button" onclick="alert('Добавить технологию')">
-                                <i class="fas fa-plus-circle"></i> Добавить
-                            </button>
-                        </div>
-                        
-                        <div class="tags-cloud">
-                            <span class="tag stack-tag"><i class="fab fa-react"></i> React</span>
-                            <span class="tag stack-tag"><i class="fab fa-js"></i> TypeScript</span>
-                            <span class="tag stack-tag"><i class="fab fa-node"></i> Node.js</span>
-                            <span class="tag stack-tag"><i class="fab fa-figma"></i> Figma</span>
-                            <span class="tag stack-tag"><i class="fas fa-code"></i> C++</span>
-                            <span class="tag stack-tag"><i class="fab fa-python"></i> Python</span>
+                            <span class="tag stack-tag"><i class="fas fa-database"></i> Базы данных</span>
+                            <span class="tag stack-tag"><i class="fas fa-square-root-alt"></i> Математика</span>
+                            <span class="tag stack-tag"><i class="fas fa-laptop-code"></i> Прикладная информатика</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Футер -->
-        <div class="footer">
-            <span>© 2026 Цифровое портфолио УрФУ</span>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Редактировать профиль</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Загрузить фото профиля</label>
+                    <input type="file" id="inputAvatarFile" accept="image/*">
+                </div>
+                <div class="input-group">
+                    <label>Кем вы себя считаете</label>
+                    <input type="text" id="inputRole" placeholder="Frontend разработчик">
+                </div>
+                <div class="input-group">
+                    <label>Ссылка на хранилище</label>
+                    <input type="text" id="inputCloud" placeholder="https://github.com/...">
+                </div>
+                <button class="save-btn" id="saveProfile">Сохранить изменения</button>
+            </div>
         </div>
     </div>
 
-    <!-- Подключаем JavaScript -->
     <script src="js/theme.js"></script>
+    <script>
+        const modal = document.getElementById('modalOverlay');
+        const openBtn = document.getElementById('openModal');
+        const closeBtn = document.getElementById('closeModal');
+        const saveBtn = document.getElementById('saveProfile');
+
+        openBtn.onclick = () => modal.classList.add('active');
+        closeBtn.onclick = () => modal.classList.remove('active');
+        
+        saveBtn.onclick = () => {
+            const roleInput = document.getElementById('inputRole').value;
+            const cloudInput = document.getElementById('inputCloud').value;
+            const fileInput = document.getElementById('inputAvatarFile');
+            const avatarDiv = document.getElementById('profileAvatar');
+
+            if(roleInput) document.getElementById('displayRole').innerHTML = `<i class="fas fa-code"></i> ${roleInput}`;
+            if(cloudInput) document.getElementById('displayCloud').innerHTML = `<i class="fab fa-github"></i> ${cloudInput}`;
+            
+            // Логика загрузки фото
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarDiv.style.backgroundImage = `url(${e.target.result})`;
+                    avatarDiv.style.backgroundSize = 'cover';
+                    avatarDiv.style.backgroundPosition = 'center';
+                    avatarDiv.innerText = ''; // Убираем инициалы
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+
+            modal.classList.remove('active');
+        }
+    </script>
 </body>
 </html>
