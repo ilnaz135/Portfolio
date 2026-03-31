@@ -6,7 +6,7 @@ body.dark-mode {
 
 .portfolio-container {
     max-width: 1280px;
-    width: 100%;
+    margin: 0 auto;
     background-color: #ffffff;
     border-radius: 32px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -45,7 +45,7 @@ body.dark-mode .header {
     color: white;
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,14 +76,15 @@ body.dark-mode .logo-text span {
     color: #94a3b8;
 }
 
-/* ===== ПОИСК ===== */
+/* ===== ПОИСК (ФИКС КНОПКИ ФИЛЬТРЫ) ===== */
 .search-wrapper {
     display: flex;
     align-items: center;
     background-color: #f1f5f9;
     border-radius: 60px;
-    padding: 4px 4px 4px 20px;
     border: 1px solid #dbe0e6;
+    padding: 4px; /* Одинаковый внутренний отступ для всего содержимого */
+    padding-left: 20px; /* Больше отступ слева для иконки лупы */
     flex: 1;
     max-width: 500px;
     min-width: 280px;
@@ -106,7 +107,7 @@ body.dark-mode .search-wrapper i {
 .search-wrapper input {
     border: none;
     background: transparent;
-    padding: 12px 12px 12px 8px;
+    padding: 8px;
     flex: 1;
     font-size: 15px;
     outline: none;
@@ -128,17 +129,14 @@ body.dark-mode .search-wrapper input::placeholder {
 
 .filter-btn {
     background: white;
-    border: none;
+    border: 1px solid #dbe0e6;
     border-radius: 40px;
-    padding: 8px 18px;
-    margin-left: 4px;
-    font-weight: 500;
+    padding: 8px 18px; /* Высота кнопки теперь зависит только от этих падингов */
     font-size: 14px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
-    border: 1px solid #dbe0e6;
     color: #1e293b;
     transition: background 0.2s;
 }
@@ -146,7 +144,7 @@ body.dark-mode .search-wrapper input::placeholder {
 body.dark-mode .filter-btn {
     background: #334155;
     border-color: #475569;
-    color: #e2e8f0;
+    color: #fff;
 }
 
 .filter-btn:hover {
@@ -157,7 +155,7 @@ body.dark-mode .filter-btn:hover {
     background: #475569;
 }
 
-/* ===== КНОПКИ УПРАВЛЕНИЯ ===== */
+/* ===== КНОПКИ УПРАВЛЕНИЯ И БУРГЕР ===== */
 .control-buttons {
     display: flex;
     gap: 12px;
@@ -194,6 +192,88 @@ body.dark-mode .icon-btn:hover {
     color: #f1f5f9;
 }
 
+.burger-menu {
+    position: relative;
+}
+
+.burger-menu:hover .dropdown-menu {
+    display: flex;
+}
+
+/* "Мостик", чтобы меню не закрывалось при движении мыши вниз */
+.burger-menu::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    height: 15px; /* Дистанция между кнопкой и меню */
+    display: none;
+}
+
+.burger-menu:hover::before {
+    display: block;
+}
+
+.burger-menu:hover .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 220px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+body.dark-mode .dropdown-menu {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.dropdown-menu a {
+    padding: 14px 20px;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+body.dark-mode .dropdown-menu a {
+    color: #e2e8f0;
+}
+
+.dropdown-menu a:hover {
+    background: #f1f5f9;
+}
+
+body.dark-mode .dropdown-menu a:hover {
+    background: #334155;
+}
+
+.dropdown-menu a.active {
+    color: #2563eb;
+    background: #eef2f6;
+    border-left: 3px solid #2563eb;
+}
+
+body.dark-mode .dropdown-menu a.active {
+    color: #3b82f6;
+    background: #0f172a;
+    border-left-color: #3b82f6;
+}
+
 /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
 .main-content {
     display: grid;
@@ -201,6 +281,7 @@ body.dark-mode .icon-btn:hover {
     gap: 32px;
     padding: 32px;
     min-height: auto;
+    align-items: stretch;
 }
 
 /* Левая колонка — профиль */
@@ -214,12 +295,48 @@ body.dark-mode .icon-btn:hover {
     flex-direction: column;
     gap: 12px;
     height: fit-content;
+    position: relative;
 }
+
 
 body.dark-mode .profile-card {
     background-color: #0f172a;
     border-color: #334155;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.edit-profile-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #f1f5f9;
+    border: 1px solid #dbe0e6;
+    color: #475569;
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+body.dark-mode .edit-profile-btn {
+    background: #334155;
+    border-color: #475569;
+    color: #94a3b8;
+}
+
+.edit-profile-btn:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.2);
+}
+
+body.dark-mode .edit-profile-btn:hover {
+    background-color: #475569;
+    color: #f1f5f9;
 }
 
 .avatar {
@@ -241,7 +358,7 @@ body.dark-mode .profile-card {
 
 body.dark-mode .avatar {
     border-color: #0f172a;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+    box-shadow: none; /* Убрали свечение */
 }
 
 .full-name {
@@ -420,15 +537,30 @@ body.dark-mode .edu-value-small {
 
 .edu-highlight-small {
     color: #2563eb;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 body.dark-mode .edu-highlight-small {
     color: #3b82f6;
 }
 
-/* Правая колонка */
+/* Правая колонка: Сетка с одинаковой высотой блоков */
 .activity-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch; /* Это делает колонки одинаковыми по высоте */
+    height: 100%;
+}
+
+.left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    
+}
+
+.right-col {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -439,11 +571,12 @@ body.dark-mode .edu-highlight-small {
 .science-card {
     background-color: #ffffff;
     border-radius: 24px;
-    padding: 20px;
     border: 1px solid #e2e8f0;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    padding: 16px;
     display: flex;
     flex-direction: column;
+    height: auto;
 }
 
 body.dark-mode .science-card {
@@ -452,16 +585,7 @@ body.dark-mode .science-card {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* Сетка для двух нижних карточек */
-.skills-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    flex: 1;
-    min-height: 200px;
-}
-
-/* Карточки специализаций и стека */
+/* Карточки специализаций и курсов */
 .skill-card {
     background-color: #ffffff;
     border-radius: 24px;
@@ -477,6 +601,11 @@ body.dark-mode .skill-card {
     background-color: #0f172a;
     border-color: #334155;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.tall-card {
+    height: 100%; /* Карточка растягивается на всю колонку */
+    flex: 1;
 }
 
 .card-title {
@@ -569,6 +698,7 @@ body.dark-mode .add-button:hover {
 .publications-list {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .publication-item {
@@ -660,6 +790,25 @@ body.dark-mode .tag:hover {
     border-color: #4b5563;
 }
 
+/* Кнопка посмотреть ещё */
+
+.more-button {
+    background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
+    border: 1px solid #b8d1ff;
+    color: #1e4f8a;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 30px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(30, 79, 138, 0.1);
+    letter-spacing: 0.3px;
+    margin-top: auto;
+}
+
 /* Стек */
 .stack-tag {
     background: linear-gradient(135deg, #e0f2fe, #bae6fd);
@@ -699,6 +848,91 @@ body.dark-mode .stack-tag i {
 body.dark-mode .footer {
     border-top-color: #2d3a4f;
     color: #94a3b8;
+}
+
+/* ===== МОДАЛЬНОЕ ОКНО ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-window {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    width: 400px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .modal-window {
+    background: #1e293b;
+    color: #fff;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    outline: none;
+}
+
+body.dark-mode .input-group input {
+    background: #0f172a;
+    border-color: #334155;
+    color: #fff;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.save-btn:hover {
+    background: #1d4ed8;
 }
 
 /* ===== МЕДИА-ЗАПРОСЫ (АДАПТИВНОСТЬ) ===== */
@@ -770,7 +1004,7 @@ body.dark-mode .footer {
 /* СРЕДНИЙ ДИАПАЗОН - планшеты в альбомной ориентации */
 @media (min-width: 771px) and (max-width: 970px) {
     .main-content {
-        grid-template-columns: 260px 1fr;
+        grid-template-columns: 360px 1fr;
         gap: 16px;
         padding: 16px;
     }
@@ -840,8 +1074,9 @@ body.dark-mode .footer {
     }
     
     .activity-section {
+        grid-template-columns: 1fr; /* Включаем 1 колонку */
         gap: 14px;
-        height: 100%;
+        height: auto;   
     }
     
     .science-card {
@@ -894,12 +1129,6 @@ body.dark-mode .footer {
     
     .pub-meta i {
         font-size: 9px;
-    }
-    
-    .skills-grid {
-        gap: 14px;
-        flex: 1;
-        min-height: 180px;
     }
     
     .skill-card {
@@ -1005,16 +1234,41 @@ body.dark-mode .footer {
         border-radius: 20px;
     }
     
+    /* === ИЗМЕНЕНИЯ ЗДЕСЬ === */
     .header {
-        flex-direction: column;
-        align-items: stretch;
+        display: grid;
+        /* Два ряда: верх (логотип + кнопки), низ (поиск) */
+        grid-template-rows: auto auto; 
+        /* Три колонки: логотип, пустота, кнопки */
+        grid-template-columns: 1fr auto 1fr; 
         padding: 14px;
         gap: 12px;
     }
     
+    /* Логотип в левую колонку */
     .logo-area {
-        justify-content: space-between;
+        grid-column: 1 / 2;
+        justify-self: start;
+        gap: 15px;
     }
+    
+    /* Кнопки в правую колонку (на одном уровне с лого) */
+    .control-buttons {
+        grid-column: 3 / 4;
+        justify-self: end;
+        margin-top: 0; /* Убираем отступ, если был */
+        gap: 10px;
+    }
+    
+    /* Поиск на всю ширину во втором ряду */
+    .search-wrapper {
+        grid-column: 1 / -1; /* Растягиваем от начала до конца */
+        width: 100%;
+        max-width: 100%;
+        padding: 3px 3px 3px 16px;
+        order: 3; /* Гарантируем, что поиск будет внизу */
+    }
+    /* ======================= */
     
     .logo-icon {
         width: 38px;
@@ -1024,13 +1278,6 @@ body.dark-mode .footer {
     
     .logo-text {
         font-size: 16px;
-    }
-    
-    .search-wrapper {
-        width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-        padding: 3px 3px 3px 16px;
     }
     
     .search-wrapper i {
@@ -1054,12 +1301,6 @@ body.dark-mode .footer {
     
     .filter-btn i {
         font-size: 13px;
-    }
-    
-    .control-buttons {
-        justify-content: flex-end;
-        margin-top: 4px;
-        gap: 10px;
     }
     
     .icon-btn {
@@ -1114,6 +1355,7 @@ body.dark-mode .footer {
     }
     
     .activity-section {
+        grid-template-columns: 1fr;
         height: auto;
         gap: 14px;
     }
@@ -1143,13 +1385,6 @@ body.dark-mode .footer {
     
     .pub-meta {
         font-size: 11px;
-    }
-    
-    .skills-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        flex: none;
-        min-height: auto;
     }
     
     .skill-card {
@@ -1342,33 +1577,94 @@ body.dark-mode .footer {
 }
 
 /* Очень маленькие телефоны */
+/* Очень маленькие телефоны */
 @media (max-width: 360px) {
     body {
         padding: 5px;
     }
     
+    .portfolio-container {
+        border-radius: 18px;
+        overflow: visible; /* Убираем скрытие переполнения */
+    }
+    
+    /* === ИСПРАВЛЕННЫЙ ХЕДЕР === */
     .header {
-        padding: 10px;
-        gap: 8px;
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: auto auto auto;
+        padding: 8px;
+        gap: 6px;
+        overflow: visible; /* Важно! */
+    }
+    
+    /* Логотип */
+    .logo-area {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        justify-self: start;
+        gap: 6px;
+        display: flex;
+        align-items: center;
+        min-width: 0;
     }
     
     .logo-icon {
-        width: 30px;
-        height: 30px;
-        font-size: 14px;
-        border-radius: 8px;
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+        border-radius: 6px;
+        flex-shrink: 0;
     }
     
     .logo-text {
-        font-size: 12px;
+        font-size: 11px;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
     }
     
+    /* Кнопки управления - ПЕРВАЯ ЛИНИЯ СПРАВА */
+    .control-buttons {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        justify-self: end;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        flex-shrink: 0;
+        min-width: 0;
+    }
+    
+    .icon-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+        flex-shrink: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .icon-btn i {
+        margin: 0;
+    }
+    
+    /* Поиск - ВТОРАЯ ЛИНИЯ */
     .search-wrapper {
-        flex-wrap: wrap;
+        grid-column: 1 / -1;
+        grid-row: 2 / 3;
+        display: flex;
+        align-items: center;
+        width: 100%;
         padding: 0;
         background: transparent;
         border: none;
-        gap: 6px;
+        gap: 4px;
+        min-width: 0;
     }
     
     .search-wrapper i {
@@ -1376,13 +1672,12 @@ body.dark-mode .footer {
     }
     
     .search-wrapper input {
-        width: 100%;
         background-color: #f1f5f9;
         border: 1px solid #dbe0e6;
         border-radius: 30px;
-        padding: 10px 12px;
-        font-size: 13px;
-        min-width: 100%;
+        padding: 8px 10px;
+        font-size: 12px;
+        min-width: 0;
     }
     
     body.dark-mode .search-wrapper input {
@@ -1390,23 +1685,37 @@ body.dark-mode .footer {
         border-color: #475569;
     }
     
+    /* Кнопка фильтра - ТРЕТЬЯ ЛИНИЯ */
     .filter-btn {
-        width: 100%;
+        grid-column: 1 / -1;
+        grid-row: 3 / 4;
+        width: 20%;
         margin-left: 0;
         justify-content: center;
-        padding: 10px;
-        font-size: 13px;
+        padding: 8px;
+        font-size: 0;
+        gap: 0;
+        height: 36px;
+        flex-shrink: 0;
+        order: 3;
     }
     
-    .control-buttons {
-        justify-content: center;
-        gap: 8px;
+    .filter-btn i {
+        font-size: 14px;
+        margin: 0;
+        display: block;
     }
     
-    .icon-btn {
-        width: 40px;
-        height: 40px;
+    /* Принудительно показываем элементы */
+    .control-buttons,
+    .control-buttons .icon-btn,
+    .burger-menu,
+    .filter-btn {
+        display: flex;
+        visibility: visible;
+        opacity: 1
     }
+    /* ========================= */
     
     .main-content {
         padding: 8px;
