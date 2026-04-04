@@ -6,9 +6,11 @@
 """
 
 import os
+from pathlib import Path
 from typing import Optional
 from pydantic_settings import BaseSettings
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 class Settings(BaseSettings):
     """
@@ -26,7 +28,7 @@ class Settings(BaseSettings):
     debug: bool = False
 
     # Настройки базы данных
-    database_url: str = "sqlite+aiosqlite:///portfolio.db"
+    database_url: str = f"sqlite+aiosqlite:///{BASE_DIR / 'portfolio.db'}"
 
     # Настройки CORS
     cors_origins: list[str] = ["*"]
