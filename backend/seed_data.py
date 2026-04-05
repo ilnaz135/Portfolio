@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent
 # Конфигурация базы данных, сохраняется в backend/portfolio.db
 engine = create_async_engine(
     f"sqlite+aiosqlite:///{BASE_DIR / 'portfolio.db'}",
-    echo=True,
+    echo=False,
     future=True
 )
 
@@ -47,7 +47,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/ivanpetrov",
                     "academic_direction": "Информатика и вычислительная техника",
                     "class_": "1 курс",
-                    "avg_score": 4.2
+                    "avg_score": 85.5
                 },
                 {
                     "username": "maria_ivanova_2",
@@ -58,7 +58,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/mariaivanova",
                     "academic_direction": "Программная инженерия",
                     "class_": "2 курс",
-                    "avg_score": 4.5
+                    "avg_score": 92.3
                 },
                 {
                     "username": "alexey_smirnov_3",
@@ -69,7 +69,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/alexeysmirnov",
                     "academic_direction": "Компьютерные науки",
                     "class_": "3 курс",
-                    "avg_score": 4.1
+                    "avg_score": 88.7
                 },
                 {
                     "username": "elena_kuznetsova_4",
@@ -80,7 +80,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/elenakuznetsova",
                     "academic_direction": "Информационные системы",
                     "class_": "4 курс",
-                    "avg_score": 4.8
+                    "avg_score": 95.1
                 },
                 {
                     "username": "dmitry_volkov_1",
@@ -91,7 +91,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/dmitryvolkov",
                     "academic_direction": "Искусственный интеллект",
                     "class_": "1 курс",
-                    "avg_score": 4.3
+                    "avg_score": 87.4
                 },
                 {
                     "username": "anna_sokolova_2",
@@ -102,7 +102,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/annasokolova",
                     "academic_direction": "Веб-разработка",
                     "class_": "2 курс",
-                    "avg_score": 4.6
+                    "avg_score": 91.8
                 },
                 {
                     "username": "sergey_morozov_3",
@@ -113,7 +113,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/sergeymorozov",
                     "academic_direction": "Облачные технологии",
                     "class_": "3 курс",
-                    "avg_score": 4.4
+                    "avg_score": 89.2
                 },
                 {
                     "username": "olga_novikova_4",
@@ -124,7 +124,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/olganovikova",
                     "academic_direction": "Бэкенд-разработка",
                     "class_": "4 курс",
-                    "avg_score": 4.7
+                    "avg_score": 93.6
                 }
             ]
 
