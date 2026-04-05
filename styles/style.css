@@ -788,6 +788,9 @@ body.dark-mode .tag:hover {
 
 .more-button {
     background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid #b8d1ff;
     color: #1e4f8a;
     font-size: 12px;
@@ -801,6 +804,20 @@ body.dark-mode .tag:hover {
     box-shadow: 0 2px 6px rgba(30, 79, 138, 0.1);
     letter-spacing: 0.3px;
     margin-top: auto;
+}
+
+body.dark-mode .more-button {
+    background: #1e2a3a;
+    color: #a0c0e0;
+    border-left: 3px solid #3b82f6;
+    border: 1px solid #334155;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.more-button i {
+    font-size: 11px;
+    color: #2d68c4;
+    transition: transform 0.2s;
 }
 
 /* Стек */
