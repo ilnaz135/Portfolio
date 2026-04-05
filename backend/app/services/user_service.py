@@ -195,3 +195,19 @@ class UserService:
         stmt = select(UserModel).where(UserModel.username == username)
         result = await self.session.execute(stmt)
         return result.scalars().first()
+
+    async def authenticate_user(self, username: str, password: str) -> bool:
+        """
+        Проверить, существует ли пользователь с данным логином и паролем.
+
+        Args:
+            username: Имя пользователя
+            password: Пароль пользователя
+
+        Returns:
+            True если пользователь найден и пароль совпадает, иначе False
+        """
+        user = await self._get_user_by_username(username)
+        if user and user.password == password:
+            return True
+        return False

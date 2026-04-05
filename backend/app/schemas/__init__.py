@@ -184,3 +184,17 @@ class UserSchema(BaseModel):
     class Config:
         from_attributes = True
         populate_by_name = True
+
+
+# --- Схемы аутентификации ---
+
+class UserLoginSchema(BaseModel):
+    """
+    Схема для проверки логина и пароля пользователя.
+
+    Поля:
+    - username: Имя пользователя (логин)
+    - password: Пароль пользователя
+    """
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6, max_length=255)

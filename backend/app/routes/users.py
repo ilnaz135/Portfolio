@@ -13,7 +13,8 @@ from app.services.user_service import UserService
 from app.schemas import (
     UserCreateSchema,
     UserUpdateSchema,
-    UserSchema
+    UserSchema,
+    UserLoginSchema
 )
 
 router = APIRouter()
@@ -112,3 +113,22 @@ async def delete_user(
     """
     user_service = UserService(session)
     await user_service.delete_user(user_id)
+
+
+@router.post("/login", response_model=bool, tags=["Users"])
+async def login_user(
+    login_data: UserLoginSchema,
+    session: AsyncSession = SessionDep
+):
+    """
+    Проверить логин и пароль пользователя.
+
+    Args:
+        login_data: Данные для входа (username и password)
+        session: Зависимость сессии базы данных
+
+    Returns:
+        True если пользователь найден и пароль верный, иначе False
+    """
+    user_service = UserService(session)
+    return await user_service.authenticate_user(login_data.username, login_data.password)

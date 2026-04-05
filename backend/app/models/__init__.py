@@ -21,6 +21,7 @@ class UserModel(Base):
     - id: Первичный ключ, уникальный идентификатор пользователя
     - username: Уникальное имя пользователя для входа
     - password: Пароль пользователя
+    - email: Email пользователя (может использоваться как логин)
     - user_directions: Академические направления пользователя
     - first_name: Имя пользователя
     - last_name: Фамилия пользователя
@@ -42,6 +43,7 @@ class UserModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     user_directions: Mapped[str] = mapped_column(Text, nullable=True)
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
