@@ -20,6 +20,7 @@ class UserModel(Base):
     Поля:
     - id: Первичный ключ, уникальный идентификатор пользователя
     - username: Уникальное имя пользователя для входа
+    - password: Пароль пользователя
     - first_name: Имя пользователя
     - last_name: Фамилия пользователя
     - patronymic: Отчество пользователя (среднее имя)
@@ -39,6 +40,7 @@ class UserModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
     patronymic: Mapped[str] = mapped_column(String(100), nullable=True)

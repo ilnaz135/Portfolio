@@ -52,6 +52,7 @@ class UserService:
             # Создать нового пользователя
             new_user = UserModel(
                 username=user_data.username,
+                password=user_data.password,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
                 patronymic=user_data.patronymic,

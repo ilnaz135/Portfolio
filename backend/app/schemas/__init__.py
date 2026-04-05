@@ -93,6 +93,7 @@ class UserCreateSchema(BaseModel):
 
     Поля:
     - username: Уникальное имя пользователя для аутентификации
+    - password: Пароль пользователя
     - first_name: Имя пользователя
     - last_name: Фамилия пользователя
     - patronymic: Отчество пользователя (среднее имя)
@@ -102,6 +103,7 @@ class UserCreateSchema(BaseModel):
     - avg_score: Средний академический балл/GPA
     """
     username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6, max_length=255)
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
     patronymic: str = Field(None, max_length=100)
@@ -119,6 +121,7 @@ class UserUpdateSchema(BaseModel):
     Схема для обновления информации о пользователе.
     Все поля опциональны для поддержки частичных обновлений.
     """
+    password: str = Field(None, min_length=6, max_length=255)
     first_name: str = Field(None, min_length=1, max_length=100)
     last_name: str = Field(None, min_length=1, max_length=100)
     patronymic: str = Field(None, max_length=100)
@@ -161,6 +164,7 @@ class UserSchema(BaseModel):
     """
     id: int
     username: str
+    password: str
     first_name: str
     last_name: str
     patronymic: str | None

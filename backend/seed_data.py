@@ -6,14 +6,17 @@
 """
 
 import asyncio
+from pathlib import Path
 from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from app.models import Base, UserModel, UserDirectionModel, UserCourseModel, UserScientificAchievementModel, UserStackModel
 
+BASE_DIR = Path(__file__).resolve().parent
 
-# Конфигурация базы данных (та же, что и в main.py)
+
+# Конфигурация базы данных, сохраняется в backend/portfolio.db
 engine = create_async_engine(
-    "sqlite+aiosqlite:///portfolio.db",
+    f"sqlite+aiosqlite:///{BASE_DIR / 'portfolio.db'}",
     echo=True,
     future=True
 )
@@ -37,6 +40,7 @@ async def seed_database():
             users_data = [
                 {
                     "username": "ivan_petrov_1",
+                    "password": "password123",
                     "first_name": "Иван",
                     "last_name": "Петров",
                     "patronymic": "Сергеевич",
@@ -47,6 +51,7 @@ async def seed_database():
                 },
                 {
                     "username": "maria_ivanova_2",
+                    "password": "password123",
                     "first_name": "Мария",
                     "last_name": "Иванова",
                     "patronymic": "Александровна",
@@ -57,6 +62,7 @@ async def seed_database():
                 },
                 {
                     "username": "alexey_smirnov_3",
+                    "password": "password123",
                     "first_name": "Алексей",
                     "last_name": "Смирнов",
                     "patronymic": "Владимирович",
@@ -67,6 +73,7 @@ async def seed_database():
                 },
                 {
                     "username": "elena_kuznetsova_4",
+                    "password": "password123",
                     "first_name": "Елена",
                     "last_name": "Кузнецова",
                     "patronymic": "Дмитриевна",
@@ -77,6 +84,7 @@ async def seed_database():
                 },
                 {
                     "username": "dmitry_volkov_1",
+                    "password": "password123",
                     "first_name": "Дмитрий",
                     "last_name": "Волков",
                     "patronymic": "Андреевич",
@@ -87,6 +95,7 @@ async def seed_database():
                 },
                 {
                     "username": "anna_sokolova_2",
+                    "password": "password123",
                     "first_name": "Анна",
                     "last_name": "Соколова",
                     "patronymic": "Игоревна",
@@ -97,6 +106,7 @@ async def seed_database():
                 },
                 {
                     "username": "sergey_morozov_3",
+                    "password": "password123",
                     "first_name": "Сергей",
                     "last_name": "Морозов",
                     "patronymic": "Павлович",
@@ -107,6 +117,7 @@ async def seed_database():
                 },
                 {
                     "username": "olga_novikova_4",
+                    "password": "password123",
                     "first_name": "Ольга",
                     "last_name": "Новикова",
                     "patronymic": "Викторовна",
@@ -283,7 +294,7 @@ async def seed_database():
             await session.commit()
             print(f"✅ Добавлено {achievements_count} достижений")
 
-            print("🎉 База данных успешно заполнена искусственными данными!")
+            print(f"🎉 База данных успешно заполнена искусственными данными в папке {BASE_DIR}!")
             print(f"📊 Итого: {len(users)} пользователей, {directions_count} направлений, {courses_count} курсов, {achievements_count} достижений")
 
         except Exception as e:
