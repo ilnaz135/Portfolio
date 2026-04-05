@@ -99,6 +99,7 @@ class UserCreateSchema(BaseModel):
     - patronymic: Отчество пользователя (среднее имя)
     - cloude_storage: URL облачного хранилища (GitHub, GitLab и т.д.)
     - academic_direction: Основная академическая специализация
+    - user_directions: Одно академическое направление пользователя
     - class_: Номер класса/группы
     - avg_score: Средний академический балл/GPA (от 0 до 100)
     """
@@ -109,6 +110,7 @@ class UserCreateSchema(BaseModel):
     patronymic: str = Field(None, max_length=100)
     cloude_storage: str = Field(None, max_length=255)
     academic_direction: str = Field(..., min_length=1, max_length=150)
+    user_directions: str | None = Field(None, max_length=500)
     class_: str = Field(..., alias="class", min_length=1, max_length=50)
     avg_score: float = Field(..., ge=0, le=100)
 
@@ -127,6 +129,7 @@ class UserUpdateSchema(BaseModel):
     patronymic: str = Field(None, max_length=100)
     cloude_storage: str = Field(None, max_length=255)
     academic_direction: str = Field(None, min_length=1, max_length=150)
+    user_directions: str | None = Field(None, max_length=500)
     class_: str = Field(None, alias="class", min_length=1, max_length=50)
     avg_score: float = Field(None, ge=0, le=100)
 
@@ -165,6 +168,7 @@ class UserSchema(BaseModel):
     id: int
     username: str
     password: str
+    user_directions: str | None
     first_name: str
     last_name: str
     patronymic: str | None
