@@ -1,0 +1,454 @@
+/* ТЕМНАЯ ТЕМА */
+body.dark-mode {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* Контейнер */
+.auth-container {
+  max-width: 480px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+}
+
+body.dark-mode .auth-container {
+  background-color: #1e293b;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Хедер */
+.auth-header {
+  padding: 32px 32px 24px;
+  text-align: center;
+  border-bottom: 1px solid #e9eef2;
+}
+
+body.dark-mode .auth-header {
+  border-bottom-color: #334155;
+}
+
+.logo-icon-large {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: none; /* Убрал тень/свечение */
+}
+
+body.dark-mode .logo-icon-large {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  box-shadow: none; /* Убрал тень/свечение в темной теме */
+}
+
+.logo-icon-large i {
+  font-size: 32px;
+  color: white;
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0b2b5c;
+  margin-bottom: 8px;
+}
+
+body.dark-mode .auth-title {
+  color: #ffffff;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: #64748b;
+}
+
+body.dark-mode .auth-subtitle {
+  color: #94a3b8;
+}
+
+/* Переключение между входом и регистрацией */
+.auth-tabs {
+  display: flex;
+  padding: 0 32px;
+  gap: 8px;
+  background-color: #ffffff;
+  transition: background-color 0.3s;
+}
+
+body.dark-mode .auth-tabs {
+  background-color: #1e293b;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  font-family: "Inter", sans-serif;
+}
+
+body.dark-mode .tab-btn {
+  color: #94a3b8;
+}
+
+.tab-btn.active {
+  color: #0b2b5c;
+  border-bottom-color: #f97316;
+}
+
+body.dark-mode .tab-btn.active {
+  color: #3b82f6;
+  border-bottom-color: #f97316;
+}
+
+.tab-btn:hover:not(.active) {
+  color: #1e293b;
+  border-bottom-color: #cbd5e1;
+}
+
+body.dark-mode .tab-btn:hover:not(.active) {
+  color: #e2e8f0;
+  border-bottom-color: #475569;
+}
+
+/* Формы */
+.auth-forms {
+  padding: 32px;
+}
+
+.auth-form {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-form.active {
+  display: flex;
+}
+
+/* Поля ввода */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0b2b5c;
+}
+
+body.dark-mode .input-label {
+  color: #e2e8f0;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9;
+  border: 1px solid #dbe0e6;
+  border-radius: 16px;
+  padding: 12px 16px;
+  transition: all 0.2s;
+}
+
+body.dark-mode .input-wrapper {
+  background-color: #0f172a;
+  border-color: #334155;
+}
+
+.input-wrapper:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.input-wrapper i {
+  color: #94a3b8;
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+body.dark-mode .input-wrapper i {
+  color: #64748b;
+}
+
+.input-wrapper input {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
+  color: #1e293b;
+  outline: none;
+}
+
+body.dark-mode .input-wrapper input {
+  color: #f1f5f9;
+}
+
+.input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+body.dark-mode .input-wrapper input::placeholder {
+  color: #64748b;
+}
+
+/* Дополнительные опции */
+.auth-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #f97316;
+}
+
+.checkbox span {
+  color: #475569;
+}
+
+body.dark-mode .checkbox span {
+  color: #94a3b8;
+}
+
+.forgot-link {
+  color: #f97316;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.forgot-link:hover {
+  color: #ea580c;
+  text-decoration: underline;
+}
+
+/* Кнопка действия */
+.auth-btn {
+  background: linear-gradient(135deg, #0b2b5c, #1e3a8a);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+body.dark-mode .auth-btn {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+}
+
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(11, 43, 92, 0.3);
+}
+
+body.dark-mode .auth-btn:hover {
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.auth-btn:active {
+  transform: translateY(0);
+}
+
+/* Футер */
+.auth-footer {
+  padding: 20px 32px;
+  text-align: center;
+  border-top: 1px solid #e9eef2;
+  font-size: 13px;
+  color: #64748b;
+}
+
+body.dark-mode .auth-footer {
+  border-top-color: #334155;
+  color: #94a3b8;
+}
+
+.auth-footer a {
+  color: #f97316;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Кнопка переключения темы */
+.theme-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #dbe0e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+  font-size: 20px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .theme-toggle {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.05);
+  background-color: #e2e8f0;
+}
+
+body.dark-mode .theme-toggle:hover {
+  background-color: #334155;
+  color: #f1f5f9;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form.active {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Адаптивность для телефонов */
+@media (max-width: 600px) {
+  body {
+    padding: 16px;
+  }
+
+  .auth-header {
+    padding: 24px 24px 20px;
+  }
+
+  .auth-header .logo-icon-large {
+    width: 56px;
+    height: 56px;
+  }
+
+  .auth-header .logo-icon-large i {
+    font-size: 28px;
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .auth-subtitle {
+    font-size: 13px;
+  }
+
+  .auth-tabs {
+    padding: 0 24px;
+  }
+
+  .tab-btn {
+    padding: 14px 0;
+    font-size: 15px;
+  }
+
+  .auth-forms {
+    padding: 24px;
+  }
+
+  .input-wrapper {
+    padding: 10px 14px;
+  }
+
+  .input-wrapper i {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  .input-wrapper input {
+    font-size: 14px;
+  }
+
+  .auth-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .auth-footer {
+    padding: 16px 24px;
+    font-size: 12px;
+  }
+
+  .theme-toggle {
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 400px) {
+  .auth-header {
+    padding: 20px 20px 16px;
+  }
+
+  .auth-tabs {
+    padding: 0 20px;
+  }
+
+  .auth-forms {
+    padding: 20px;
+  }
+
+  .auth-footer {
+    padding: 14px 20px;
+  }
+}
