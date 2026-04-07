@@ -4,34 +4,26 @@ const scienceCard = document.querySelector('.publications-list')
 const tags = document.querySelector('.tags-cloud')
 const skillsCard = document.querySelector('.right-col').querySelector('.tags-cloud')
 
-const trimUserName = (username) => {
-    return username
-    .split(' ')
-    .map(nickname => nickname[0])
-    .join('')
-}
-
 async function getUserData(currentAccountId) {
-    const response = await fetch("http://localhost:8000/api/v1/users")
+    const response = await fetch(`http://localhost:8000/api/v1/users/${currentAccountId}`)
     if(!response.ok) throw new Error('Ответ от сервера не получен.')
     const userData = {...await response.json()}
-    console.log(userData);
     const profileHTML = `
             <div class="profile-card">
                 <button class="edit-profile-btn" id="openModal">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
 
-                <div class="avatar" id="profileAvatar">${trimUserName(userData[currentAccountId].username)}</div>
-                <div class="full-name">${userData[currentAccountId].first_name} ${userData[currentAccountId].last_name}</div>
-                <div class="username"><i class="fas fa-at"></i>${userData[currentAccountId].username}</div>
+                <div class="avatar" id="profileAvatar">${userData.first_name[0] + userData.last_name[0]}</div>
+                <div class="full-name">${userData.first_name} ${userData.last_name}</div>
+                <div class="username"><i class="fas fa-at"></i>${userData.username}</div>
                 
                 <div class="role-badge">
-                    <span class="badge" id="displayRole"><i class="fas fa-code"></i> ${userData[currentAccountId].user_directions}</span>
+                    <span class="badge" id="displayRole"><i class="fas fa-code"></i> ${userData.user_directions}</span>
                 </div>
 
                 <a href="#" class="github-link" id="displayCloud">
-                    <i class="fab fa-github"></i> ${userData[currentAccountId].cloude_storage}
+                    <i class="fab fa-github"></i> ${userData.cloude_storage}
                 </a>
 
                 <button class="download-resume">
@@ -42,31 +34,31 @@ async function getUserData(currentAccountId) {
                     <div class="edu-row">
                         <span class="edu-icon-small"><i class="fas fa-university"></i></span>
                         <span class="edu-label-small">Направление:</span>
-                        <span class="edu-value-small">${userData[currentAccountId].academic_direction}</span>
+                        <span class="edu-value-small">${userData.academic_direction}</span>
                     </div>
                     <div class="edu-row">
                         <span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span>
                         <span class="edu-label-small">Курс:</span>
-                        <span class="edu-value-small">${userData[currentAccountId].class_}</span>
+                        <span class="edu-value-small">${userData.class_}</span>
                     </div>
                     <div class="edu-row">
                         <span class="edu-icon-small"><i class="fas fa-star"></i></span>
                         <span class="edu-label-small">Ср. балл:</span>
-                        <span class="edu-value-small"><span class="edu-highlight-small">${userData[currentAccountId].avg_score}</span>/100</span>
+                        <span class="edu-value-small"><span class="edu-highlight-small">${userData.avg_score}</span>/100</span>
                     </div>
                 </div>
             </div>
             `
         for (i = 0; i < 2; i++) {
-            if (userData[currentAccountId].scientific_achievements[i]) {
+            if (userData.scientific_achievements[i]) {
                 scienceCard.insertAdjacentHTML('afterbegin', `
                                     <div class="publication-item">
                                         <div class="pub-icon"><i class="fas fa-file-alt"></i> </div>
                                         <div class="pub-content">
-                                            <div class="pub-title"><a href="#">${userData[currentAccountId].scientific_achievements[i].name}</a></div>
+                                            <div class="pub-title"><a href="#">${userData.scientific_achievements[i].name}</a></div>
                                             <div class="pub-meta">
-                                                <span><i class="far fa-calendar-alt"></i> ${userData[currentAccountId].scientific_achievements[i].date.slice(0, 4)}</span>
-                                                <span><i class="fas fa-tag"></i> ${userData[currentAccountId].scientific_achievements[i].type}</span>
+                                                <span><i class="far fa-calendar-alt"></i> ${userData.scientific_achievements[i].date.slice(0, 4)}</span>
+                                                <span><i class="fas fa-tag"></i> ${userData.scientific_achievements[i].type}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -75,14 +67,14 @@ async function getUserData(currentAccountId) {
             }
         }
 
-    userData[currentAccountId].stacks.forEach(element => {
+    userData.stacks.forEach(element => {
         tags.insertAdjacentHTML('afterbegin', `
                             <a href="#"><span class="tag">${element.stack}</span></a>
         `
     )
     });
 
-    userData[currentAccountId].courses.forEach(element => {
+    userData.courses.forEach(element => {
         skillsCard.insertAdjacentHTML('afterbegin', `
                             <a href="#"><span class="tag stack-tag"><i class="fas fa-database"></i>${element.name_course}</span></a>
         `
@@ -123,4 +115,8 @@ async function getUserData(currentAccountId) {
         }
 }
 
-getUserData(1)
+if (!localStorage.getItem('loggedUserId')) {
+    window.location.href = 'loginindex.html'
+} else {
+    getUserData(localStorage.getItem('loggedUserId'))
+}
