@@ -60,14 +60,10 @@ async function handleLogin() {
       body: JSON.stringify({ username, password })
     });
 
-    console.log(response);
-
     const data = await response.json();
 
-    console.log(data);
-
-    if (data) {
-      localStorage.setItem("isLoggedIn", true);
+    if (data !== -1) {
+      localStorage.setItem("loggedUserId", data);
       window.location.href = "index.html";
     } else {
       alert("Неверный email или пароль");
