@@ -214,3 +214,23 @@ class UserEmailLoginSchema(BaseModel):
     """
     email: str = Field(..., min_length=5, max_length=255)
     password: str = Field(..., min_length=6, max_length=255)
+
+
+class UsernameCheckSchema(BaseModel):
+    """
+    Схема для проверки занятости username.
+
+    Поля:
+    - username: Имя пользователя
+    """
+    username: str = Field(..., min_length=3, max_length=50)
+
+
+class EmailCheckSchema(BaseModel):
+    """
+    Схема для проверки занятости email.
+
+    Поля:
+    - email: Email пользователя
+    """
+    email: str = Field(..., min_length=5, max_length=255)

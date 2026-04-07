@@ -271,6 +271,32 @@ class UserService:
             return user.id
         return -1
 
+    async def username_exists(self, username: str) -> bool:
+        """
+        Проверить, занят ли username.
+
+        Args:
+            username: Имя пользователя
+
+        Returns:
+            True если username уже существует, иначе False
+        """
+        user = await self._get_user_by_username(username)
+        return user is not None
+
+    async def email_exists(self, email: str) -> bool:
+        """
+        Проверить, занят ли email.
+
+        Args:
+            email: Email пользователя
+
+        Returns:
+            True если email уже существует, иначе False
+        """
+        user = await self._get_user_by_email(email)
+        return user is not None
+
     @staticmethod
     def _raise_unique_constraint_error(
         exc: IntegrityError,

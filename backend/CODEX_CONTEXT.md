@@ -32,6 +32,8 @@ Use it to avoid re-analyzing the whole backend from scratch.
 - `DELETE /api/v1/users/{user_id}`
 - `POST /api/v1/users/login`
 - `POST /api/v1/users/login/email`
+- `POST /api/v1/users/check-username`
+- `POST /api/v1/users/check-email`
 - Nested user routes also exist for directions, courses, achievements, and stacks.
 
 ## Important Backend Files
@@ -97,6 +99,8 @@ If the backend starts against an older DB, run setup or call the helper path bef
 - `UserUpdateSchema` supports updating `email`
 - `UserSchema` returns `email`
 - `UserEmailLoginSchema` is used for `email + password` login check
+- `UsernameCheckSchema` is used to check whether a username is already taken
+- `EmailCheckSchema` is used to check whether an email is already taken
 - account check endpoints return user `id` on success and `-1` on failure
 - `UserSchema` also currently returns `password`
   This is current behavior, not a recommendation. It is a security smell and should be changed if API hardening is requested.
@@ -112,6 +116,8 @@ If the backend starts against an older DB, run setup or call the helper path bef
 - login check by username/password
 - login check by email/password
 - both login checks now return user id instead of boolean
+- username existence check
+- email existence check
 
 Important implementation detail:
 

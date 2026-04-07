@@ -155,6 +155,28 @@ curl -X POST http://localhost:8000/users/login/email \
 
 Возвращает `id` пользователя, если пользователь с таким email и паролем существует, иначе `-1`.
 
+#### `POST /users/check-username` - Проверить занятость username
+```bash
+curl -X POST http://localhost:8000/users/check-username \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "ivan_petrov_1"
+  }'
+```
+
+Возвращает `true`, если такой `username` уже существует, иначе `false`.
+
+#### `POST /users/check-email` - Проверить занятость email
+```bash
+curl -X POST http://localhost:8000/users/check-email \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ivan_petrov_1@portfolio.local"
+  }'
+```
+
+Возвращает `true`, если такой `email` уже существует, иначе `false`.
+
 ### Управление направлениями обучения
 
 #### `POST /users/{user_id}/directions` - Добавить направление

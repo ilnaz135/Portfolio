@@ -15,7 +15,9 @@ from app.schemas import (
     UserUpdateSchema,
     UserSchema,
     UserLoginSchema,
-    UserEmailLoginSchema
+    UserEmailLoginSchema,
+    UsernameCheckSchema,
+    EmailCheckSchema
 )
 
 router = APIRouter()
@@ -155,3 +157,41 @@ async def login_user_by_email(
         login_data.email,
         login_data.password
     )
+
+
+@router.post("/check-username", response_model=bool, tags=["Users"])
+async def check_username(
+    check_data: UsernameCheckSchema,
+    session: AsyncSession = SessionDep
+):
+    """
+    Проверить, занят ли username.
+
+    Args:
+        check_data: Данные для проверки username
+        session: Зависимость сессии базы данных
+
+    Returns:
+        True если username уже существует, иначе False
+    """
+    user_service = UserService(session)
+    return await user_service.username_exists(check_data.username)
+
+
+@router.post("/check-email", response_model=bool, tags=["Users"])
+async def check_email(
+    check_data: EmailCheckSchema,
+    session: AsyncSession = SessionDep
+):
+    """
+    Проверить, занят ли email.
+
+    Args:
+        check_data: Данные для проверки email
+        session: Зависимость сессии базы данных
+
+    Returns:
+        True если email уже существует, иначе False
+    """
+    user_service = UserService(session)
+    return await user_service.email_exists(check_data.email)
