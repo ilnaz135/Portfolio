@@ -4,60 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Вход и регистрация | Цифровое портфолио УрФУ</title>
-    <!-- Подключаем шрифт Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <!-- Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/styles/login.css">
     <link rel="stylesheet" href="styles/global.css">
     <link rel="icon" href="/favicon-irit2.ico">
 </head>
 <body>
-    <!-- Кнопка переключения темы -->
     <div class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon"></i>
     </div>
 
     <div class="auth-container">
         <div class="auth-header">
-            <div class="logo-icon-large">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
             <h1 class="auth-title">Цифровое портфолио</h1>
             <p class="auth-subtitle">Уральский федеральный университет</p>
         </div>
 
-        <!-- Табы переключения -->
         <div class="auth-tabs">
             <button class="tab-btn active" data-tab="login">Вход</button>
             <button class="tab-btn" data-tab="register">Регистрация</button>
         </div>
 
-        <!-- Формы -->
         <div class="auth-forms">
             <!-- Форма входа -->
-            <form class="auth-form active" id="loginForm"">
+            <form class="auth-form active" id="loginForm">
                 <div class="input-group">
                     <label class="input-label">Email или username</label>
                     <div class="input-wrapper">
                         <i class="fas fa-envelope"></i>
-                        <input type="text" placeholder="ivanov@urfu.ru или @vanok_dev" id="loginEmail">
+                        <input type="text" placeholder="ivanov@urfu.ru или vanok_dev" id="loginEmail">
                     </div>
                 </div>
-
+                
                 <div class="input-group">
                     <label class="input-label">Пароль</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
                         <input type="password" placeholder="••••••••" id="loginPassword">
+                        <button class="button-show_password" type="button">Показать</button>
                     </div>
                 </div>
 
                 <div class="auth-options">
                     <label class="checkbox">
-                        <input type="checkbox">
+                        <input type="checkbox" id="checkboxRememberMe">
                         <span>Запомнить меня</span>
                     </label>
                     <a href="#" class="forgot-link">Забыли пароль?</a>
@@ -74,7 +67,13 @@
                     <label class="input-label">ФИО</label>
                     <div class="input-wrapper">
                         <i class="fas fa-user"></i>
-                        <input type="text" placeholder="Иванов Иван Иванович" id="registerFullname">
+                        <input type="text" 
+                               placeholder="Иванов Иван Иванович" 
+                               id="registerFullname"
+                               pattern="[A-Za-zА-Яа-яЁё\s-]+"
+                               maxlength="300"
+                               title="Только буквы, пробелы и дефисы"
+                               required>
                     </div>
                 </div>
 
@@ -82,7 +81,13 @@
                     <label class="input-label">Username</label>
                     <div class="input-wrapper">
                         <i class="fas fa-at"></i>
-                        <input type="text" placeholder="vanok_dev" id="registerUsername">
+                        <input type="text" 
+                               placeholder="vanok_dev" 
+                               id="registerUsername"
+                               pattern="[a-z0-9_]+"
+                               maxlength="50"
+                               title="Только строчные латинские буквы, цифры и нижнее подчеркивание"
+                               required>
                     </div>
                 </div>
 
@@ -90,7 +95,13 @@
                     <label class="input-label">Email</label>
                     <div class="input-wrapper">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="ivanov@urfu.ru" id="registerEmail">
+                        <input type="email" 
+                               placeholder="ivanov@urfu.ru" 
+                               id="registerEmail"
+                               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                               maxlength="255"
+                               title="Формат: name@domain.com"
+                               required>
                     </div>
                 </div>
 
@@ -98,7 +109,15 @@
                     <label class="input-label">Пароль</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="••••••••" id="registerPassword">
+                        <input type="password" 
+                               placeholder="••••••••" 
+                               id="registerPassword"
+                               pattern="[A-Za-z0-9]+"
+                               maxlength="255"
+                               minlength="6"
+                               title="Только латинские буквы и цифры. Минимум 6 символов"
+                               required>
+                        <button class="button-show_password" type="button">Показать</button>
                     </div>
                 </div>
 
@@ -106,7 +125,12 @@
                     <label class="input-label">Подтверждение пароля</label>
                     <div class="input-wrapper">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="••••••••" id="registerConfirmPassword">
+                        <input type="password" 
+                               placeholder="••••••••" 
+                               id="registerConfirmPassword"
+                               maxlength="255"
+                               required>
+                        <button class="button-show_password" type="button">Показать</button>
                     </div>
                 </div>
 
@@ -132,6 +156,7 @@
             </p>
         </div>
     </div>
+    <script src="/js/theme.js"></script>
     <script src="/js/login.js"></script>
 </body>
 </html>
