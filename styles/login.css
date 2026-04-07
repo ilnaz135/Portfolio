@@ -8,7 +8,7 @@ body {
   justify-content: center;
   padding: 16px;
   margin: 0;
-  overflow: hidden; /* Убираем скролл у body */
+  overflow: hidden;
 }
 
 /* ТЕМНАЯ ТЕМА ДЛЯ BODY */
@@ -16,7 +16,7 @@ body.dark-mode {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
-/* КОНТЕЙНЕР - СКРОЛЛ ТОЛЬКО ЗДЕСЬ */
+/* КОНТЕЙНЕР - СКРОЛЛ ТОЛЬКО ЗДЕСЬ, НО НЕ ВЫЛАЗИТ ЗА ГРАНИЦЫ */
 .auth-container {
   width: 100%;
   max-width: 480px;
@@ -25,19 +25,30 @@ body.dark-mode {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transition: all 0.3s;
   margin: auto;
-  overflow-y: auto; /* Скролл только у контейнера */
+  overflow-y: auto;
   overflow-x: hidden;
-  max-height: 90vh; /* Ограничиваем высоту, чтобы был скролл при необходимости */
+  max-height: 90vh;
+  
+  /* Важно: скролл внутри, не вылазит за границы */
+  position: relative;
+  isolation: isolate;
 }
 
-/* Кастомный скролл */
+/* Кастомный скролл - ТОЛЬКО ВНУТРИ КОНТЕЙНЕРА, НЕ ВЫЛАЗИТ */
+.auth-container {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f1f1;
+}
+
 .auth-container::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .auth-container::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
+  margin: 8px 0; /* Отступы сверху и снизу, чтобы не вылазил за скругления */
 }
 
 .auth-container::-webkit-scrollbar-thumb {
@@ -47,6 +58,14 @@ body.dark-mode {
 
 .auth-container::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Для Firefox - скролл не вылазит за границы */
+@supports (scrollbar-width: thin) {
+  .auth-container {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f1f1;
+  }
 }
 
 body.dark-mode .auth-container::-webkit-scrollbar-track {
@@ -60,6 +79,15 @@ body.dark-mode .auth-container::-webkit-scrollbar-thumb {
 body.dark-mode .auth-container {
   background-color: #1e293b;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  scrollbar-color: #475569 #1e293b;
+}
+
+/* ДОПОЛНИТЕЛЬНО: обрезаем скролл по границам скругления */
+.auth-container {
+  border-radius: 28px;
+  /* Это гарантирует, что скролл не вылезет за скругленные углы */
+  mask-image: radial-gradient(circle at center, white, black);
+  -webkit-mask-image: radial-gradient(circle at center, white, black);
 }
 
 /* ХЕДЕР */
@@ -67,10 +95,15 @@ body.dark-mode .auth-container {
   padding: 20px 24px 14px;
   text-align: center;
   border-bottom: 1px solid #e9eef2;
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 10;
 }
 
 body.dark-mode .auth-header {
   border-bottom-color: #334155;
+  background-color: #1e293b;
 }
 
 .logo-icon-large {
@@ -111,6 +144,9 @@ body.dark-mode .auth-title {
   padding: 0 24px;
   gap: 12px;
   background-color: #ffffff;
+  position: sticky;
+  top: 78px; /* Высота хедера */
+  z-index: 9;
 }
 
 body.dark-mode .auth-tabs {
@@ -351,10 +387,15 @@ body.dark-mode .checkbox span {
   border-top: 1px solid #e9eef2;
   font-size: 10px;
   color: #64748b;
+  position: sticky;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: 10;
 }
 
 body.dark-mode .auth-footer {
   border-top-color: #334155;
+  background-color: #1e293b;
   color: #94a3b8;
 }
 
@@ -406,15 +447,25 @@ body.dark-mode .theme-toggle {
   color: #f1f5f9;
 }
 
-/* ========== МОБИЛЬНЫЕ УСТРОЙСТВА ПО ШИРИНЕ ========== */
+/* ========== МОБИЛЬНЫЕ УСТРОЙСТВА ========== */
 @media (max-width: 480px) {
+  body {
+    padding: 8px;
+  }
+  
   .auth-container {
     max-width: 100%;
     border-radius: 20px;
+    max-height: 95vh;
   }
   
   .auth-header {
     padding: 14px 16px 10px;
+    top: 0;
+  }
+  
+  .auth-tabs {
+    top: 66px;
   }
   
   .logo-icon-large {
@@ -483,6 +534,10 @@ body.dark-mode .theme-toggle {
     padding: 10px 12px 8px;
   }
   
+  .auth-tabs {
+    top: 58px;
+  }
+  
   .logo-icon-large {
     width: 36px;
     height: 36px;
@@ -505,7 +560,7 @@ body.dark-mode .theme-toggle {
   }
 }
 
-/* ========== БОЛЬШИЕ ЭКРАНЫ (ДЕСКТОП) ========== */
+/* ========== БОЛЬШИЕ ЭКРАНЫ ========== */
 @media (min-width: 1024px) and (max-width: 1999px) {
   .auth-container {
     max-width: 520px;
@@ -563,7 +618,7 @@ body.dark-mode .theme-toggle {
   }
 }
 
-/* ========== ОЧЕНЬ БОЛЬШИЕ ЭКРАНЫ (2000px+) ========== */
+/* ========== ОЧЕНЬ БОЛЬШИЕ ЭКРАНЫ ========== */
 @media (min-width: 2000px) {
   body {
     padding: 40px;
