@@ -14,6 +14,9 @@ tabBtns.forEach((btn) => {
         form.classList.remove("active");
       }
     });
+    // Очищаем ошибки при переключении
+    clearAllErrors();
+    clearGlobalError();
   });
 });
 
@@ -42,23 +45,38 @@ const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const API_BASE = "http://localhost:8000/api/v1";
 
-// Обработчик для формы входа
-if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await handleLogin();
-  });
+// Функция для показа глобальной ошибки (вверху формы)
+function showGlobalError(message, isSuccess = false) {
+  // Удаляем существующую глобальную ошибку
+  const existingGlobalMsg = document.querySelector('.global-message');
+  if (existingGlobalMsg) existingGlobalMsg.remove();
+  
+  const formsContainer = document.querySelector('.auth-forms');
+  const globalDiv = document.createElement('div');
+  globalDiv.className = `global-message ${isSuccess ? 'success' : 'error'}`;
+  globalDiv.innerHTML = `
+    <i class="fas ${isSuccess ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+    <span>${message}</span>
+  `;
+  
+  // Вставляем в начало forms контейнера
+  formsContainer.insertBefore(globalDiv, formsContainer.firstChild);
+  
+  // Автоматически скрываем через 5 секунд
+  setTimeout(() => {
+    if (globalDiv.parentNode) {
+      globalDiv.remove();
+    }
+  }, 5000);
 }
 
-// Обработчик для формы регистрации
-if (registerForm) {
-  registerForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    await handleRegister();
-  });
+// Функция для очистки глобальной ошибки
+function clearGlobalError() {
+  const globalMsg = document.querySelector('.global-message');
+  if (globalMsg) globalMsg.remove();
 }
 
-// Функция для показа ошибки
+// Функция для показа ошибки под полем
 function showError(inputElement, message) {
   const parentGroup = inputElement.closest('.input-group');
   const existingError = parentGroup.querySelector('.error-message');
@@ -87,6 +105,12 @@ function clearErrors() {
   });
 }
 
+// Функция для очистки всех ошибок и глобальных сообщений
+function clearAllErrors() {
+  clearErrors();
+  clearGlobalError();
+}
+
 // Функции валидации для каждого поля
 function validateFullname(value) {
   const nameRegex = /^[A-Za-zА-Яа-яЁё\s-]+$/;
@@ -94,7 +118,7 @@ function validateFullname(value) {
     return { valid: false, message: "Заполните это поле" };
   }
   if (!nameRegex.test(value)) {
-    return { valid: false, message: "Неверный формат" };
+    return { valid: false, message: "Используйте только буквы, пробелы и дефисы" };
   }
   return { valid: true, message: "" };
 }
@@ -105,10 +129,13 @@ function validateUsername(value) {
     return { valid: false, message: "Заполните это поле" };
   }
   if (!usernameRegex.test(value)) {
-    return { valid: false, message: "Неверный формат" };
+    return { valid: false, message: "Только строчные латинские буквы, цифры и _ (нижнее подчеркивание)" };
   }
   if (value.length > 50) {
     return { valid: false, message: "Максимум 50 символов" };
+  }
+  if (value.length < 3) {
+    return { valid: false, message: "Минимум 3 символа" };
   }
   return { valid: true, message: "" };
 }
@@ -119,7 +146,7 @@ function validateEmail(value) {
     return { valid: false, message: "Заполните это поле" };
   }
   if (!emailRegex.test(value)) {
-    return { valid: false, message: "Неверный формат" };
+    return { valid: false, message: "Введите корректный email (example@domain.com)" };
   }
   if (value.length > 255) {
     return { valid: false, message: "Максимум 255 символов" };
@@ -133,7 +160,7 @@ function validatePassword(value) {
     return { valid: false, message: "Заполните это поле" };
   }
   if (!passwordRegex.test(value)) {
-    return { valid: false, message: "Неверный формат" };
+    return { valid: false, message: "Только латинские буквы и цифры" };
   }
   if (value.length < 6) {
     return { valid: false, message: "Минимум 6 символов" };
@@ -146,7 +173,7 @@ function validatePassword(value) {
 
 function validateConfirm(password, confirm) {
   if (!confirm) {
-    return { valid: false, message: "Заполните это поле" };
+    return { valid: false, message: "Подтвердите пароль" };
   }
   if (password !== confirm) {
     return { valid: false, message: "Пароли не совпадают" };
@@ -154,7 +181,7 @@ function validateConfirm(password, confirm) {
   return { valid: true, message: "" };
 }
 
-// Функция для проверки существования username на сервере (POST)
+// Функция для проверки существования username на сервере
 async function checkUsernameExists(username) {
   try {
     const response = await fetch(`${API_BASE}/users/check-username`, {
@@ -167,7 +194,7 @@ async function checkUsernameExists(username) {
     
     if (response.ok) {
       const data = await response.json();
-      return data;
+      return data.exists === true || data === true;
     }
     return false;
   } catch (error) {
@@ -176,7 +203,7 @@ async function checkUsernameExists(username) {
   }
 }
 
-// Функция для проверки существования email на сервере (POST)
+// Функция для проверки существования email на сервере
 async function checkEmailExists(email) {
   try {
     const response = await fetch(`${API_BASE}/users/check-email`, {
@@ -189,9 +216,7 @@ async function checkEmailExists(email) {
     
     if (response.ok) {
       const data = await response.json();
-      // Предполагаем, что сервер возвращает { exists: true } или { exists: false }
-      // или может возвращать { available: true/false }
-      return data;
+      return data.exists === true || data === true;
     }
     return false;
   } catch (error) {
@@ -233,7 +258,7 @@ function setupLiveValidation() {
       }
       
       // Проверка на существование username с debounce
-      if (this.value && result.valid) {
+      if (this.value && result.valid && this.value.length >= 3) {
         timeoutId = setTimeout(async () => {
           const exists = await checkUsernameExists(this.value);
           if (exists) {
@@ -263,7 +288,7 @@ function setupLiveValidation() {
         timeoutId = setTimeout(async () => {
           const exists = await checkEmailExists(this.value);
           if (exists) {
-            showError(this, "Этот email уже занят");
+            showError(this, "Этот email уже зарегистрирован");
           } else if (!exists && this.value) {
             removeError(this);
           }
@@ -276,7 +301,7 @@ function setupLiveValidation() {
   if (passwordInput) {
     passwordInput.addEventListener('blur', function() {
       const result = validatePassword(this.value);
-      if (!result.valid) {
+      if (!result.valid && this.value) {
         showError(this, result.message);
       } else {
         removeError(this);
@@ -293,7 +318,7 @@ function setupLiveValidation() {
     confirmInput.addEventListener('blur', function() {
       const password = document.getElementById('registerPassword').value;
       const result = validateConfirm(password, this.value);
-      if (!result.valid) {
+      if (!result.valid && this.value) {
         showError(this, result.message);
       } else {
         removeError(this);
@@ -314,8 +339,10 @@ async function handleLogin() {
   const loginValue = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
+  clearAllErrors();
+
   if (!loginValue || !password) {
-    alert("Пожалуйста, заполните все поля");
+    showGlobalError("Пожалуйста, заполните все поля");
     return;
   }
 
@@ -335,24 +362,56 @@ async function handleLogin() {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      if (response.status === 401) {
+        showGlobalError("Неверный email/username или пароль");
+      } else {
+        showGlobalError("Ошибка при входе. Попробуйте позже.");
+      }
+      return;
     }
 
     const data = await response.json();
 
-    if (data !== -1) {
+    if (data !== -1 && data !== null) {
       localStorage.setItem("loggedUserId", data);
-      window.location.href = "index.html";
+      // Показываем сообщение об успехе и перенаправляем
+      showGlobalError("Вход выполнен успешно! Перенаправление...", true);
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1000);
     } else {
-      alert("Неверный email, username или пароль");
+      showGlobalError("Неверный email/username или пароль");
     }
   } catch (error) {
     console.error(error);
     if (error instanceof TypeError) {
-      alert("Бэкенд недоступен. Запустите API на http://localhost:8000");
+      showGlobalError("Бэкенд недоступен. Запустите API на http://localhost:8000");
       return;
     }
-    alert("Ошибка во время входа");
+    showGlobalError("Ошибка соединения с сервером");
+  }
+}
+
+// Функция автоматического входа после регистрации
+async function autoLoginAndRedirect(username, password) {
+  try {
+    const response = await fetch(`${API_BASE}/users/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, password: password })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data !== -1 && data !== null) {
+        localStorage.setItem("loggedUserId", data);
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error("Auto-login error:", error);
+    return false;
   }
 }
 
@@ -364,7 +423,7 @@ async function handleRegister() {
   const password = document.getElementById("registerPassword").value;
   const confirm = document.getElementById("registerConfirmPassword").value;
 
-  clearErrors();
+  clearAllErrors();
   
   let hasError = false;
 
@@ -410,14 +469,14 @@ async function handleRegister() {
   // Проверка на существование username на сервере
   const usernameExists = await checkUsernameExists(username);
   if (usernameExists) {
-    showError(document.getElementById("registerUsername"), "Username уже занят");
+    showError(document.getElementById("registerUsername"), "Этот username уже занят");
     return;
   }
 
   // Проверка на существование email на сервере
   const emailExists = await checkEmailExists(email);
   if (emailExists) {
-    showError(document.getElementById("registerEmail"), "Email уже занят");
+    showError(document.getElementById("registerEmail"), "Этот email уже зарегистрирован");
     return;
   }
 
@@ -447,25 +506,82 @@ async function handleRegister() {
     const data = await response.json();
     
     if (response.ok) {
-      alert("Регистрация успешна! Теперь войдите в систему.");
-      const loginTab = document.querySelector('[data-tab="login"]');
-      if (loginTab) loginTab.click();
+      // Показываем сообщение об успешной регистрации
+      showGlobalError("Регистрация успешна! Выполняется вход...", true);
+      
+      // Пытаемся выполнить автоматический вход
+      const loginSuccess = await autoLoginAndRedirect(username, password);
+      
+      
+      if (loginSuccess) {
+        // Если вход успешен, перенаправляем на главную
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1500);
+      } else {
+        // Если автоматический вход не удался, показываем сообщение
+        setTimeout(() => {
+          showGlobalError("Регистрация успешна! Пожалуйста, войдите в систему.", true);
+          
+          // Переключаем на форму входа
+          const loginTab = document.querySelector('[data-tab="login"]');
+          if (loginTab) {
+            loginTab.click();
+          }
+          
+          // Очищаем и автоматически заполняем поля входа
+          const loginUsernameField = document.getElementById("loginEmail");
+          const loginPasswordField = document.getElementById("loginPassword");
+          if (loginUsernameField) {
+            loginUsernameField.value = username;
+          }
+          if (loginPasswordField) {
+            loginPasswordField.value = password;
+          }
+        }, 1500);
+      }
     } else {
       // Обработка ошибок от сервера
       if (response.status === 409) {
         if (data.message && data.message.toLowerCase().includes("username")) {
-          showError(document.getElementById("registerUsername"), "Username уже занят");
+          showError(document.getElementById("registerUsername"), "Этот username уже занят");
         } else if (data.message && data.message.toLowerCase().includes("email")) {
-          showError(document.getElementById("registerEmail"), "Email уже занят");
+          showError(document.getElementById("registerEmail"), "Этот email уже зарегистрирован");
         } else {
-          alert(data.message || "Пользователь с таким username или email уже существует");
+          showGlobalError(data.message || "Пользователь с таким username или email уже существует");
         }
+      } else if (response.status === 400) {
+        showGlobalError(data.message || "Проверьте правильность заполнения полей");
       } else {
-        alert(data.message || "Ошибка при регистрации");
+        showGlobalError(data.message || "Ошибка при регистрации. Попробуйте позже.");
       }
     }
   } catch (error) {
     console.error(error);
-    alert("Ошибка сервера");
+    if (error instanceof TypeError) {
+      showGlobalError("Бэкенд недоступен. Запустите API на http://localhost:8000");
+    } else {
+      showGlobalError("Ошибка соединения с сервером");
+    }
   }
+}
+
+// Обработчик для формы входа
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await handleLogin();
+  });
+}
+
+// Обработчик для формы регистрации
+if (registerForm) {
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await handleRegister();
+  });
+}
+
+if (localStorage.getItem('loggedUserId')) {
+    window.location.href = 'index.html'
 }
