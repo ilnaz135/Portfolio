@@ -2,12 +2,13 @@
 body {
   font-family: "Inter", sans-serif;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   margin: 0;
+  overflow: hidden; /* Убираем скролл у body */
 }
 
 /* ТЕМНАЯ ТЕМА ДЛЯ BODY */
@@ -15,7 +16,7 @@ body.dark-mode {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
-/* КОНТЕЙНЕР - АВТОМАТИЧЕСКАЯ ВЫСОТА */
+/* КОНТЕЙНЕР - СКРОЛЛ ТОЛЬКО ЗДЕСЬ */
 .auth-container {
   width: 100%;
   max-width: 480px;
@@ -24,7 +25,36 @@ body.dark-mode {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transition: all 0.3s;
   margin: auto;
-  overflow: visible;
+  overflow-y: auto; /* Скролл только у контейнера */
+  overflow-x: hidden;
+  max-height: 90vh; /* Ограничиваем высоту, чтобы был скролл при необходимости */
+}
+
+/* Кастомный скролл */
+.auth-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.auth-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.auth-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+body.dark-mode .auth-container::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+body.dark-mode .auth-container::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 
 body.dark-mode .auth-container {
@@ -34,7 +64,7 @@ body.dark-mode .auth-container {
 
 /* ХЕДЕР */
 .auth-header {
-  padding: 24px 24px 16px;
+  padding: 20px 24px 14px;
   text-align: center;
   border-bottom: 1px solid #e9eef2;
 }
@@ -44,26 +74,26 @@ body.dark-mode .auth-header {
 }
 
 .logo-icon-large {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   background: linear-gradient(135deg, #1e3a8a, #2563eb);
-  border-radius: 16px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
+  margin: 0 auto 10px;
 }
 
 .logo-icon-large i {
-  font-size: 26px;
+  font-size: 24px;
   color: white;
 }
 
 .auth-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #0b2b5c;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 body.dark-mode .auth-title {
@@ -71,7 +101,7 @@ body.dark-mode .auth-title {
 }
 
 .auth-subtitle {
-  font-size: 13px;
+  font-size: 12px;
   color: #64748b;
 }
 
@@ -89,10 +119,10 @@ body.dark-mode .auth-tabs {
 
 .tab-btn {
   flex: 1;
-  padding: 14px 0;
+  padding: 12px 0;
   background: none;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
@@ -112,13 +142,13 @@ body.dark-mode .tab-btn.active {
 
 /* ФОРМЫ */
 .auth-forms {
-  padding: 24px 24px 20px;
+  padding: 20px 24px 16px;
 }
 
 .auth-form {
   display: none;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
 .auth-form.active {
@@ -129,11 +159,11 @@ body.dark-mode .tab-btn.active {
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .input-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #0b2b5c;
 }
@@ -147,12 +177,12 @@ body.dark-mode .input-label {
   align-items: center;
   background-color: #f1f5f9;
   border: 1px solid #dbe0e6;
-  border-radius: 14px;
-  padding: 12px 16px;
+  border-radius: 12px;
+  padding: 10px 14px;
   transition: all 0.2s;
   width: 100%;
   box-sizing: border-box;
-  gap: 10px;
+  gap: 8px;
 }
 
 body.dark-mode .input-wrapper {
@@ -167,7 +197,7 @@ body.dark-mode .input-wrapper {
 
 .input-wrapper i {
   color: #94a3b8;
-  font-size: 16px;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
@@ -175,7 +205,7 @@ body.dark-mode .input-wrapper {
   flex: 1;
   border: none;
   background: none;
-  font-size: 15px;
+  font-size: 14px;
   font-family: "Inter", sans-serif;
   color: #1e293b;
   outline: none;
@@ -189,7 +219,7 @@ body.dark-mode .input-wrapper input {
 
 .input-wrapper input::placeholder {
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* КНОПКА ПОКАЗА ПАРОЛЯ */
@@ -197,11 +227,11 @@ body.dark-mode .input-wrapper input {
   background: none;
   border: none;
   color: #f97316;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
   transition: all 0.2s;
   font-family: "Inter", sans-serif;
   white-space: nowrap;
@@ -218,9 +248,9 @@ body.dark-mode .input-wrapper input {
 
 /* ОШИБКИ */
 .error-message {
-  font-size: 11px;
+  font-size: 10px;
   color: #ef4444;
-  margin-top: 4px;
+  margin-top: 3px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -244,22 +274,22 @@ body.dark-mode .input-wrapper input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
-  margin-top: 4px;
+  font-size: 12px;
+  margin-top: 2px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
 }
 
 .checkbox input {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
   accent-color: #f97316;
   flex-shrink: 0;
@@ -267,7 +297,7 @@ body.dark-mode .input-wrapper input {
 
 .checkbox span {
   color: #475569;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 body.dark-mode .checkbox span {
@@ -278,7 +308,7 @@ body.dark-mode .checkbox span {
   color: #f97316;
   text-decoration: none;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -292,8 +322,8 @@ body.dark-mode .checkbox span {
   color: white;
   border: none;
   border-radius: 40px;
-  padding: 14px;
-  font-size: 15px;
+  padding: 11px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -301,7 +331,7 @@ body.dark-mode .checkbox span {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 6px;
   width: 100%;
 }
 
@@ -316,10 +346,10 @@ body.dark-mode .checkbox span {
 
 /* ФУТЕР */
 .auth-footer {
-  padding: 16px 24px 24px;
+  padding: 14px 24px 20px;
   text-align: center;
   border-top: 1px solid #e9eef2;
-  font-size: 11px;
+  font-size: 10px;
   color: #64748b;
 }
 
@@ -342,7 +372,7 @@ body.dark-mode .auth-footer {
 }
 
 .auth-footer p:first-child {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 /* КНОПКА ПЕРЕКЛЮЧЕНИЯ ТЕМЫ */
@@ -350,8 +380,8 @@ body.dark-mode .auth-footer {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: #ffffff;
   border: 1px solid #dbe0e6;
@@ -376,90 +406,15 @@ body.dark-mode .theme-toggle {
   color: #f1f5f9;
 }
 
-/* ========== МОБИЛЬНЫЕ УСТРОЙСТВА ========== */
+/* ========== МОБИЛЬНЫЕ УСТРОЙСТВА ПО ШИРИНЕ ========== */
 @media (max-width: 480px) {
-  body {
-    padding: 12px;
-  }
-  
   .auth-container {
     max-width: 100%;
     border-radius: 20px;
   }
   
   .auth-header {
-    padding: 18px 18px 12px;
-  }
-  
-  .logo-icon-large {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .logo-icon-large i {
-    font-size: 22px;
-  }
-  
-  .auth-title {
-    font-size: 22px;
-  }
-  
-  .auth-subtitle {
-    font-size: 12px;
-  }
-  
-  .auth-tabs {
-    padding: 0 18px;
-  }
-  
-  .tab-btn {
-    padding: 10px 0;
-    font-size: 14px;
-  }
-  
-  .auth-forms {
-    padding: 18px 18px 14px;
-  }
-  
-  .auth-form {
-    gap: 14px;
-  }
-  
-  .input-wrapper {
-    padding: 10px 14px;
-  }
-  
-  .input-wrapper input {
-    font-size: 16px;
-  }
-  
-  .button-show_password {
-    font-size: 11px;
-    padding: 4px 8px;
-  }
-  
-  .auth-btn {
-    padding: 12px;
-    font-size: 14px;
-  }
-  
-  .auth-footer {
-    padding: 12px 18px 18px;
-  }
-  
-  .theme-toggle {
-    top: 12px;
-    right: 12px;
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-  }
-}
-
-/* ========== ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ ========== */
-@media (max-width: 360px) {
-  .auth-header {
-    padding: 14px 14px 10px;
+    padding: 14px 16px 10px;
   }
   
   .logo-icon-large {
@@ -475,35 +430,45 @@ body.dark-mode .theme-toggle {
     font-size: 20px;
   }
   
+  .auth-subtitle {
+    font-size: 11px;
+  }
+  
   .auth-tabs {
-    padding: 0 14px;
+    padding: 0 16px;
   }
   
   .tab-btn {
+    padding: 10px 0;
     font-size: 13px;
   }
   
   .auth-forms {
-    padding: 14px 14px 10px;
+    padding: 14px 16px 12px;
   }
   
   .auth-form {
     gap: 12px;
   }
   
-  .input-label {
-    font-size: 12px;
-  }
-  
   .input-wrapper {
     padding: 8px 12px;
   }
   
-  .button-show_password {
-    font-size: 10px;
-    padding: 3px 6px;
+  .auth-footer {
+    padding: 10px 16px 14px;
   }
   
+  .theme-toggle {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
   .auth-options {
     flex-direction: column;
     align-items: flex-start;
@@ -514,13 +479,29 @@ body.dark-mode .theme-toggle {
     white-space: normal;
   }
   
-  .auth-btn {
-    padding: 10px;
-    font-size: 13px;
+  .auth-header {
+    padding: 10px 12px 8px;
   }
   
-  .auth-footer {
-    padding: 10px 14px 14px;
+  .logo-icon-large {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .logo-icon-large i {
+    font-size: 18px;
+  }
+  
+  .auth-title {
+    font-size: 18px;
+  }
+  
+  .auth-form {
+    gap: 10px;
+  }
+  
+  .input-wrapper {
+    padding: 6px 10px;
   }
 }
 
@@ -609,7 +590,6 @@ body.dark-mode .theme-toggle {
   
   .auth-title {
     font-size: 38px;
-    margin-bottom: 10px;
   }
   
   .auth-subtitle {
@@ -618,13 +598,11 @@ body.dark-mode .theme-toggle {
   
   .auth-tabs {
     padding: 0 48px;
-    gap: 20px;
   }
   
   .tab-btn {
     padding: 20px 0;
     font-size: 20px;
-    border-bottom-width: 3px;
   }
   
   .auth-forms {
@@ -632,11 +610,7 @@ body.dark-mode .theme-toggle {
   }
   
   .auth-form {
-    gap: 28px;
-  }
-  
-  .input-group {
-    gap: 10px;
+    gap: 24px;
   }
   
   .input-label {
@@ -645,311 +619,31 @@ body.dark-mode .theme-toggle {
   
   .input-wrapper {
     padding: 18px 24px;
-    border-radius: 20px;
-    gap: 14px;
-  }
-  
-  .input-wrapper i {
-    font-size: 22px;
   }
   
   .input-wrapper input {
     font-size: 18px;
   }
   
-  .input-wrapper input::placeholder {
-    font-size: 16px;
-  }
-  
   .button-show_password {
-    font-size: 15px;
-    padding: 8px 16px;
-  }
-  
-  .auth-options {
-    font-size: 16px;
-    margin-top: 8px;
-  }
-  
-  .checkbox {
-    gap: 10px;
-  }
-  
-  .checkbox input {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .checkbox span {
-    font-size: 16px;
-  }
-  
-  .forgot-link {
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .auth-btn {
     padding: 20px;
     font-size: 18px;
-    gap: 12px;
-    margin-top: 12px;
-    border-radius: 50px;
   }
   
   .auth-footer {
     padding: 28px 48px 40px;
-    font-size: 15px;
-  }
-  
-  .auth-footer p:first-child {
-    margin-bottom: 12px;
+    font-size: 14px;
   }
   
   .theme-toggle {
     top: 40px;
     right: 40px;
-    width: 60px;
-    height: 60px;
-    font-size: 26px;
-  }
-}
-
-/* =========️ ЭКРАНЫ 3000px+ (4K и больше) ========== */
-@media (min-width: 3000px) {
-  body {
-    padding: 60px;
-  }
-  
-  .auth-container {
-    max-width: 950px;
-    border-radius: 56px;
-  }
-  
-  .auth-header {
-    padding: 64px 64px 40px;
-  }
-  
-  .logo-icon-large {
-    width: 120px;
-    height: 120px;
-    border-radius: 32px;
-  }
-  
-  .logo-icon-large i {
-    font-size: 60px;
-  }
-  
-  .auth-title {
-    font-size: 48px;
-    margin-bottom: 14px;
-  }
-  
-  .auth-subtitle {
-    font-size: 22px;
-  }
-  
-  .auth-tabs {
-    padding: 0 64px;
-    gap: 28px;
-  }
-  
-  .tab-btn {
-    padding: 26px 0;
+    width: 56px;
+    height: 56px;
     font-size: 24px;
-    border-bottom-width: 4px;
-  }
-  
-  .auth-forms {
-    padding: 52px 64px 42px;
-  }
-  
-  .auth-form {
-    gap: 36px;
-  }
-  
-  .input-group {
-    gap: 14px;
-  }
-  
-  .input-label {
-    font-size: 22px;
-  }
-  
-  .input-wrapper {
-    padding: 24px 32px;
-    border-radius: 28px;
-    gap: 18px;
-  }
-  
-  .input-wrapper i {
-    font-size: 28px;
-  }
-  
-  .input-wrapper input {
-    font-size: 24px;
-  }
-  
-  .input-wrapper input::placeholder {
-    font-size: 20px;
-  }
-  
-  .button-show_password {
-    font-size: 18px;
-    padding: 10px 20px;
-    border-radius: 12px;
-  }
-  
-  .auth-options {
-    font-size: 20px;
-    margin-top: 10px;
-    gap: 18px;
-  }
-  
-  .checkbox {
-    gap: 14px;
-  }
-  
-  .checkbox input {
-    width: 26px;
-    height: 26px;
-  }
-  
-  .checkbox span {
-    font-size: 20px;
-  }
-  
-  .forgot-link {
-    font-size: 20px;
-  }
-  
-  .auth-btn {
-    padding: 26px;
-    font-size: 24px;
-    gap: 16px;
-    margin-top: 16px;
-    border-radius: 60px;
-  }
-  
-  .auth-footer {
-    padding: 36px 64px 56px;
-    font-size: 18px;
-  }
-  
-  .auth-footer p:first-child {
-    margin-bottom: 16px;
-  }
-  
-  .theme-toggle {
-    top: 60px;
-    right: 60px;
-    width: 80px;
-    height: 80px;
-    font-size: 36px;
-  }
-}
-
-/* ========== ЭКРАНЫ 3840px+ (4K Ultra HD) ========== */
-@media (min-width: 3840px) {
-  body {
-    padding: 80px;
-  }
-  
-  .auth-container {
-    max-width: 1200px;
-    border-radius: 72px;
-  }
-  
-  .auth-header {
-    padding: 80px 80px 50px;
-  }
-  
-  .logo-icon-large {
-    width: 150px;
-    height: 150px;
-    border-radius: 40px;
-  }
-  
-  .logo-icon-large i {
-    font-size: 75px;
-  }
-  
-  .auth-title {
-    font-size: 56px;
-  }
-  
-  .auth-subtitle {
-    font-size: 28px;
-  }
-  
-  .auth-tabs {
-    padding: 0 80px;
-    gap: 36px;
-  }
-  
-  .tab-btn {
-    padding: 32px 0;
-    font-size: 28px;
-  }
-  
-  .auth-forms {
-    padding: 64px 80px 52px;
-  }
-  
-  .auth-form {
-    gap: 44px;
-  }
-  
-  .input-label {
-    font-size: 26px;
-  }
-  
-  .input-wrapper {
-    padding: 30px 40px;
-    border-radius: 36px;
-    gap: 22px;
-  }
-  
-  .input-wrapper i {
-    font-size: 34px;
-  }
-  
-  .input-wrapper input {
-    font-size: 28px;
-  }
-  
-  .button-show_password {
-    font-size: 22px;
-    padding: 12px 24px;
-  }
-  
-  .checkbox input {
-    width: 32px;
-    height: 32px;
-  }
-  
-  .checkbox span {
-    font-size: 24px;
-  }
-  
-  .forgot-link {
-    font-size: 24px;
-  }
-  
-  .auth-btn {
-    padding: 32px;
-    font-size: 28px;
-  }
-  
-  .auth-footer {
-    padding: 44px 80px 70px;
-    font-size: 22px;
-  }
-  
-  .theme-toggle {
-    top: 80px;
-    right: 80px;
-    width: 100px;
-    height: 100px;
-    font-size: 46px;
   }
 }
