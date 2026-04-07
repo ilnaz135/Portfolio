@@ -50,10 +50,12 @@ python main.py
 #### 1. **users** - Основная информация о пользователе
 - `id` - Уникальный идентификатор
 - `username` - Уникальное имя пользователя
+- `password` - Пароль пользователя
+- `email` - Email пользователя
+- `user_directions` - Основное пользовательское направление
 - `first_name` - Имя
 - `last_name` - Фамилия
 - `patronymic` - Отчество
-- `stack` - Технологический стек
 - `cloude_storage` - Ссылка на облачное хранилище (GitHub, GitLab и т.д.)
 - `academic_direction` - Основное направление обучения
 - `class` - Класс/группа
@@ -96,14 +98,16 @@ curl -X POST http://localhost:8000/users \
   -H "Content-Type: application/json" \
   -d '{
     "username": "john_doe",
+    "password": "password123",
+    "email": "john_doe@portfolio.local",
+    "user_directions": "Backend Development",
     "first_name": "John",
     "last_name": "Doe",
     "patronymic": "Smith",
-    "stack": "Python, JavaScript, React",
     "cloude_storage": "https://github.com/johndoe",
     "academic_direction": "Computer Science",
     "class": "4-1",
-    "avg_score": 4.5
+    "avg_score": 95
   }'
 ```
 
@@ -128,8 +132,9 @@ curl http://localhost:8000/users/1
 curl -X PUT http://localhost:8000/users/1 \
   -H "Content-Type: application/json" \
   -d '{
+    "email": "jane_doe@portfolio.local",
     "first_name": "Jane",
-    "avg_score": 4.7
+    "avg_score": 97
   }'
 ```
 
@@ -256,7 +261,7 @@ API возвращает стандартные HTTP коды ошибок:
 ## Примечания
 
 - Все даты должны быть в формате ISO 8601: `YYYY-MM-DDTHH:MM:SS`
-- Средний балл (avg_score) должен быть от 0 до 5
+- Средний балл (avg_score) должен быть от 0 до 100
 - При удалении пользователя автоматически удаляются все связанные данные (каскадное удаление)
 - База данных хранится в файле `portfolio.db` (SQLite)
 - GET запросы для списков элементов возвращают данные, отсортированные по дате создания (сначала самые новые)

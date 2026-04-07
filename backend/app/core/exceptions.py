@@ -35,6 +35,13 @@ class UsernameAlreadyExistsException(PortfolioException):
         super().__init__(f"Имя пользователя '{username}' уже существует", 400)
 
 
+class EmailAlreadyExistsException(PortfolioException):
+    """Исключение, когда email уже существует."""
+
+    def __init__(self, email: str):
+        super().__init__(f"Email '{email}' уже существует", 400)
+
+
 class DirectionNotFoundException(PortfolioException):
     """Исключение, когда направление не найдено."""
 

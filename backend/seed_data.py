@@ -7,9 +7,10 @@
 
 import asyncio
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from app.models import Base, UserModel, UserDirectionModel, UserCourseModel, UserScientificAchievementModel, UserStackModel
+from app.core.database import ensure_database_schema
+from app.models import UserModel, UserDirectionModel, UserCourseModel, UserScientificAchievementModel, UserStackModel
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -41,6 +42,7 @@ async def seed_database():
                 {
                     "username": "ivan_petrov_1",
                     "password": "password123",
+                    "email": "ivan_petrov_1@portfolio.local",
                     "user_directions": "Машинное обучение",
                     "first_name": "Иван",
                     "last_name": "Петров",
@@ -53,6 +55,7 @@ async def seed_database():
                 {
                     "username": "maria_ivanova_2",
                     "password": "password123",
+                    "email": "maria_ivanova_2@portfolio.local",
                     "user_directions": "Фронтенд-разработка",
                     "first_name": "Мария",
                     "last_name": "Иванова",
@@ -65,6 +68,7 @@ async def seed_database():
                 {
                     "username": "alexey_smirnov_3",
                     "password": "password123",
+                    "email": "alexey_smirnov_3@portfolio.local",
                     "user_directions": "Системное программирование",
                     "first_name": "Алексей",
                     "last_name": "Смирнов",
@@ -77,6 +81,7 @@ async def seed_database():
                 {
                     "username": "elena_kuznetsova_4",
                     "password": "password123",
+                    "email": "elena_kuznetsova_4@portfolio.local",
                     "user_directions": "Базы данных",
                     "first_name": "Елена",
                     "last_name": "Кузнецова",
@@ -89,6 +94,7 @@ async def seed_database():
                 {
                     "username": "dmitry_volkov_1",
                     "password": "password123",
+                    "email": "dmitry_volkov_1@portfolio.local",
                     "user_directions": "Нейронные сети",
                     "first_name": "Дмитрий",
                     "last_name": "Волков",
@@ -101,6 +107,7 @@ async def seed_database():
                 {
                     "username": "anna_sokolova_2",
                     "password": "password123",
+                    "email": "anna_sokolova_2@portfolio.local",
                     "user_directions": "Веб-дизайн",
                     "first_name": "Анна",
                     "last_name": "Соколова",
@@ -113,6 +120,7 @@ async def seed_database():
                 {
                     "username": "sergey_morozov_3",
                     "password": "password123",
+                    "email": "sergey_morozov_3@portfolio.local",
                     "user_directions": "Микросервисы",
                     "first_name": "Сергей",
                     "last_name": "Морозов",
@@ -125,6 +133,7 @@ async def seed_database():
                 {
                     "username": "olga_novikova_4",
                     "password": "password123",
+                    "email": "olga_novikova_4@portfolio.local",
                     "user_directions": "API разработка",
                     "first_name": "Ольга",
                     "last_name": "Новикова",
@@ -316,8 +325,7 @@ async def main():
     Основная функция для запуска скрипта сидинга.
     """
     # Создаем таблицы, если они не существуют
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    await ensure_database_schema(engine)
     print("📋 Таблицы базы данных проверены/созданы")
 
     # Заполняем данными

@@ -12,7 +12,11 @@ from sqlalchemy.orm import selectinload
 
 from app.models import UserModel
 from app.schemas import UserCreateSchema, UserUpdateSchema
-from app.core.exceptions import UserNotFoundException, UsernameAlreadyExistsException
+from app.core.exceptions import (
+    EmailAlreadyExistsException,
+    UserNotFoundException,
+    UsernameAlreadyExistsException,
+)
 
 
 class UserService:
@@ -49,10 +53,15 @@ class UserService:
             if existing_user:
                 raise UsernameAlreadyExistsException(user_data.username)
 
+            existing_email = await self._get_user_by_email(user_data.email)
+            if existing_email:
+                raise EmailAlreadyExistsException(user_data.email)
+
             # Создать нового пользователя
             new_user = UserModel(
                 username=user_data.username,
                 password=user_data.password,
+                email=user_data.email,
                 user_directions=user_data.user_directions,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
@@ -66,11 +75,15 @@ class UserService:
             self.session.add(new_user)
             await self.session.commit()
             await self.session.refresh(new_user)
-            return new_user
+            return await self.get_user_by_id(new_user.id)
 
-        except IntegrityError:
+        except IntegrityError as exc:
             await self.session.rollback()
-            raise UsernameAlreadyExistsException(user_data.username)
+            self._raise_unique_constraint_error(
+                exc,
+                username=user_data.username,
+                email=user_data.email
+            )
         except Exception:
             await self.session.rollback()
             raise
@@ -152,14 +165,30 @@ class UserService:
             if "class" in update_data:
                 update_data["class_"] = update_data.pop("class")
 
+            if (
+                "email" in update_data
+                and update_data["email"] is not None
+                and update_data["email"] != user.email
+            ):
+                existing_email = await self._get_user_by_email(update_data["email"])
+                if existing_email and existing_email.id != user.id:
+                    raise EmailAlreadyExistsException(update_data["email"])
+
             for field, value in update_data.items():
                 if value is not None:
                     setattr(user, field, value)
 
             await self.session.commit()
             await self.session.refresh(user)
-            return user
+            return await self.get_user_by_id(user.id)
 
+        except IntegrityError as exc:
+            await self.session.rollback()
+            self._raise_unique_constraint_error(
+                exc,
+                username=user.username,
+                email=update_data.get("email", user.email)
+            )
         except Exception:
             await self.session.rollback()
             raise
@@ -196,6 +225,20 @@ class UserService:
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
+    async def _get_user_by_email(self, email: str) -> Optional[UserModel]:
+        """
+        Получить пользователя по email.
+
+        Args:
+            email: Email пользователя
+
+        Returns:
+            Пользователь или None
+        """
+        stmt = select(UserModel).where(UserModel.email == email)
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
     async def authenticate_user(self, username: str, password: str) -> bool:
         """
         Проверить, существует ли пользователь с данным логином и паролем.
@@ -211,3 +254,22 @@ class UserService:
         if user and user.password == password:
             return True
         return False
+
+    @staticmethod
+    def _raise_unique_constraint_error(
+        exc: IntegrityError,
+        username: str,
+        email: str
+    ) -> None:
+        """
+        Преобразовать ошибку уникальности БД в понятное исключение API.
+
+        Args:
+            exc: Ошибка целостности SQLAlchemy
+            username: Имя пользователя для сообщения об ошибке
+            email: Email для сообщения об ошибке
+        """
+        error_message = str(getattr(exc, "orig", exc)).lower()
+        if "users.email" in error_message or " email" in error_message:
+            raise EmailAlreadyExistsException(email) from exc
+        raise UsernameAlreadyExistsException(username) from exc

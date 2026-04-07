@@ -94,6 +94,7 @@ class UserCreateSchema(BaseModel):
     Поля:
     - username: Уникальное имя пользователя для аутентификации
     - password: Пароль пользователя
+    - email: Email пользователя
     - first_name: Имя пользователя
     - last_name: Фамилия пользователя
     - patronymic: Отчество пользователя (среднее имя)
@@ -105,6 +106,7 @@ class UserCreateSchema(BaseModel):
     """
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=6, max_length=255)
+    email: str = Field(..., min_length=5, max_length=255)
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
     patronymic: str = Field(None, max_length=100)
@@ -124,6 +126,7 @@ class UserUpdateSchema(BaseModel):
     Все поля опциональны для поддержки частичных обновлений.
     """
     password: str = Field(None, min_length=6, max_length=255)
+    email: str = Field(None, min_length=5, max_length=255)
     first_name: str = Field(None, min_length=1, max_length=100)
     last_name: str = Field(None, min_length=1, max_length=100)
     patronymic: str = Field(None, max_length=100)
@@ -168,6 +171,7 @@ class UserSchema(BaseModel):
     id: int
     username: str
     password: str
+    email: str
     user_directions: str | None
     first_name: str
     last_name: str
@@ -176,10 +180,10 @@ class UserSchema(BaseModel):
     academic_direction: str
     class_: str = Field(alias="class_")
     avg_score: float
-    directions: List[UserDirectionSchema] = []
-    courses: List[UserCourseSchema] = []
-    scientific_achievements: List[UserScientificAchievementSchema] = []
-    stacks: List[UserStackSchema] = []
+    directions: List[UserDirectionSchema] = Field(default_factory=list)
+    courses: List[UserCourseSchema] = Field(default_factory=list)
+    scientific_achievements: List[UserScientificAchievementSchema] = Field(default_factory=list)
+    stacks: List[UserStackSchema] = Field(default_factory=list)
 
     class Config:
         from_attributes = True

@@ -6,11 +6,7 @@ Portfolio Backend API - System Routes
 """
 
 from fastapi import APIRouter, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
-
-from app.core.database import engine
-from app.models import Base
+from app.core.database import ensure_database_schema
 
 router = APIRouter()
 
@@ -28,8 +24,7 @@ async def setup_database() -> dict:
         HTTPException: Если настройка базы данных не удалась
     """
     try:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+        await ensure_database_schema()
         return {"status": "Настройка базы данных завершена успешно"}
     except Exception as e:
         raise HTTPException(
