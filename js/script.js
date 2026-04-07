@@ -4,9 +4,14 @@ const scienceCard = document.querySelector('.publications-list')
 const tags = document.querySelector('.tags-cloud')
 const skillsCard = document.querySelector('.right-col').querySelector('.tags-cloud')
 
-let currentAccountId = 3;
+const trimUserName = (username) => {
+    return username
+    .split(' ')
+    .map(nickname => nickname[0])
+    .join('')
+}
 
-async function getUserData() {
+async function getUserData(currentAccountId) {
     const response = await fetch("http://localhost:8000/api/v1/users")
     if(!response.ok) throw new Error('Ответ от сервера не получен.')
     const userData = {...await response.json()}
@@ -17,7 +22,7 @@ async function getUserData() {
                     <i class="fas fa-pencil-alt"></i>
                 </button>
 
-                <div class="avatar" id="profileAvatar">ИИ</div>
+                <div class="avatar" id="profileAvatar">${trimUserName(userData[currentAccountId].username)}</div>
                 <div class="full-name">${userData[currentAccountId].first_name} ${userData[currentAccountId].last_name}</div>
                 <div class="username"><i class="fas fa-at"></i>${userData[currentAccountId].username}</div>
                 
@@ -52,22 +57,23 @@ async function getUserData() {
                 </div>
             </div>
             `
-
-    userData[currentAccountId].scientific_achievements.forEach(element => {
-        scienceCard.insertAdjacentHTML('afterbegin', `
-                            <div class="publication-item">
-                                <div class="pub-icon"><i class="fas fa-file-alt"></i> </div>
-                                <div class="pub-content">
-                                    <div class="pub-title"><a href="#">${element.name}</a></div>
-                                    <div class="pub-meta">
-                                        <span><i class="far fa-calendar-alt"></i> ${element.date.slice(0,4)}</span>
-                                        <span><i class="fas fa-tag"></i> ${element.type}</span>
+        for (i = 0; i < 2; i++) {
+            if (userData[currentAccountId].scientific_achievements[i]) {
+                scienceCard.insertAdjacentHTML('afterbegin', `
+                                    <div class="publication-item">
+                                        <div class="pub-icon"><i class="fas fa-file-alt"></i> </div>
+                                        <div class="pub-content">
+                                            <div class="pub-title"><a href="#">${userData[currentAccountId].scientific_achievements[i].name}</a></div>
+                                            <div class="pub-meta">
+                                                <span><i class="far fa-calendar-alt"></i> ${userData[currentAccountId].scientific_achievements[i].date.slice(0, 4)}</span>
+                                                <span><i class="fas fa-tag"></i> ${userData[currentAccountId].scientific_achievements[i].type}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-        `
-    )
-    });
+                `
+            );                  
+            }
+        }
 
     userData[currentAccountId].stacks.forEach(element => {
         tags.insertAdjacentHTML('afterbegin', `
@@ -117,5 +123,4 @@ async function getUserData() {
         }
 }
 
-getUserData()
-
+getUserData(1)
