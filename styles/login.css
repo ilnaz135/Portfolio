@@ -5,15 +5,14 @@ body.dark-mode {
 
 /* Контейнер */
 .auth-container {
-  max-width: 480px;
+  max-width: 400px;
   width: 100%;
   background-color: #ffffff;
-  border-radius: 32px;
+  border-radius: 24px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  transition:
-    background-color 0.3s,
-    box-shadow 0.3s;
+  overflow: visible;
+  transition: all 0.3s;
+  margin: 16px auto;
 }
 
 body.dark-mode .auth-container {
@@ -21,9 +20,9 @@ body.dark-mode .auth-container {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
-/* Хедер */
+/* Хедер - уменьшенный */
 .auth-header {
-  padding: 32px 32px 24px;
+  padding: 16px 20px 12px;
   text-align: center;
   border-bottom: 1px solid #e9eef2;
 }
@@ -33,32 +32,26 @@ body.dark-mode .auth-header {
 }
 
 .logo-icon-large {
-  width: 64px;
-  height: 64px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #1e3a8a, #2563eb);
-  border-radius: 20px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
-  box-shadow: none; /* Убрал тень/свечение */
-}
-
-body.dark-mode .logo-icon-large {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  box-shadow: none; /* Убрал тень/свечение в темной теме */
+  margin: 0 auto 8px;
 }
 
 .logo-icon-large i {
-  font-size: 32px;
+  font-size: 20px;
   color: white;
 }
 
 .auth-title {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
   color: #0b2b5c;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 body.dark-mode .auth-title {
@@ -66,21 +59,16 @@ body.dark-mode .auth-title {
 }
 
 .auth-subtitle {
-  font-size: 14px;
+  font-size: 11px;
   color: #64748b;
 }
 
-body.dark-mode .auth-subtitle {
-  color: #94a3b8;
-}
-
-/* Переключение между входом и регистрацией */
+/* Табы - уменьшенные */
 .auth-tabs {
   display: flex;
-  padding: 0 32px;
+  padding: 0 20px;
   gap: 8px;
   background-color: #ffffff;
-  transition: background-color 0.3s;
 }
 
 body.dark-mode .auth-tabs {
@@ -89,20 +77,16 @@ body.dark-mode .auth-tabs {
 
 .tab-btn {
   flex: 1;
-  padding: 16px 0;
+  padding: 10px 0;
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
   transition: all 0.2s;
   border-bottom: 2px solid transparent;
   font-family: "Inter", sans-serif;
-}
-
-body.dark-mode .tab-btn {
-  color: #94a3b8;
 }
 
 .tab-btn.active {
@@ -112,43 +96,32 @@ body.dark-mode .tab-btn {
 
 body.dark-mode .tab-btn.active {
   color: #3b82f6;
-  border-bottom-color: #f97316;
 }
 
-.tab-btn:hover:not(.active) {
-  color: #1e293b;
-  border-bottom-color: #cbd5e1;
-}
-
-body.dark-mode .tab-btn:hover:not(.active) {
-  color: #e2e8f0;
-  border-bottom-color: #475569;
-}
-
-/* Формы */
+/* Формы - минимальные отступы */
 .auth-forms {
-  padding: 32px;
+  padding: 16px 20px;
 }
 
 .auth-form {
   display: none;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .auth-form.active {
   display: flex;
 }
 
-/* Поля ввода */
+/* Поля ввода - минимальные */
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
 }
 
 .input-label {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: #0b2b5c;
 }
@@ -162,9 +135,11 @@ body.dark-mode .input-label {
   align-items: center;
   background-color: #f1f5f9;
   border: 1px solid #dbe0e6;
-  border-radius: 16px;
-  padding: 12px 16px;
+  border-radius: 10px;
+  padding: 6px 10px;
   transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 body.dark-mode .input-wrapper {
@@ -174,27 +149,26 @@ body.dark-mode .input-wrapper {
 
 .input-wrapper:focus-within {
   border-color: #f97316;
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
 }
 
 .input-wrapper i {
   color: #94a3b8;
-  font-size: 18px;
-  margin-right: 12px;
-}
-
-body.dark-mode .input-wrapper i {
-  color: #64748b;
+  font-size: 12px;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
 
 .input-wrapper input {
   flex: 1;
   border: none;
   background: none;
-  font-size: 15px;
+  font-size: 12px;
   font-family: "Inter", sans-serif;
   color: #1e293b;
   outline: none;
+  min-width: 0;
+  width: 100%;
 }
 
 body.dark-mode .input-wrapper input {
@@ -203,36 +177,97 @@ body.dark-mode .input-wrapper input {
 
 .input-wrapper input::placeholder {
   color: #94a3b8;
+  font-size: 11px;
 }
 
-body.dark-mode .input-wrapper input::placeholder {
-  color: #64748b;
+/* Кнопка показа пароля */
+.button-show_password {
+  background: none;
+  border: none;
+  color: #f97316;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 5px;
+  transition: all 0.2s;
+  font-family: "Inter", sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 6px;
+  min-width: 45px;
 }
 
-/* Дополнительные опции */
+.button-show_password:hover {
+  background-color: rgba(249, 115, 22, 0.1);
+}
+
+.button-show_password:active {
+  transform: scale(0.95);
+}
+
+/* Кастомные ошибки */
+.error-message {
+  font-size: 10px;
+  color: #ef4444;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  animation: fadeIn 0.2s ease-out;
+  word-break: break-word;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-wrapper input.error {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+body.dark-mode .input-wrapper input.error {
+  border-color: #f87171;
+  background-color: rgba(248, 113, 113, 0.1);
+}
+
+/* Опции */
 .auth-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 10px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   cursor: pointer;
 }
 
 .checkbox input {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   cursor: pointer;
   accent-color: #f97316;
+  flex-shrink: 0;
 }
 
 .checkbox span {
   color: #475569;
+  font-size: 10px;
 }
 
 body.dark-mode .checkbox span {
@@ -243,12 +278,8 @@ body.dark-mode .checkbox span {
   color: #f97316;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s;
-}
-
-.forgot-link:hover {
-  color: #ea580c;
-  text-decoration: underline;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
 /* Кнопка действия */
@@ -257,41 +288,34 @@ body.dark-mode .checkbox span {
   color: white;
   border: none;
   border-radius: 40px;
-  padding: 14px;
-  font-size: 16px;
+  padding: 9px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-body.dark-mode .auth-btn {
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  gap: 6px;
+  margin-top: 6px;
+  width: 100%;
 }
 
 .auth-btn:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(11, 43, 92, 0.3);
-}
-
-body.dark-mode .auth-btn:hover {
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
 }
 
 .auth-btn:active {
   transform: translateY(0);
 }
 
-/* Футер */
+/* Футер - минимальный */
 .auth-footer {
-  padding: 20px 32px;
+  padding: 10px 20px;
   text-align: center;
   border-top: 1px solid #e9eef2;
-  font-size: 13px;
+  font-size: 10px;
   color: #64748b;
 }
 
@@ -303,20 +327,23 @@ body.dark-mode .auth-footer {
 .auth-footer a {
   color: #f97316;
   text-decoration: none;
-  font-weight: 500;
 }
 
-.auth-footer a:hover {
-  text-decoration: underline;
+.auth-footer p {
+  margin: 0;
+}
+
+.auth-footer p:first-child {
+  margin-bottom: 4px;
 }
 
 /* Кнопка переключения темы */
 .theme-toggle {
   position: fixed;
-  top: 24px;
-  right: 24px;
-  width: 48px;
-  height: 48px;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background-color: #ffffff;
   border: 1px solid #dbe0e6;
@@ -325,130 +352,133 @@ body.dark-mode .auth-footer {
   justify-content: center;
   cursor: pointer;
   color: #475569;
-  font-size: 20px;
+  font-size: 16px;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
-body.dark-mode .theme-toggle {
-  background-color: #1e293b;
-  border-color: #334155;
-  color: #94a3b8;
-}
-
-.theme-toggle:hover {
-  transform: scale(1.05);
-  background-color: #e2e8f0;
-}
-
-body.dark-mode .theme-toggle:hover {
-  background-color: #334155;
-  color: #f1f5f9;
-}
-
-/* Анимации */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.auth-form.active {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* Адаптивность для телефонов */
-@media (max-width: 600px) {
+/* Адаптив для мобильных */
+@media (max-width: 480px) {
   body {
-    padding: 16px;
+    padding: 8px;
   }
-
+  
+  .auth-container {
+    max-width: 100%;
+    margin: 8px auto;
+  }
+  
   .auth-header {
-    padding: 24px 24px 20px;
+    padding: 12px 16px 10px;
   }
-
+  
   .auth-header .logo-icon-large {
-    width: 56px;
-    height: 56px;
+    width: 36px;
+    height: 36px;
   }
-
+  
   .auth-header .logo-icon-large i {
-    font-size: 28px;
+    font-size: 18px;
   }
-
+  
   .auth-title {
-    font-size: 24px;
+    font-size: 18px;
   }
-
+  
   .auth-subtitle {
-    font-size: 13px;
+    font-size: 10px;
   }
-
+  
   .auth-tabs {
-    padding: 0 24px;
+    padding: 0 16px;
   }
-
+  
   .tab-btn {
-    padding: 14px 0;
-    font-size: 15px;
-  }
-
-  .auth-forms {
-    padding: 24px;
-  }
-
-  .input-wrapper {
-    padding: 10px 14px;
-  }
-
-  .input-wrapper i {
-    font-size: 16px;
-    margin-right: 10px;
-  }
-
-  .input-wrapper input {
-    font-size: 14px;
-  }
-
-  .auth-btn {
-    padding: 12px;
-    font-size: 15px;
-  }
-
-  .auth-footer {
-    padding: 16px 24px;
+    padding: 8px 0;
     font-size: 12px;
   }
-
+  
+  .auth-forms {
+    padding: 12px 16px;
+  }
+  
+  .auth-form {
+    gap: 10px;
+  }
+  
+  .input-wrapper {
+    padding: 5px 8px;
+  }
+  
+  .input-wrapper i {
+    font-size: 11px;
+    margin-right: 5px;
+  }
+  
+  .input-wrapper input {
+    font-size: 12px;
+  }
+  
+  .button-show_password {
+    font-size: 9px;
+    padding: 2px 5px;
+    margin-left: 5px;
+    min-width: 40px;
+  }
+  
+  .auth-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .auth-footer {
+    padding: 8px 16px;
+  }
+  
   .theme-toggle {
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
   }
 }
 
 /* Для очень маленьких экранов */
-@media (max-width: 400px) {
-  .auth-header {
-    padding: 20px 20px 16px;
-  }
-
-  .auth-tabs {
-    padding: 0 20px;
-  }
-
+@media (max-width: 360px) {
   .auth-forms {
-    padding: 20px;
+    padding: 10px 12px;
   }
-
-  .auth-footer {
-    padding: 14px 20px;
+  
+  .auth-form {
+    gap: 8px;
+  }
+  
+  .input-wrapper {
+    padding: 4px 6px;
+  }
+  
+  .button-show_password {
+    font-size: 8px;
+    padding: 2px 4px;
+    min-width: 35px;
+  }
+  
+  .auth-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .forgot-link {
+    white-space: normal;
+  }
+  
+  .input-label {
+    font-size: 10px;
+  }
+  
+  .error-message {
+    font-size: 9px;
   }
 }
