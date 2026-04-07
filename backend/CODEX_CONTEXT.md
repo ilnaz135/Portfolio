@@ -128,14 +128,15 @@ Important implementation detail:
 
 ## Known Gotchas
 
-- `settings.debug` in `backend/app/core/config.py` is typed as `bool`
-- If environment provides `DEBUG=release`, app import fails with a Pydantic validation error
-- Safe values are boolean-like ones such as `true` / `false`
+- `backend/app/core/config.py` normalizes non-standard debug modes from environment
+- `DEBUG=release` is treated as `false`
+- `DEBUG=debug` is treated as `true`
 
 - PowerShell output may show mojibake for Russian text if console encoding is not UTF-8
 - Source files themselves are UTF-8; do not treat garbled terminal output as file corruption by default
 
 - `js/script.js` fetches `http://localhost:8000/api/v1/users`
+- `js/login.js` now logs in through `POST /api/v1/users/login/email`
 - Frontend currently expects the users endpoint to return a list and then indexes it with `currentAccountId = 3`
 - `GET /api/v1/users` is ordered by `created_at DESC`, so changing ordering may change which profile the frontend shows
 

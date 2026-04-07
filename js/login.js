@@ -24,6 +24,7 @@ tabBtns.forEach((btn) => {
 // Находим формы
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
+const API_BASE = "http://localhost:8000/api/v1";
 
 // Обработчик для формы входа
 if (loginForm) {
@@ -43,22 +44,34 @@ if (registerForm) {
 
 // Обработчики отправки форм
 async function handleLogin() {
-  const username = document.getElementById("loginEmail").value;
+  const loginValue = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
-  if (!username || !password) {
+  if (!loginValue || !password) {
     alert("Пожалуйста, заполните все поля");
     return;
   }
 
   try {
-    const response = await fetch("http://localhost:8000/api/v1/users/login", {
+    const isEmailLogin = loginValue.includes("@");
+    const loginUrl = isEmailLogin
+      ? `${API_BASE}/users/login/email`
+      : `${API_BASE}/users/login`;
+    const loginPayload = isEmailLogin
+      ? { email: loginValue, password }
+      : { username: loginValue, password };
+
+    const response = await fetch(loginUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify(loginPayload)
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
     const data = await response.json();
 
@@ -66,12 +79,16 @@ async function handleLogin() {
       localStorage.setItem("loggedUserId", data);
       window.location.href = "index.html";
     } else {
-      alert("Неверный email или пароль");
+      alert("Неверный email, username или пароль");
     }
 
   } catch (error) {
     console.error(error);
-    alert("Ошибка сервера");
+    if (error instanceof TypeError) {
+      alert("Бэкенд недоступен. Запустите API на http://localhost:8000");
+      return;
+    }
+    alert("Ошибка во время входа");
   }
 }
 
@@ -98,7 +115,7 @@ async function handleRegister() {
   }
 
   try {
-    const response = await fetch("http://localhost:8000/api/v1/users", {
+    const response = await fetch(`${API_BASE}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

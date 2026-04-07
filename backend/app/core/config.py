@@ -7,7 +7,8 @@
 
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -39,6 +40,27 @@ class Settings(BaseSettings):
     # Настройки пагинации
     default_page_size: int = 10
     max_page_size: int = 100
+
+    @field_validator("debug", mode="before")
+    @classmethod
+    def parse_debug_value(cls, value: Any) -> bool:
+        """
+        Нормализовать значение DEBUG из окружения.
+
+        Поддерживает строковые режимы вроде `release` и `debug`,
+        чтобы приложение не падало на старте из-за нестандартного значения.
+        """
+        if isinstance(value, bool):
+            return value
+
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"1", "true", "yes", "on", "debug", "dev", "development"}:
+                return True
+            if normalized in {"0", "false", "no", "off", "release", "prod", "production"}:
+                return False
+
+        return bool(value)
 
     class Config:
         env_file = ".env"
