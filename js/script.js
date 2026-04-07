@@ -22,7 +22,7 @@ async function getUserData(currentAccountId) {
                     <span class="badge" id="displayRole"><i class="fas fa-code"></i> ${userData.user_directions}</span>
                 </div>
 
-                <a href="#" class="github-link" id="displayCloud">
+                <a href="${userData.cloude_storage}" class="github-link" id="displayCloud">
                     <i class="fab fa-github"></i> ${userData.cloude_storage}
                 </a>
 
