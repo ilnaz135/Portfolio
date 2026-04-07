@@ -143,6 +143,18 @@ curl -X PUT http://localhost:8000/users/1 \
 curl -X DELETE http://localhost:8000/users/1
 ```
 
+#### `POST /users/login/email` - Проверить email и пароль пользователя
+```bash
+curl -X POST http://localhost:8000/users/login/email \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john_doe@portfolio.local",
+    "password": "password123"
+  }'
+```
+
+Возвращает `id` пользователя, если пользователь с таким email и паролем существует, иначе `-1`.
+
 ### Управление направлениями обучения
 
 #### `POST /users/{user_id}/directions` - Добавить направление

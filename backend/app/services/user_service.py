@@ -239,7 +239,7 @@ class UserService:
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def authenticate_user(self, username: str, password: str) -> bool:
+    async def authenticate_user(self, username: str, password: str) -> int:
         """
         Проверить, существует ли пользователь с данным логином и паролем.
 
@@ -248,12 +248,28 @@ class UserService:
             password: Пароль пользователя
 
         Returns:
-            True если пользователь найден и пароль совпадает, иначе False
+            ID пользователя если пользователь найден и пароль совпадает, иначе -1
         """
         user = await self._get_user_by_username(username)
         if user and user.password == password:
-            return True
-        return False
+            return user.id
+        return -1
+
+    async def authenticate_user_by_email(self, email: str, password: str) -> int:
+        """
+        Проверить, существует ли пользователь с данным email и паролем.
+
+        Args:
+            email: Email пользователя
+            password: Пароль пользователя
+
+        Returns:
+            ID пользователя если пользователь найден и пароль совпадает, иначе -1
+        """
+        user = await self._get_user_by_email(email)
+        if user and user.password == password:
+            return user.id
+        return -1
 
     @staticmethod
     def _raise_unique_constraint_error(

@@ -14,7 +14,8 @@ from app.schemas import (
     UserCreateSchema,
     UserUpdateSchema,
     UserSchema,
-    UserLoginSchema
+    UserLoginSchema,
+    UserEmailLoginSchema
 )
 
 router = APIRouter()
@@ -115,7 +116,7 @@ async def delete_user(
     await user_service.delete_user(user_id)
 
 
-@router.post("/login", response_model=bool, tags=["Users"])
+@router.post("/login", response_model=int, tags=["Users"])
 async def login_user(
     login_data: UserLoginSchema,
     session: AsyncSession = SessionDep
@@ -128,7 +129,29 @@ async def login_user(
         session: Зависимость сессии базы данных
 
     Returns:
-        True если пользователь найден и пароль верный, иначе False
+        ID пользователя если пользователь найден и пароль верный, иначе -1
     """
     user_service = UserService(session)
     return await user_service.authenticate_user(login_data.username, login_data.password)
+
+
+@router.post("/login/email", response_model=int, tags=["Users"])
+async def login_user_by_email(
+    login_data: UserEmailLoginSchema,
+    session: AsyncSession = SessionDep
+):
+    """
+    Проверить email и пароль пользователя.
+
+    Args:
+        login_data: Данные для входа (email и password)
+        session: Зависимость сессии базы данных
+
+    Returns:
+        ID пользователя если пользователь найден и пароль верный, иначе -1
+    """
+    user_service = UserService(session)
+    return await user_service.authenticate_user_by_email(
+        login_data.email,
+        login_data.password
+    )
