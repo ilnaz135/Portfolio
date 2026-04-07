@@ -4,6 +4,7 @@ Portfolio Backend API - User Service
 Этот модуль содержит бизнес-логику для работы с пользователями.
 """
 
+import random
 from typing import List, Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,6 +18,25 @@ from app.core.exceptions import (
     UserNotFoundException,
     UsernameAlreadyExistsException,
 )
+
+
+PROFILE_GENERATION_VARIANTS = [
+    ("Информатика и вычислительная техника", "Машинное обучение"),
+    ("Программная инженерия", "Фронтенд-разработка"),
+    ("Компьютерные науки", "Системное программирование"),
+    ("Информационные системы", "Базы данных"),
+    ("Искусственный интеллект", "Нейронные сети"),
+    ("Веб-разработка", "Веб-дизайн"),
+    ("Облачные технологии", "Микросервисы"),
+    ("Бэкенд-разработка", "API разработка"),
+]
+
+PROFILE_GENERATION_CLASSES = [
+    "1 курс",
+    "2 курс",
+    "3 курс",
+    "4 курс",
+]
 
 
 class UserService:
@@ -48,6 +68,8 @@ class UserService:
             UsernameAlreadyExistsException: Если имя пользователя уже существует
         """
         try:
+            user_data = self._apply_generated_profile_defaults(user_data)
+
             # Проверить, существует ли имя пользователя
             existing_user = await self._get_user_by_username(user_data.username)
             if existing_user:
@@ -296,6 +318,49 @@ class UserService:
         """
         user = await self._get_user_by_email(email)
         return user is not None
+
+    @staticmethod
+    def _apply_generated_profile_defaults(user_data: UserCreateSchema) -> UserCreateSchema:
+        """
+        Подставить сгенерированные данные профиля, если пришёл пустой шаблон.
+
+        Args:
+            user_data: Данные для создания пользователя
+
+        Returns:
+            UserCreateSchema с исходными или сгенерированными значениями
+        """
+        if not UserService._should_generate_profile_defaults(user_data):
+            return user_data
+
+        academic_direction, user_direction = random.choice(PROFILE_GENERATION_VARIANTS)
+        generated_class = random.choice(PROFILE_GENERATION_CLASSES)
+        generated_avg_score = round(random.uniform(70.0, 100.0), 1)
+
+        return user_data.model_copy(update={
+            "academic_direction": academic_direction,
+            "user_directions": user_direction,
+            "class_": generated_class,
+            "avg_score": generated_avg_score,
+        })
+
+    @staticmethod
+    def _should_generate_profile_defaults(user_data: UserCreateSchema) -> bool:
+        """
+        Проверить, нужно ли подставить случайные значения профиля.
+
+        Args:
+            user_data: Данные для создания пользователя
+
+        Returns:
+            True если поля соответствуют пустому шаблону, иначе False
+        """
+        return (
+            user_data.academic_direction.strip() == ""
+            and (user_data.user_directions or "").strip() == ""
+            and user_data.class_.strip() == ""
+            and user_data.avg_score == 0.0
+        )
 
     @staticmethod
     def _raise_unique_constraint_error(

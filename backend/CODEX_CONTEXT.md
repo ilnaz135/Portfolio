@@ -102,6 +102,7 @@ If the backend starts against an older DB, run setup or call the helper path bef
 - `UsernameCheckSchema` is used to check whether a username is already taken
 - `EmailCheckSchema` is used to check whether an email is already taken
 - account check endpoints return user `id` on success and `-1` on failure
+- on `POST /api/v1/users`, if `academic_direction == ""`, `user_directions == ""`, `class == ""`, and `avg_score == 0.0`, the backend auto-generates replacement values before save
 - `UserSchema` also currently returns `password`
   This is current behavior, not a recommendation. It is a security smell and should be changed if API hardening is requested.
 
@@ -118,6 +119,7 @@ If the backend starts against an older DB, run setup or call the helper path bef
 - both login checks now return user id instead of boolean
 - username existence check
 - email existence check
+- random fallback generation for empty create-user profile fields
 
 Important implementation detail:
 

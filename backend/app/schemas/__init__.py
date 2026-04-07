@@ -111,9 +111,9 @@ class UserCreateSchema(BaseModel):
     last_name: str = Field(..., min_length=1, max_length=100)
     patronymic: str = Field(None, max_length=100)
     cloude_storage: str = Field(None, max_length=255)
-    academic_direction: str = Field(..., min_length=1, max_length=150)
+    academic_direction: str = Field(..., max_length=150)
     user_directions: str | None = Field(None, max_length=500)
-    class_: str = Field(..., alias="class", min_length=1, max_length=50)
+    class_: str = Field(..., alias="class", max_length=50)
     avg_score: float = Field(..., ge=0, le=100)
 
     class Config:
