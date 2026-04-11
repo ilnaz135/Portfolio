@@ -4,11 +4,54 @@ const scienceCard = document.querySelector(".publications-list");
 const tags = document.querySelector(".tags-cloud");
 const skillsCard = document.querySelector(".right-col .tags-cloud");
 const logoutButton = document.querySelector('.logout-button');
+const settigsButton = document.getElementById('settigs')
 
 // Выход из системы
-logoutButton.addEventListener('click', () => {
-    localStorage.removeItem("loggedUserId");
+// logoutButton.addEventListener('click', () => {
+//     localStorage.removeItem("loggedUserId");
+// });
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem("loggedUserId");
+        window.location.href = "loginindex.html";
+    });
+}
+
+document.addEventListener('click', function(e) {
+    const settingsWrapper = document.getElementById('settingsMenuWrapper');
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    if (settingsWrapper && settingsDropdown) {
+        if (!settingsWrapper.contains(e.target)) {
+            settingsDropdown.style.display = 'none';
+        } else {
+            // toggle при клике на шестеренку
+            if (e.target.closest('#settingsBtn') || e.target.closest('#settingsMenuWrapper .icon-btn')) {
+                const isVisible = settingsDropdown.style.display === 'flex';
+                settingsDropdown.style.display = isVisible ? 'none' : 'flex';
+            }
+        }
+    }
 });
+
+const settingsWrapper = document.getElementById('settingsMenuWrapper');
+const settingsDropdown = document.getElementById('settingsDropdown');
+if (settingsWrapper && settingsDropdown) {
+    let hoverTimeout;
+    settingsWrapper.addEventListener('mouseenter', () => {
+        clearTimeout(hoverTimeout);
+        settingsDropdown.style.display = 'flex';
+    });
+    settingsWrapper.addEventListener('mouseleave', () => {
+        hoverTimeout = setTimeout(() => {
+            if (!settingsWrapper.matches(':hover')) {
+                settingsDropdown.style.display = 'none';
+            }
+        }, 100);
+    });
+}
 
 // Получение данных пользователя
 async function getUserData(userId) {
@@ -16,6 +59,7 @@ async function getUserData(userId) {
     if (!response.ok) throw new Error("Ошибка загрузки данных");
     
     const user = await response.json();
+    console.log(user);
 
     // Профиль
     const profileHTML = `
@@ -24,7 +68,7 @@ async function getUserData(userId) {
             <div class="avatar" id="profileAvatar">${user.first_name[0]}${user.last_name[0]}</div>
             <div class="full-name">${user.first_name} ${user.last_name}</div>
             <div class="username"><i class="fas fa-at"></i>${user.username}</div>
-            <div class="role-badge"><span class="badge" id="displayRole"><i class="fas fa-code"></i> ${user.user_directions}</span></div>
+            <div class="role-badge"><span class="badge" id="displayRole"><i class="fas fa-code"></i> ${user.user_directions? user.user_directions : 'В поиске себя'}</span></div>
             <a href="${user.cloude_storage}" class="github-link" id="displayCloud"><i class="fab fa-github"></i> ${user.cloude_storage}</a>
             <button class="download-resume"><i class="fas fa-file-pdf"></i> Создать резюме</button>
             <div class="education-compact">
