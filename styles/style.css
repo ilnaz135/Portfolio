@@ -627,6 +627,12 @@ body.dark-mode .card-title {
     font-size: 18px;
 }
 
+.centred-text {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+}
+
 .add-button {
     background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
     border: 1px solid #b8d1ff;
