@@ -1,14 +1,23 @@
-const mainContent = document.querySelector('.main-content')
-const activitySection = document.querySelector('.activity-section')
-const scienceCard = document.querySelector('.publications-list')
-const tags = document.querySelector('.tags-cloud')
-const skillsCard = document.querySelector('.right-col').querySelector('.tags-cloud')
+const mainContent = document.querySelector(".main-content");
+const activitySection = document.querySelector(".activity-section");
+const scienceCard = document.querySelector(".publications-list");
+const tags = document.querySelector(".tags-cloud");
+const skillsCard = document
+  .querySelector(".right-col")
+  .querySelector(".tags-cloud");
+const logoutButton = document.querySelector('.logout-button')
+
+logoutButton.addEventListener('click', () => {
+    localStorage.removeItem("loggedUserId")
+})
 
 async function getUserData(currentAccountId) {
-    const response = await fetch(`http://localhost:8000/api/v1/users/${currentAccountId}`)
-    if(!response.ok) throw new Error('Ответ от сервера не получен.')
-    const userData = {...await response.json()}
-    const profileHTML = `
+  const response = await fetch(
+    `http://localhost:8000/api/v1/users/${currentAccountId}`,
+  );
+  if (!response.ok) throw new Error("Ответ от сервера не получен.");
+  const userData = { ...(await response.json()) };
+  const profileHTML = `
             <div class="profile-card">
                 <button class="edit-profile-btn" id="openModal">
                     <i class="fas fa-pencil-alt"></i>
@@ -48,10 +57,23 @@ async function getUserData(currentAccountId) {
                     </div>
                 </div>
             </div>
-            `
-        for (i = 0; i < 2; i++) {
-            if (userData.scientific_achievements[i]) {
-                scienceCard.insertAdjacentHTML('afterbegin', `
+            `;
+
+  scienceCard.insertAdjacentHTML(
+    "afterbegin",
+    `
+                                    <div class="publication-item">
+                                        <h3>У вас пока нет научных достижений</h3>
+                                    </div>
+                `,
+  );
+
+  for (i = 0; i < 2; i++) {
+    if (i == 0 && userData.scientific_achievements[i]) scienceCard.innerHTML = "";
+    if (userData.scientific_achievements[i]) {
+      scienceCard.insertAdjacentHTML(
+        "afterbegin",
+        `
                                     <div class="publication-item">
                                         <div class="pub-icon"><i class="fas fa-file-alt"></i> </div>
                                         <div class="pub-content">
@@ -62,61 +84,115 @@ async function getUserData(currentAccountId) {
                                             </div>
                                         </div>
                                     </div>
-                `
-            );                  
-            }
-        }
+                `,
+      );
+    }
+  }
 
-    userData.stacks.forEach(element => {
-        tags.insertAdjacentHTML('afterbegin', `
+  if (!userData.stacks.length) {
+    tags.classList.add('centred-text')
+    tags.insertAdjacentHTML(
+      "afterbegin",
+      `
+                            <h2>Пусто</h2>
+        `,
+    );
+  }
+
+  if (!userData.courses.length) {
+    skillsCard.classList.add('centred-text')
+    skillsCard.insertAdjacentHTML(
+      "afterbegin",
+      `
+                            <h2>Пусто</h2>
+        `,
+    );
+  }
+
+  userData.stacks.forEach((element) => {
+    tags.insertAdjacentHTML(
+      "afterbegin",
+      `
                             <a href="#"><span class="tag">${element.stack}</span></a>
-        `
-    )
-    });
+        `,
+    );
+  });
 
-    userData.courses.forEach(element => {
-        skillsCard.insertAdjacentHTML('afterbegin', `
-                            <a href="#"><span class="tag stack-tag"><i class="fas fa-database"></i>${element.name_course}</span></a>
-        `
-    )
-    });
+  // Обновленный код для отображения курсов с галочкой и подсказкой
+  userData.courses.forEach((element) => {
+    // Получаем процент прогресса (если есть поле progress, иначе генерируем случайный для примера)
+    const progressPercent = element.progress || Math.floor(Math.random() * 101);
+    // Объем/сложность курса (от 1 до 10)
+    const courseComplexity = element.complexity || Math.floor(Math.random() * 10) + 1;
+    
+    skillsCard.insertAdjacentHTML(
+      "afterbegin",
+      `
+        <div class="course-progress-item">
+          <div class="course-progress-header">
+            <span class="course-progress-name">
+              <i class="fas fa-database"></i> ${element.name_course}
+            </span>
+            <div class="course-header-right">
+              <div class="verified-tooltip">
+                <i class="fas fa-check-circle verified-icon"></i>
+                <span class="tooltip-text">Данные о прохождении курса действительны</span>
+              </div>
+            </div>
+          </div>
+          <div class="course-progress-bar-wrapper" data-percentage="${progressPercent}%">
+            <div class="course-progress-bar-fill" style="width: ${progressPercent}%"></div>
+          </div>
+          <div class="course-progress-footer">
+            <span class="course-progress-label">
+              <i class="fas fa-chart-line"></i> Объём/сложность курса: ${courseComplexity}
+            </span>
+          </div>
+        </div>
+      `,
+    );
+  });
 
-    mainContent.insertAdjacentHTML('afterbegin', profileHTML)
-    const modal = document.getElementById('modalOverlay');
-        const openBtn = document.getElementById('openModal');
-        const closeBtn = document.getElementById('closeModal');
-        const saveBtn = document.getElementById('saveProfile');
+  mainContent.insertAdjacentHTML("afterbegin", profileHTML);
+  const modal = document.getElementById("modalOverlay");
+  const openBtn = document.getElementById("openModal");
+  const closeBtn = document.getElementById("closeModal");
+  const saveBtn = document.getElementById("saveProfile");
 
-        openBtn.onclick = () => modal.classList.add('active');
-        closeBtn.onclick = () => modal.classList.remove('active');
-        
-        saveBtn.onclick = () => {
-            const roleInput = document.getElementById('inputRole').value;
-            const cloudInput = document.getElementById('inputCloud').value;
-            const fileInput = document.getElementById('inputAvatarFile');
-            const avatarDiv = document.getElementById('profileAvatar');
+  openBtn.onclick = () => modal.classList.add("active");
+  closeBtn.onclick = () => modal.classList.remove("active");
 
-            if(roleInput) document.getElementById('displayRole').innerHTML = `<i class="fas fa-code"></i> ${roleInput}`;
-            if(cloudInput) document.getElementById('displayCloud').innerHTML = `<i class="fab fa-github"></i> ${cloudInput}`;
-            
-            // Логика загрузки фото
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    avatarDiv.style.backgroundImage = `url(${e.target.result})`;
-                    avatarDiv.style.backgroundSize = 'cover';
-                    avatarDiv.style.backgroundPosition = 'center';
-                    avatarDiv.innerText = ''; // Убираем инициалы
-                }
-                reader.readAsDataURL(fileInput.files[0]);
-            }
+  saveBtn.onclick = () => {
+    const roleInput = document.getElementById("inputRole").value;
+    const cloudInput = document.getElementById("inputCloud").value;
+    const fileInput = document.getElementById("inputAvatarFile");
+    const avatarDiv = document.getElementById("profileAvatar");
 
-            modal.classList.remove('active');
-        }
+    if (roleInput)
+      document.getElementById("displayRole").innerHTML =
+        `<i class="fas fa-code"></i> ${roleInput}`;
+    if (cloudInput)
+      document.getElementById("displayCloud").innerHTML =
+        `<i class="fab fa-github"></i> ${cloudInput}`;
+
+    // Логика загрузки фото
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        avatarDiv.style.backgroundImage = `url(${e.target.result})`;
+        avatarDiv.style.backgroundSize = "cover";
+        avatarDiv.style.backgroundPosition = "center";
+        avatarDiv.innerText = ""; // Убираем инициалы
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    modal.classList.remove("active");
+  };
 }
 
-if (!localStorage.getItem('loggedUserId')) {
-    window.location.href = 'loginindex.html'
+if (!localStorage.getItem("loggedUserId")) {
+  window.location.href = "loginindex.html";
 } else {
-    getUserData(localStorage.getItem('loggedUserId'))
+  getUserData(localStorage.getItem("loggedUserId"));
 }
