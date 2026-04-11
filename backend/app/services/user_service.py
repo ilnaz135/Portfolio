@@ -339,7 +339,6 @@ class UserService:
 
         return user_data.model_copy(update={
             "academic_direction": academic_direction,
-            "user_directions": user_direction,
             "class_": generated_class,
             "avg_score": generated_avg_score,
         })
