@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Научные достижения | Цифровое портфолио УрФУ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="icon" href="/favicon-irit2.ico">
+    <style>
+        .achievements-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0b2b5c;
+            margin: 0 0 4px 0;
+        }
+        body.dark-mode .achievements-header h1 {
+            color: #ffffff;
+        }
+        .tabs-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 28px;
+            padding: 8px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        body.dark-mode .tabs-container {
+            background-color: #0f172a;
+            border-color: #334155;
+        }
+        .tab-btn-achievement {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            color: #475569;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        body.dark-mode .tab-btn-achievement {
+            color: #94a3b8;
+        }
+        .tab-btn-achievement:hover {
+            background-color: #f1f5f9;
+            color: #0b2b5c;
+        }
+        body.dark-mode .tab-btn-achievement:hover {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+        .tab-btn-achievement.active {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            color: #1e3a8a;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        body.dark-mode .tab-btn-achievement.active {
+            background: #1e293b;
+            color: #60a5fa;
+            border: 1px solid #3b82f6;
+        }
+        .table-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+            transition: background-color 0.3s;
+        }
+        body.dark-mode .table-card {
+            background-color: #0f172a;
+            border-color: #334155;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        .achievements-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 680px;
+        }
+        .achievements-table th {
+            text-align: left;
+            padding: 16px 16px 12px 16px;
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #0b2b5c;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        body.dark-mode .achievements-table th {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            border-bottom-color: #334155;
+        }
+        .achievements-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eef2f6;
+            color: #1e293b;
+            vertical-align: top;
+        }
+        body.dark-mode .achievements-table td {
+            border-bottom-color: #334155;
+            color: #cbd5e1;
+        }
+        .achievements-table tr:last-child td {
+            border-bottom: none;
+        }
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+        body.dark-mode .badge-status {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+        @media (max-width: 768px) {
+            .tabs-container {
+                padding: 6px 12px;
+            }
+            .tab-btn-achievement {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .achievements-table th,
+            .achievements-table td {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="portfolio-container">
+        <header class="header">
+            <div class="logo-area">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="57" height="57" class="logo-svg">
+                    <path d="M0 0 C8.25 0 16.5 0 25 0 C25 0.99 25 1.98 25 3 C24.01 3.33 23.02 3.66 22 4 C23.6487245 8.56501675 25.96251997 12.62219563 28.375 16.8125 C29.54564923 18.85138074 30.70942659 20.89179359 31.84545898 22.95019531 C32.62357541 24.33168517 33.44230661 25.69097401 34.29711914 27.02636719 C37.18930318 31.87199747 37.18930318 31.87199747 36.67480469 34.93774414 C35.83675564 36.97289485 34.84968668 38.75638139 33.6875 40.625 C33.1140686 41.60448608 33.1140686 41.60448608 32.52905273 42.60375977 C26.94710789 51.79666623 26.94710789 51.79666623 22 54 C18.81179266 54.71572002 16.17179578 54.82503358 13 54 C10.375 51.75 10.375 51.75 9 49 C9.4140625 46.828125 9.4140625 46.828125 10 45 C10.67546875 45.02320313 11.3509375 45.04640625 12.046875 45.0703125 C13.38492187 45.09738281 13.38492187 45.09738281 14.75 45.125 C16.07257812 45.15980469 16.07257812 45.15980469 17.421875 45.1953125 C20.1135858 44.99139502 21.69904974 44.36551721 24 43 C23.50523213 37.85932958 22.39260017 34.29253798 19.796875 29.83984375 C19.14589844 28.71642578 18.49492187 27.59300781 17.82421875 26.43554688 C17.48310059 25.86054443 17.14198242 25.28554199 16.79052734 24.69311523 C15.75466255 22.94536683 14.73745378 21.18778153 13.72265625 19.42773438 C8.5678847 9.40680314 8.5678847 9.40680314 0 3 C0 2.01 0 1.02 0 0 Z " fill="#E41353" transform="translate(0,2)"/>
+                    <path d="M0 0 C2.64 0 5.28 0 8 0 C5.13108564 5.8266889 2.67277329 10.61815438 -3 14 C-6.1560181 14.66529301 -8.85550119 14.75039176 -12 14 C-14.625 11.75 -14.625 11.75 -16 9 C-15.5859375 6.828125 -15.5859375 6.828125 -15 5 C-13.98679687 5.03480469 -13.98679687 5.03480469 -12.953125 5.0703125 C-12.06109375 5.08835937 -11.1690625 5.10640625 -10.25 5.125 C-9.36828125 5.14820313 -8.4865625 5.17140625 -7.578125 5.1953125 C-4.83110453 4.98720489 -3.27112497 4.54477419 -1 3 C-0.67 2.01 -0.34 1.02 0 0 Z " fill="#F8BC08" transform="translate(25,42)"/>
+                    <path d="M0 0 C5.28 0 10.56 0 16 0 C18 5 18 5 17.3203125 7.01953125 C16.21354167 8.6796875 15.10677083 10.33984375 14 12 C11.36 12 8.72 12 6 12 C4.02 8.04 2.04 4.08 0 0 Z " fill="#E53320" transform="translate(19,30)"/>
+                    <path d="M0 0 C5.94 0 11.88 0 18 0 C18 0.99 18 1.98 18 3 C13.77050005 5.41685712 10.87664009 6.34833144 6 6 C6 5.34 6 4.68 6 4 C3.03 3.505 3.03 3.505 0 3 C0 2.01 0 1.02 0 0 Z " fill="#E50A78" transform="translate(39,2)"/>
+                    <path d="M0 0 C2.64 0 5.28 0 8 0 C6.68 2.31 5.36 4.62 4 7 C-2.6 7 -9.2 7 -16 7 C-15.67 6.34 -15.34 5.68 -15 5 C-13.98679687 5.03480469 -13.98679687 5.03480469 -12.953125 5.0703125 C-12.06109375 5.08835937 -11.1690625 5.10640625 -10.25 5.125 C-9.36828125 5.14820313 -8.4865625 5.17140625 -7.578125 5.1953125 C-4.83110453 4.98720489 -3.27112497 4.54477419 -1 3 C-0.67 2.01 -0.34 1.02 0 0 Z " fill="#F5A60C" transform="translate(25,42)"/>
+                    <path d="M0 0 C3.96 0 7.92 0 12 0 C11.34 1.65 10.68 3.3 10 5 C7.36 5 4.72 5 2 5 C1.34 3.35 0.68 1.7 0 0 Z " fill="#EC6816" transform="translate(23,37)"/>
+                    <path d="M0 0 C5.28 0 10.56 0 16 0 C15.67 0.99 15.34 1.98 15 3 C12.87561661 3.08078641 10.7503677 3.13909141 8.625 3.1875 C7.44164062 3.22230469 6.25828125 3.25710937 5.0390625 3.29296875 C3.53472656 3.14794922 3.53472656 3.14794922 2 3 C1.34 2.01 0.68 1.02 0 0 Z " fill="#E84C1C" transform="translate(21,34)"/>
+                    <path d="M0 0 C4.62 0 9.24 0 14 0 C11 3 11 3 8.80859375 3.3984375 C7.63490234 3.38683594 7.63490234 3.38683594 6.4375 3.375 C5.25994141 3.38660156 5.25994141 3.38660156 4.05859375 3.3984375 C3.03958984 3.20121094 3.03958984 3.20121094 2 3 C1.34 2.01 0.68 1.02 0 0 Z " fill="#FBD604" transform="translate(11,53)"/>
+                    <path d="M0 0 C2.64 0 5.28 0 8 0 C7.34 1.32 6.68 2.64 6 4 C3.69 4 1.38 4 -1 4 C-0.67 2.68 -0.34 1.36 0 0 Z " fill="#F18A11" transform="translate(25,42)"/>
+                </svg>
+                <div class="logo-text">Цифровое портфолио <span>УрФУ</span></div>
+            </div>
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Поиск">
+                <button class="filter-btn">
+                    <i class="fas fa-sliders-h"></i> Фильтры
+                </button>
+            </div>
+            <div class="control-buttons">
+                <div class="icon-btn" id="themeToggle"><i class="fas fa-moon"></i></div>
+                <div class="icon-btn"><i class="fas fa-cog"></i></div>
+                <div class="burger-menu">
+                    <div class="icon-btn"><i class="fas fa-bars"></i></div>
+                    <div class="dropdown-menu">
+                        <a href="../index.html">Главное меню</a>
+                        <a href="#">Список студентов</a>
+                        <a href="#">Проекты</a>
+                        <a href="../loginindex.html" class="logout-button" id="logoutBtnAchiev">Выйти</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content" style="display: block; padding: 24px 32px 40px;">
+            <div class="achievements-header">
+                <h1><i class="fas fa-trophy" style="color: #f97316; margin-right: 10px;"></i>Научные достижения</h1>
+            </div>
+
+            <div class="tabs-container">
+                <button class="tab-btn-achievement active" data-tab="publications">Публикации</button>
+                <button class="tab-btn-achievement" data-tab="events">Мероприятия</button>
+                <button class="tab-btn-achievement" data-tab="grants">Гранты</button>
+                <button class="tab-btn-achievement" data-tab="intellectual">Интеллектуальная собственность</button>
+                <button class="tab-btn-achievement" data-tab="innovation">Инновационная деятельность</button>
+                <button class="tab-btn-achievement" data-tab="scholarships">Стипендии</button>
+                <button class="tab-btn-achievement" data-tab="internships">Стажировки</button>
+            </div>
+
+            <!-- Публикации -->
+            <div class="tab-content" id="publications-content">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Дата размещения</th>
+                                <th>Название</th>
+                                <th>Тип</th>
+                                <th>Дата индексации</th>
+                                <th>Состояние</th>
+                                <th>Балл</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>12.03.2024</td>
+                                <td>Оптимизация алгоритмов машинного обучения</td>
+                                <td>Статья (ВАК)</td>
+                                <td>15.05.2024</td>
+                                <td><span class="badge-status">Опубликовано</span></td>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>01.09.2024</td>
+                                <td>Цифровая трансформация образования</td>
+                                <td>Тезисы доклада</td>
+                                <td>20.10.2024</td>
+                                <td><span class="badge-status">Принято</span></td>
+                                <td>8</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Мероприятия -->
+            <div class="tab-content" id="events-content" style="display: none;">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead>
+                            <tr><th>№</th><th>Дата размещения</th><th>Название</th><th>Тип</th><th>Дата</th><th>Состояние</th><th>Балл</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>10.01.2025</td><td>Международная конференция "IT-прорыв"</td><td>Конференция</td><td>14-15.02.2025</td><td><span class="badge-status">Участие с докладом</span></td><td>12</td></tr>
+                            <tr><td>2</td><td>05.06.2024</td><td>Хакатон "Цифровой Урал"</td><td>Хакатон</td><td>20-22.06.2024</td><td><span class="badge-status">Диплом 2 степени</span></td><td>20</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Гранты -->
+            <div class="tab-content" id="grants-content" style="display: none;">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead><tr><th>№</th><th>Дата размещения</th><th>Название</th><th>Тип работы</th><th>Год</th><th>Состояние</th><th>Балл</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>01.03.2024</td><td>Грант Президента РФ</td><td>Научный проект</td><td>2024</td><td><span class="badge-status">Получен</span></td><td>30</td></tr>
+                            <tr><td>2</td><td>15.08.2024</td><td>Стипендия Ученого совета УрФУ</td><td>Исследование в области ИИ</td><td>2024</td><td><span class="badge-status">Поддержан</span></td><td>25</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Интеллектуальная собственность -->
+            <div class="tab-content" id="intellectual-content" style="display: none;">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead><tr><th>№</th><th>Дата размещения</th><th>Название</th><th>Тип</th><th>Дата выдачи</th><th>Состояние</th><th>Балл</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>10.02.2025</td><td>Система анализа образовательных траекторий</td><td>Свидетельство о регистрации ПО</td><td>25.02.2025</td><td><span class="badge-status">Зарегистрировано</span></td><td>18</td></tr>
+                            <tr><td>2</td><td>20.11.2024</td><td>Метод прогнозирования успеваемости</td><td>Патент на изобретение</td><td>10.12.2024</td><td><span class="badge-status">Выдан</span></td><td>40</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Инновационная деятельность -->
+            <div class="tab-content" id="innovation-content" style="display: none;">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead><tr><th>№</th><th>Дата размещения</th><th>Название</th><th>Год внедрения</th><th>Состояние</th><th>Балл</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>05.05.2024</td><td>Разработка платформы для цифрового портфолио</td><td>2024</td><td><span class="badge-status">Внедрено в учебный процесс</span></td><td>35</td></tr>
+                            <tr><td>2</td><td>12.09.2024</td><td>Чат-бот для абитуриентов</td><td>2024</td><td><span class="badge-status">Пилотное тестирование</span></td><td>15</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Стипендии -->
+            <div class="tab-content" id="scholarships-content" style="display: none;">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead><tr><th>№</th><th>Дата размещения</th><th>Тип</th><th>Год</th><th>Состояние</th><th>Балл</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>01.09.2024</td><td>Повышенная государственная академическая стипендия</td><td>2024/2025</td><td><span class="badge-status">Назначена</span></td><td>10</td></tr>
+                            <tr><td>2</td><td>15.01.2025</td><td>Именная стипендия им. В.Н. Татищева</td><td>2025</td><td><span class="badge-status">Получена</span></td><td>15</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Стажировки -->
+            <div class="tab-content" id="internships-content" style="display: none;">
+                <div class="table-card">
+                    <table class="achievements-table">
+                        <thead><tr><th>№</th><th>Дата размещения</th><th>Принимающая организация</th><th>Город</th><th>Дата начала</th><th>Дата окончания</th><th>Состояние</th><th>Балл</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>20.12.2024</td><td>ООО "Яндекс"</td><td>Москва</td><td>10.01.2025</td><td>10.02.2025</td><td><span class="badge-status">Завершена</span></td><td>25</td></tr>
+                            <tr><td>2</td><td>15.05.2024</td><td>СКБ Контур</td><td>Екатеринбург</td><td>01.06.2024</td><td>31.08.2024</td><td><span class="badge-status">Успешно</span></td><td>30</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переключение вкладок
+        const tabButtons = document.querySelectorAll('.tab-btn-achievement');
+        const contentsMap = {
+            publications: document.getElementById('publications-content'),
+            events: document.getElementById('events-content'),
+            grants: document.getElementById('grants-content'),
+            intellectual: document.getElementById('intellectual-content'),
+            innovation: document.getElementById('innovation-content'),
+            scholarships: document.getElementById('scholarships-content'),
+            internships: document.getElementById('internships-content')
+        };
+
+        function switchTab(tabId) {
+            Object.values(contentsMap).forEach(content => {
+                if (content) content.style.display = 'none';
+            });
+            if (contentsMap[tabId]) contentsMap[tabId].style.display = 'block';
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
+            });
+        }
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                if (tabId && contentsMap[tabId]) switchTab(tabId);
+            });
+        });
+        switchTab('publications');
+
+        // Выход
+        const logoutBtn = document.getElementById('logoutBtnAchiev');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('loggedUserId');
+                window.location.href = '../loginindex.html';
+            });
+        }
+
+        // Поиск
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const query = e.target.value.trim().toLowerCase();
+                const activeTab = document.querySelector('.tab-btn-achievement.active');
+                if (!activeTab) return;
+                const tabId = activeTab.getAttribute('data-tab');
+                const activeContent = contentsMap[tabId];
+                if (!activeContent) return;
+                const table = activeContent.querySelector('table');
+                if (!table) return;
+                const rows = table.querySelectorAll('tbody tr');
+                let hasVisible = false;
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    if (query === '' || text.includes(query)) {
+                        row.style.display = '';
+                        hasVisible = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                let emptyMsg = activeContent.querySelector('.search-empty-message');
+                if (!hasVisible && query !== '') {
+                    if (!emptyMsg) {
+                        emptyMsg = document.createElement('div');
+                        emptyMsg.className = 'table-card';
+                        emptyMsg.style.marginTop = '16px';
+                        emptyMsg.style.padding = '32px';
+                        emptyMsg.style.textAlign = 'center';
+                        emptyMsg.style.color = '#64748b';
+                        emptyMsg.innerHTML = '<i class="fas fa-search"></i> Ничего не найдено';
+                        emptyMsg.classList.add('search-empty-message');
+                        activeContent.appendChild(emptyMsg);
+                    }
+                } else if (emptyMsg) {
+                    emptyMsg.remove();
+                }
+            });
+        }
+
+        // Фильтры
+        const filterBtn = document.querySelector('.filter-btn');
+        if (filterBtn) {
+            filterBtn.addEventListener('click', () => {
+                alert('Расширенная фильтрация будет доступна в ближайшее время.');
+            });
+        }
+    </script>
+    <script src="../js/theme.js"></script>
+</body>
+</html>
