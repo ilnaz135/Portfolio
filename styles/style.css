@@ -26,7 +26,6 @@ body.dark-mode .portfolio-container {
     justify-content: space-between;
     padding: 20px 32px;
     border-bottom: 1px solid #e9eef2;
-    flex-wrap: wrap;
     gap: 16px;
 }
 
@@ -77,7 +76,7 @@ body.dark-mode .logo-text span {
     border: 1px solid #dbe0e6;
     padding: 4px;
     padding-left: 20px;
-    flex: 1;
+    flex: 2;
     max-width: 500px;
     min-width: 280px;
 }
@@ -105,6 +104,7 @@ body.dark-mode .search-wrapper i {
     outline: none;
     font-family: 'Inter', sans-serif;
     color: inherit;
+    min-width: 120px;
 }
 
 body.dark-mode .search-wrapper input {
@@ -131,6 +131,9 @@ body.dark-mode .search-wrapper input::placeholder {
     gap: 8px;
     color: #1e293b;
     transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 4px;
 }
 
 body.dark-mode .filter-btn {
@@ -188,10 +191,6 @@ body.dark-mode .icon-btn:hover {
     position: relative;
 }
 
-.burger-menu:hover .dropdown-menu {
-    display: flex;
-}
-
 .burger-menu::before {
     content: '';
     position: absolute;
@@ -224,6 +223,31 @@ body.dark-mode .icon-btn:hover {
     flex-direction: column;
     overflow: hidden;
     z-index: 100;
+}
+
+.settings-menu-wrapper {
+    position: relative;
+}
+
+.settings-menu-wrapper .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 220px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.dropdown-menu a.logout-item {
+    color: #dc2626;
+    border-top: 1px solid #e2e8f0;
 }
 
 body.dark-mode .dropdown-menu {
@@ -848,8 +872,9 @@ body.dark-mode .stack-tag i {
 
 /* ===== СТИЛИ ДЛЯ ПРОГРЕСС-БАРОВ КУРСОВ ===== */
 .course-progress-item {
-    margin-bottom: 20px;
-    padding: 12px;
+    margin-bottom: 5px;
+    width: 100%;
+    padding: 7px;
     background: #f8fafc;
     border-radius: 16px;
     transition: all 0.3s ease;
@@ -1267,6 +1292,10 @@ body.dark-mode .input-group input {
     .course-progress-header {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .course-progress-item {
+        width: 100%;
     }
     
     .course-header-right {
