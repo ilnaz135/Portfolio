@@ -124,23 +124,191 @@
             font-weight: 600;
             background-color: #e2e8f0;
             color: #334155;
+            white-space: nowrap;
         }
         body.dark-mode .badge-status {
             background-color: #334155;
             color: #e2e8f0;
         }
+
+        /* ===== УЛУЧШЕННАЯ АДАПТИВНОСТЬ ===== */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 20px 24px 32px !important;
+            }
+            .achievements-header h1 {
+                font-size: 22px;
+            }
+        }
+
         @media (max-width: 768px) {
+            .main-content {
+                padding: 16px 16px 24px !important;
+            }
+            .achievements-header h1 {
+                font-size: 20px;
+            }
             .tabs-container {
                 padding: 6px 12px;
+                gap: 6px;
+                margin-bottom: 20px;
+                border-radius: 16px;
             }
             .tab-btn-achievement {
                 padding: 6px 14px;
                 font-size: 12px;
+                white-space: nowrap;
+            }
+            .table-card {
+                border-radius: 16px;
             }
             .achievements-table th,
             .achievements-table td {
                 padding: 10px 12px;
-                font-size: 12px;
+                font-size: 11px;
+            }
+            .achievements-table th {
+                font-size: 11px;
+            }
+            .badge-status {
+                font-size: 9px;
+                padding: 3px 8px;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tabs-container {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                scrollbar-width: thin;
+                -webkit-overflow-scrolling: touch;
+            }
+            .tabs-container::-webkit-scrollbar {
+                height: 3px;
+            }
+            .tab-btn-achievement {
+                flex-shrink: 0;
+            }
+            .achievements-table {
+                min-width: 580px;
+            }
+            .achievements-table th,
+            .achievements-table td {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 12px 12px 20px !important;
+            }
+            .achievements-header h1 {
+                font-size: 18px;
+            }
+            .achievements-header h1 i {
+                font-size: 16px;
+            }
+            .tabs-container {
+                padding: 4px 8px;
+                gap: 4px;
+                margin-bottom: 16px;
+            }
+            .tab-btn-achievement {
+                padding: 5px 12px;
+                font-size: 11px;
+            }
+            .table-card {
+                border-radius: 12px;
+            }
+            .achievements-table th,
+            .achievements-table td {
+                padding: 8px 8px;
+                font-size: 9px;
+            }
+            .badge-status {
+                font-size: 8px;
+                padding: 2px 6px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .achievements-table {
+                min-width: 520px;
+            }
+            .achievements-table th,
+            .achievements-table td {
+                padding: 6px 6px;
+                font-size: 9px;
+            }
+        }
+
+        /* Адаптация шапки (дополнительно к style.css) */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 16px !important;
+            }
+            .logo-text {
+                font-size: 14px !important;
+            }
+            .logo-svg {
+                transform: scale(0.8) !important;
+            }
+            .search-wrapper {
+                min-width: 200px !important;
+            }
+            .search-wrapper input {
+                font-size: 13px !important;
+                padding: 6px !important;
+            }
+            .filter-btn {
+                padding: 4px 12px !important;
+                font-size: 12px !important;
+            }
+            .icon-btn {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 16px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px 12px !important;
+                gap: 10px !important;
+            }
+            .logo-text {
+                font-size: 12px !important;
+            }
+            .logo-svg {
+                transform: scale(0.7) !important;
+            }
+            .search-wrapper {
+                padding-left: 10px !important;
+            }
+            .search-wrapper input {
+                font-size: 12px !important;
+            }
+            .filter-btn {
+                padding: 4px 10px !important;
+                font-size: 11px !important;
+            }
+            .filter-btn i {
+                font-size: 10px !important;
+            }
+            .icon-btn {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+            }
+            .dropdown-menu {
+                width: 180px !important;
+            }
+            .dropdown-menu a {
+                padding: 10px 16px !important;
+                font-size: 12px !important;
             }
         }
     </style>
