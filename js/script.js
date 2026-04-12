@@ -6,11 +6,6 @@ const skillsCard = document.querySelector(".right-col .tags-cloud");
 const logoutButton = document.querySelector('.logout-button');
 const settigsButton = document.getElementById('settigs')
 
-// Выход из системы
-// logoutButton.addEventListener('click', () => {
-//     localStorage.removeItem("loggedUserId");
-// });
-
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
@@ -101,6 +96,10 @@ async function getUserData(userId) {
         scienceCard.innerHTML = `<div class="publication-item"><h3>У вас пока нет научных достижений</h3></div>`;
     }
 
+    if (user.scientific_achievements.length > 2) {
+        scienceCard.insertAdjacentHTML('afterend', `<button class="more-button"><i class="fas fa-eye"></i>Посмотреть ещё</button>`)
+    }
+
     // Стек технологий
     tags.innerHTML = "";
     if (user.stacks?.length) {
@@ -119,7 +118,7 @@ async function getUserData(userId) {
             const progress = course.progress || Math.floor(Math.random() * 101);
             const complexity = course.complexity || Math.floor(Math.random() * 10) + 1;
             skillsCard.insertAdjacentHTML("afterbegin", `
-                <div class="course-progress-item">
+                <a href="#" class="course-progress-item">
                     <div class="course-progress-header">
                         <span class="course-progress-name"><i class="fas fa-database"></i> ${course.name_course}</span>
                         <div class="verified-tooltip">
@@ -133,7 +132,7 @@ async function getUserData(userId) {
                     <div class="course-progress-footer">
                         <span class="course-progress-label"><i class="fas fa-chart-line"></i> Объём/сложность курса: ${complexity}</span>
                     </div>
-                </div>
+                </a>
             `);
         });
     } else {
