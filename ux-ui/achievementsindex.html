@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Научные достижения | Цифровое портфолио УрФУ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="icon" href="/favicon-irit2.ico">
     <style>
+        /* Базовые стили для страницы */
         .achievements-header h1 {
             font-size: 24px;
             font-weight: 700;
@@ -26,10 +27,10 @@
             border-radius: 20px;
             border: 1px solid #e2e8f0;
             margin-bottom: 28px;
-            padding: 8px 16px;
+            padding: 12px 16px;
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
         body.dark-mode .tabs-container {
@@ -77,6 +78,7 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
             overflow-x: auto;
             transition: background-color 0.3s;
+            -webkit-overflow-scrolling: touch;
         }
         body.dark-mode .table-card {
             background-color: #0f172a;
@@ -131,7 +133,9 @@
             color: #e2e8f0;
         }
 
-        /* ===== УЛУЧШЕННАЯ АДАПТИВНОСТЬ ===== */
+        /* ===== АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ (БЕЗ СКРОЛЛА ВКЛАДОК) ===== */
+        
+        /* Планшеты */
         @media (max-width: 1024px) {
             .main-content {
                 padding: 20px 24px 32px !important;
@@ -141,174 +145,227 @@
             }
         }
 
+        /* Телефоны и планшеты вертикально */
         @media (max-width: 768px) {
+            body {
+                padding: 12px !important;
+            }
+            .portfolio-container {
+                border-radius: 20px !important;
+            }
             .main-content {
                 padding: 16px 16px 24px !important;
             }
             .achievements-header h1 {
+                font-size: 22px;
+            }
+            /* Вкладки — перенос, без скролла */
+            .tabs-container {
+                padding: 12px 14px;
+                gap: 10px;
+                margin-bottom: 20px;
+                border-radius: 18px;
+                flex-wrap: wrap !important;
+                overflow-x: visible !important;
+            }
+            .tab-btn-achievement {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            .table-card {
+                border-radius: 18px;
+            }
+            .achievements-table th,
+            .achievements-table td {
+                padding: 12px 14px;
+                font-size: 12px;
+            }
+            .achievements-table th {
+                font-size: 12px;
+            }
+            .badge-status {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+            /* Шапка */
+            .header {
+                padding: 14px 18px !important;
+                gap: 12px !important;
+            }
+            .logo-text {
+                font-size: 16px !important;
+            }
+            .logo-svg {
+                transform: scale(0.85) !important;
+                width: 45px !important;
+                height: 45px !important;
+            }
+            .search-wrapper {
+                min-width: 200px !important;
+                padding-left: 14px !important;
+            }
+            .search-wrapper input {
+                font-size: 14px !important;
+                padding: 8px !important;
+            }
+            .filter-btn {
+                padding: 6px 14px !important;
+                font-size: 13px !important;
+            }
+            .icon-btn {
+                width: 42px !important;
+                height: 42px !important;
+                font-size: 18px !important;
+            }
+        }
+
+        /* Маленькие телефоны (iPhone SE, Galaxy и т.д.) */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px !important;
+            }
+            .portfolio-container {
+                border-radius: 16px !important;
+            }
+            .main-content {
+                padding: 14px 14px 20px !important;
+            }
+            .achievements-header h1 {
                 font-size: 20px;
             }
+            .achievements-header h1 i {
+                font-size: 18px;
+            }
+            /* Вкладки — перенос, крупные кнопки */
             .tabs-container {
-                padding: 6px 12px;
-                gap: 6px;
-                margin-bottom: 20px;
+                padding: 10px 12px;
+                gap: 8px;
+                margin-bottom: 18px;
                 border-radius: 16px;
             }
             .tab-btn-achievement {
-                padding: 6px 14px;
-                font-size: 12px;
-                white-space: nowrap;
+                padding: 9px 16px;
+                font-size: 13px;
             }
             .table-card {
-                border-radius: 16px;
+                border-radius: 14px;
+            }
+            .achievements-table {
+                min-width: 620px;
             }
             .achievements-table th,
             .achievements-table td {
                 padding: 10px 12px;
                 font-size: 11px;
             }
-            .achievements-table th {
-                font-size: 11px;
-            }
             .badge-status {
-                font-size: 9px;
-                padding: 3px 8px;
-                white-space: nowrap;
+                font-size: 10px;
+                padding: 3px 9px;
+            }
+            /* Шапка */
+            .header {
+                padding: 12px 14px !important;
+                gap: 10px !important;
+            }
+            .logo-text {
+                font-size: 14px !important;
+            }
+            .logo-svg {
+                transform: scale(0.75) !important;
+                width: 38px !important;
+                height: 38px !important;
+            }
+            .search-wrapper {
+                min-width: 160px !important;
+                padding-left: 12px !important;
+            }
+            .search-wrapper i {
+                font-size: 13px !important;
+            }
+            .search-wrapper input {
+                font-size: 13px !important;
+                padding: 7px !important;
+            }
+            .filter-btn {
+                padding: 5px 12px !important;
+                font-size: 12px !important;
+            }
+            .filter-btn i {
+                font-size: 11px !important;
+            }
+            .icon-btn {
+                width: 38px !important;
+                height: 38px !important;
+                font-size: 16px !important;
+            }
+            .dropdown-menu {
+                width: 180px !important;
+                right: -5px !important;
+            }
+            .dropdown-menu a {
+                padding: 12px 16px !important;
+                font-size: 13px !important;
             }
         }
 
-        @media (max-width: 640px) {
-            .tabs-container {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                justify-content: flex-start;
-                scrollbar-width: thin;
-                -webkit-overflow-scrolling: touch;
-            }
-            .tabs-container::-webkit-scrollbar {
-                height: 3px;
-            }
-            .tab-btn-achievement {
-                flex-shrink: 0;
-            }
+        /* Очень маленькие телефоны */
+        @media (max-width: 380px) {
             .achievements-table {
-                min-width: 580px;
+                min-width: 560px;
             }
             .achievements-table th,
             .achievements-table td {
                 padding: 8px 10px;
                 font-size: 10px;
             }
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 12px 12px 20px !important;
-            }
-            .achievements-header h1 {
-                font-size: 18px;
-            }
-            .achievements-header h1 i {
-                font-size: 16px;
-            }
-            .tabs-container {
-                padding: 4px 8px;
-                gap: 4px;
-                margin-bottom: 16px;
-            }
             .tab-btn-achievement {
-                padding: 5px 12px;
-                font-size: 11px;
-            }
-            .table-card {
-                border-radius: 12px;
-            }
-            .achievements-table th,
-            .achievements-table td {
-                padding: 8px 8px;
-                font-size: 9px;
-            }
-            .badge-status {
-                font-size: 8px;
-                padding: 2px 6px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .achievements-table {
-                min-width: 520px;
-            }
-            .achievements-table th,
-            .achievements-table td {
-                padding: 6px 6px;
-                font-size: 9px;
-            }
-        }
-
-        /* Адаптация шапки (дополнительно к style.css) */
-        @media (max-width: 768px) {
-            .header {
-                padding: 12px 16px !important;
-            }
-            .logo-text {
-                font-size: 14px !important;
-            }
-            .logo-svg {
-                transform: scale(0.8) !important;
+                padding: 8px 14px;
+                font-size: 12px;
             }
             .search-wrapper {
-                min-width: 200px !important;
+                min-width: 140px !important;
             }
             .search-wrapper input {
-                font-size: 13px !important;
+                font-size: 12px !important;
                 padding: 6px !important;
             }
             .filter-btn {
-                padding: 4px 12px !important;
-                font-size: 12px !important;
-            }
-            .icon-btn {
-                width: 36px !important;
-                height: 36px !important;
-                font-size: 16px !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 10px 12px !important;
-                gap: 10px !important;
+                padding: 4px 10px !important;
+                font-size: 11px !important;
             }
             .logo-text {
                 font-size: 12px !important;
             }
             .logo-svg {
                 transform: scale(0.7) !important;
-            }
-            .search-wrapper {
-                padding-left: 10px !important;
-            }
-            .search-wrapper input {
-                font-size: 12px !important;
-            }
-            .filter-btn {
-                padding: 4px 10px !important;
-                font-size: 11px !important;
-            }
-            .filter-btn i {
-                font-size: 10px !important;
+                width: 34px !important;
+                height: 34px !important;
             }
             .icon-btn {
-                width: 32px !important;
-                height: 32px !important;
+                width: 34px !important;
+                height: 34px !important;
                 font-size: 14px !important;
             }
-            .dropdown-menu {
-                width: 180px !important;
+        }
+
+        /* Перенос поиска на новую строку на узких экранах */
+        @media (max-width: 640px) {
+            .portfolio-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
             }
-            .dropdown-menu a {
-                padding: 10px 16px !important;
-                font-size: 12px !important;
+            .header {
+                flex-wrap: wrap !important;
+            }
+            .search-wrapper {
+                order: 3;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-top: 8px;
+            }
+            .control-buttons {
+                margin-left: auto;
             }
         }
     </style>
@@ -317,7 +374,7 @@
     <div class="portfolio-container">
         <header class="header">
             <div class="logo-area">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="57" height="57" class="logo-svg">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="57" height="57" class="logo-svg" viewBox="0 0 57 57">
                     <path d="M0 0 C8.25 0 16.5 0 25 0 C25 0.99 25 1.98 25 3 C24.01 3.33 23.02 3.66 22 4 C23.6487245 8.56501675 25.96251997 12.62219563 28.375 16.8125 C29.54564923 18.85138074 30.70942659 20.89179359 31.84545898 22.95019531 C32.62357541 24.33168517 33.44230661 25.69097401 34.29711914 27.02636719 C37.18930318 31.87199747 37.18930318 31.87199747 36.67480469 34.93774414 C35.83675564 36.97289485 34.84968668 38.75638139 33.6875 40.625 C33.1140686 41.60448608 33.1140686 41.60448608 32.52905273 42.60375977 C26.94710789 51.79666623 26.94710789 51.79666623 22 54 C18.81179266 54.71572002 16.17179578 54.82503358 13 54 C10.375 51.75 10.375 51.75 9 49 C9.4140625 46.828125 9.4140625 46.828125 10 45 C10.67546875 45.02320313 11.3509375 45.04640625 12.046875 45.0703125 C13.38492187 45.09738281 13.38492187 45.09738281 14.75 45.125 C16.07257812 45.15980469 16.07257812 45.15980469 17.421875 45.1953125 C20.1135858 44.99139502 21.69904974 44.36551721 24 43 C23.50523213 37.85932958 22.39260017 34.29253798 19.796875 29.83984375 C19.14589844 28.71642578 18.49492187 27.59300781 17.82421875 26.43554688 C17.48310059 25.86054443 17.14198242 25.28554199 16.79052734 24.69311523 C15.75466255 22.94536683 14.73745378 21.18778153 13.72265625 19.42773438 C8.5678847 9.40680314 8.5678847 9.40680314 0 3 C0 2.01 0 1.02 0 0 Z " fill="#E41353" transform="translate(0,2)"/>
                     <path d="M0 0 C2.64 0 5.28 0 8 0 C5.13108564 5.8266889 2.67277329 10.61815438 -3 14 C-6.1560181 14.66529301 -8.85550119 14.75039176 -12 14 C-14.625 11.75 -14.625 11.75 -16 9 C-15.5859375 6.828125 -15.5859375 6.828125 -15 5 C-13.98679687 5.03480469 -13.98679687 5.03480469 -12.953125 5.0703125 C-12.06109375 5.08835937 -11.1690625 5.10640625 -10.25 5.125 C-9.36828125 5.14820313 -8.4865625 5.17140625 -7.578125 5.1953125 C-4.83110453 4.98720489 -3.27112497 4.54477419 -1 3 C-0.67 2.01 -0.34 1.02 0 0 Z " fill="#F8BC08" transform="translate(25,42)"/>
                     <path d="M0 0 C5.28 0 10.56 0 16 0 C18 5 18 5 17.3203125 7.01953125 C16.21354167 8.6796875 15.10677083 10.33984375 14 12 C11.36 12 8.72 12 6 12 C4.02 8.04 2.04 4.08 0 0 Z " fill="#E53320" transform="translate(19,30)"/>
