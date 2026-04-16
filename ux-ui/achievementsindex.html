@@ -133,9 +133,8 @@
             color: #e2e8f0;
         }
 
-        /* ===== АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ (БЕЗ СКРОЛЛА ВКЛАДОК) ===== */
+        /* ===== АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ ===== */
         
-        /* Планшеты */
         @media (max-width: 1024px) {
             .main-content {
                 padding: 20px 24px 32px !important;
@@ -145,7 +144,6 @@
             }
         }
 
-        /* Телефоны и планшеты вертикально */
         @media (max-width: 768px) {
             body {
                 padding: 12px !important;
@@ -159,7 +157,6 @@
             .achievements-header h1 {
                 font-size: 22px;
             }
-            /* Вкладки — перенос, без скролла */
             .tabs-container {
                 padding: 12px 14px;
                 gap: 10px;
@@ -187,7 +184,6 @@
                 font-size: 10px;
                 padding: 4px 10px;
             }
-            /* Шапка */
             .header {
                 padding: 14px 18px !important;
                 gap: 12px !important;
@@ -219,7 +215,6 @@
             }
         }
 
-        /* Маленькие телефоны (iPhone SE, Galaxy и т.д.) */
         @media (max-width: 480px) {
             body {
                 padding: 8px !important;
@@ -236,7 +231,6 @@
             .achievements-header h1 i {
                 font-size: 18px;
             }
-            /* Вкладки — перенос, крупные кнопки */
             .tabs-container {
                 padding: 10px 12px;
                 gap: 8px;
@@ -262,7 +256,6 @@
                 font-size: 10px;
                 padding: 3px 9px;
             }
-            /* Шапка */
             .header {
                 padding: 12px 14px !important;
                 gap: 10px !important;
@@ -308,8 +301,8 @@
             }
         }
 
-        /* Очень маленькие телефоны */
-        @media (max-width: 380px) {
+        /* Очень маленькие телефоны (<360px) — скрываем кнопку фильтров и убираем лишние отступы */
+        @media (max-width: 360px) {
             .achievements-table {
                 min-width: 560px;
             }
@@ -322,16 +315,35 @@
                 padding: 8px 14px;
                 font-size: 12px;
             }
+            /* Исправляем поле поиска — убираем левый отступ */
             .search-wrapper {
-                min-width: 140px !important;
+                min-width: 130px !important;
+                padding-left: 0 !important;
+                margin: 0 !important;
+                border-radius: 60px !important;
+                overflow: hidden !important;
+                background-color: #f1f5f9 !important;
+                border: 1px solid #dbe0e6 !important;
+            }
+            body.dark-mode .search-wrapper {
+                background-color: #0f172a !important;
+                border-color: #475569 !important;
+            }
+            .search-wrapper i {
+                margin-left: 12px !important;
+                flex-shrink: 0 !important;
             }
             .search-wrapper input {
                 font-size: 12px !important;
-                padding: 6px !important;
+                padding: 6px 8px !important;
+                margin: 0 !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                background: transparent !important;
             }
+            /* Скрываем кнопку фильтров */
             .filter-btn {
-                padding: 4px 10px !important;
-                font-size: 11px !important;
+                display: none !important;
             }
             .logo-text {
                 font-size: 12px !important;
@@ -346,9 +358,46 @@
                 height: 34px !important;
                 font-size: 14px !important;
             }
+            .tabs-container {
+                padding: 8px 10px;
+                gap: 6px;
+            }
+            .tab-btn-achievement {
+                padding: 7px 12px;
+                font-size: 11px;
+            }
         }
 
-        /* Перенос поиска на новую строку на узких экранах */
+        @media (max-width: 320px) {
+            .search-wrapper {
+                min-width: 110px !important;
+            }
+            .search-wrapper input {
+                font-size: 11px !important;
+                padding: 5px 0 !important;
+            }
+            .logo-text {
+                font-size: 10px !important;
+            }
+            .logo-svg {
+                transform: scale(0.65) !important;
+                width: 30px !important;
+                height: 30px !important;
+            }
+            .icon-btn {
+                width: 30px !important;
+                height: 30px !important;
+                font-size: 12px !important;
+            }
+            .achievements-table {
+                min-width: 520px;
+            }
+            .tab-btn-achievement {
+                padding: 6px 10px;
+                font-size: 10px;
+            }
+        }
+
         @media (max-width: 640px) {
             .portfolio-container {
                 width: 100% !important;
@@ -371,6 +420,7 @@
     </style>
 </head>
 <body>
+    <!-- Остальной HTML-код остаётся без изменений (такой же, как у вас) -->
     <div class="portfolio-container">
         <header class="header">
             <div class="logo-area">
@@ -524,7 +574,7 @@
                         <thead><tr><th>№</th><th>Дата размещения</th><th>Тип</th><th>Год</th><th>Состояние</th><th>Балл</th></tr></thead>
                         <tbody>
                             <tr><td>1</td><td>01.09.2024</td><td>Повышенная государственная академическая стипендия</td><td>2024/2025</td><td><span class="badge-status">Назначена</span></td><td>10</td></tr>
-                            <tr><td>2</td><td>15.01.2025</td><td>Именная стипендия им. В.Н. Татищева</td><td>2025</td><td><span class="badge-status">Получена</span></td><td>15</td></tr>
+                            <tr><td>2</td><td>15.01.2025</td><td>Именная стипендия им. В.Н. Татищева</td><td>2025</td><td><span class="badge-status">Получена</span></td></td><td>15</td></tr>
                         </tbody>
                     </table>
                 </div>
