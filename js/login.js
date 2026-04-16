@@ -490,7 +490,7 @@ async function handleRegister() {
     last_name: fullNameArray[1] || '',
     patronymic: fullNameArray[2] || '',
     cloude_storage: "https://нету",
-    academic_direction: '',
+    academic_direction: 'В поиске себя',
     user_directions: '',
     class_: '',
     avg_score: 0.0,

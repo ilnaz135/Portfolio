@@ -38,11 +38,16 @@ body.dark-mode .header {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
+    min-width: fit-content;
 }
 
 .logo-svg {
-    transform: scale(1/1.75);
+    width: 57px;
+    height: 57px;
     fill: #ffb600;
+    flex-shrink: 0;
+    display: block;
 }
 
 body.dark-mode .logo-icon {
@@ -68,18 +73,44 @@ body.dark-mode .logo-text span {
     color: #94a3b8;
 }
 
-/* ===== ПОИСК ===== */
+.settings-menu-wrapper {
+    position: relative;
+}
+
+.settings-menu-wrapper .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 220px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.dropdown-menu a.logout-item {
+    color: #dc2626;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ===== ПОИСК (ФИКС КНОПКИ ФИЛЬТРЫ) ===== */
 .search-wrapper {
     display: flex;
     align-items: center;
     background-color: #f1f5f9;
     border-radius: 60px;
     border: 1px solid #dbe0e6;
-    padding: 4px;
-    padding-left: 20px;
+    padding: 4px; /* Одинаковый внутренний отступ для всего содержимого */
+    padding-left: 20px; /* Больше отступ слева для иконки лупы */
     flex: 1;
     max-width: 500px;
     min-width: 280px;
+    width: 35%;
 }
 
 body.dark-mode .search-wrapper {
@@ -105,6 +136,7 @@ body.dark-mode .search-wrapper i {
     outline: none;
     font-family: 'Inter', sans-serif;
     color: inherit;
+    width: calc(100% - 120px);
 }
 
 body.dark-mode .search-wrapper input {
@@ -123,7 +155,7 @@ body.dark-mode .search-wrapper input::placeholder {
     background: white;
     border: 1px solid #dbe0e6;
     border-radius: 40px;
-    padding: 8px 18px;
+    padding: 8px 18px; /* Высота кнопки теперь зависит только от этих падингов */
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -131,6 +163,8 @@ body.dark-mode .search-wrapper input::placeholder {
     gap: 8px;
     color: #1e293b;
     transition: background 0.2s;
+    white-space: nowrap;
+    width: auto;
 }
 
 body.dark-mode .filter-btn {
@@ -192,13 +226,14 @@ body.dark-mode .icon-btn:hover {
     display: flex;
 }
 
+/* "Мостик", чтобы меню не закрывалось при движении мыши вниз */
 .burger-menu::before {
     content: '';
     position: absolute;
     top: 100%;
     right: 0;
     width: 100%;
-    height: 15px;
+    height: 15px; /* Дистанция между кнопкой и меню */
     display: none;
 }
 
@@ -289,6 +324,7 @@ body.dark-mode .dropdown-menu a.active {
     position: relative;
 }
 
+
 body.dark-mode .profile-card {
     background-color: #0f172a;
     border-color: #334155;
@@ -348,7 +384,7 @@ body.dark-mode .edit-profile-btn:hover {
 
 body.dark-mode .avatar {
     border-color: #0f172a;
-    box-shadow: none;
+    box-shadow: none; /* Убрали свечение */
 }
 
 .full-name {
@@ -534,12 +570,12 @@ body.dark-mode .edu-highlight-small {
     color: #3b82f6;
 }
 
-/* Правая колонка */
+/* Правая колонка: Сетка с одинаковой высотой блоков */
 .activity-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
-    align-items: stretch;
+    align-items: stretch; /* Это делает колонки одинаковыми по высоте */
     height: 100%;
 }
 
@@ -547,6 +583,7 @@ body.dark-mode .edu-highlight-small {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    
 }
 
 .right-col {
@@ -574,7 +611,7 @@ body.dark-mode .science-card {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* Карточки */
+/* Карточки специализаций и курсов */
 .skill-card {
     background-color: #ffffff;
     border-radius: 24px;
@@ -587,6 +624,50 @@ body.dark-mode .science-card {
     position: relative;
 }
 
+.centred-text {
+    top: 50%;
+    left: 40%;
+    position: absolute;
+}
+
+.courses-container {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    color: #0369a1;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(2, 132, 199, 0.15);
+}
+
+.progress-container {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progress-text {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    line-height: 20px;
+}
+
+
 body.dark-mode .skill-card {
     background-color: #0f172a;
     border-color: #334155;
@@ -594,7 +675,7 @@ body.dark-mode .skill-card {
 }
 
 .tall-card {
-    height: 100%;
+    height: 100%; /* Карточка растягивается на всю колонку */
     flex: 1;
 }
 
@@ -627,6 +708,7 @@ body.dark-mode .card-title {
     font-size: 18px;
 }
 
+/* Кнопка "Добавить" */
 .add-button {
     background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
     border: 1px solid #b8d1ff;
@@ -781,6 +863,8 @@ body.dark-mode .tag:hover {
     border-color: #4b5563;
 }
 
+/* Кнопка посмотреть ещё */
+
 .more-button {
     background: linear-gradient(135deg, #e8f0fe, #d9e8ff);
     display: flex;
@@ -815,6 +899,7 @@ body.dark-mode .more-button {
     transition: transform 0.2s;
 }
 
+/* Стек */
 .stack-tag {
     background: linear-gradient(135deg, #e0f2fe, #bae6fd);
     color: #0369a1;
@@ -840,9 +925,110 @@ body.dark-mode .stack-tag i {
     color: #7a9bcb;
 }
 
+/* Футер */
+.footer {
+    border-top: 1px solid #e9eef2;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    color: #64748b;
+    font-size: 13px;
+}
+
+body.dark-mode .footer {
+    border-top-color: #2d3a4f;
+    color: #94a3b8;
+}
+
+/* ===== МОДАЛЬНОЕ ОКНО ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-window {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    width: 400px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .modal-window {
+    background: #1e293b;
+    color: #fff;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    outline: none;
+}
+
+body.dark-mode .input-group input {
+    background: #0f172a;
+    border-color: #334155;
+    color: #fff;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.save-btn:hover {
+    background: #1d4ed8;
+}
+
 /* ===== СТИЛИ ДЛЯ ПРОГРЕСС-БАРОВ КУРСОВ ===== */
 .course-progress-item {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    width: 100%;
     padding: 12px;
     background: #f8fafc;
     border-radius: 16px;
@@ -1016,7 +1202,7 @@ body.dark-mode .course-progress-bar-wrapper {
 
 .course-progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    background: #3b82f6;
     border-radius: 20px;
     transition: width 0.6s ease-in-out;
     position: relative;
@@ -1055,17 +1241,7 @@ body.dark-mode .course-progress-bar-wrapper::after {
         rgba(255, 255, 255, 0.3),
         transparent
     );
-    animation: progressShimmer 1.5s infinite;
     pointer-events: none;
-}
-
-@keyframes progressShimmer {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
 }
 
 .course-progress-footer {
@@ -1094,198 +1270,929 @@ body.dark-mode .course-progress-label {
     color: #f97316;
 }
 
-/* Футер */
-.footer {
-    border-top: 1px solid #e9eef2;
-    padding: 16px 32px;
+/* Контейнер для списка курсов */
+.courses-list {
     display: flex;
-    justify-content: space-between;
-    color: #64748b;
-    font-size: 13px;
-}
-
-body.dark-mode .footer {
-    border-top-color: #2d3a4f;
-    color: #94a3b8;
-}
-
-/* ===== МОДАЛЬНОЕ ОКНО ===== */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.modal-window {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    width: 400px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-
-body.dark-mode .modal-window {
-    background: #1e293b;
-    color: #fff;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.close-modal {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #64748b;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 13px;
-    color: #64748b;
-}
-
-.input-group input {
+    flex-direction: column;
+    gap: 16px;
     width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    outline: none;
 }
 
-body.dark-mode .input-group input {
-    background: #0f172a;
-    border-color: #334155;
-    color: #fff;
-}
-
-.save-btn {
-    width: 100%;
-    padding: 12px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 12px;
+/* Стиль для курса-стека */
+.course-stack-tag {
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    color: #0369a1;
+    border-left: 3px solid #0284c7;
     font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
 }
 
-.save-btn:hover {
-    background: #1d4ed8;
+body.dark-mode .course-stack-tag {
+    background: #1e2a3a;
+    color: #a0c0e0;
+    border-left: 3px solid #3b82f6;
+    border: 1px solid #334155;
 }
 
-/* ===== МЕДИА-ЗАПРОСЫ ===== */
-@media (max-width: 768px) {
+/* ===== МЕДИА-ЗАПРОСЫ (АДАПТИВНОСТЬ) ===== */
+
+/* Большие десктопы */
+@media (min-width: 1400px) {
+    .portfolio-container {
+        max-width: 1400px;
+    }
+    
+    .main-content {
+        grid-template-columns: 380px 1fr;
+        gap: 36px;
+        padding: 36px;
+    }
+}
+
+/* Десктоп - стандартный */
+@media (min-width: 1281px) and (max-width: 1399px) {
+    .main-content {
+        grid-template-columns: 360px 1fr;
+        gap: 32px;
+        padding: 32px;
+    }
+}
+
+/* Ноутбуки и большие планшеты */
+@media (min-width: 971px) and (max-width: 1280px) {
+    .main-content {
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+        padding: 28px;
+    }
+    
+    .profile-card {
+        padding: 20px;
+    }
+    
+    .avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+    }
+    
+    .full-name {
+        font-size: 22px;
+    }
+    
+    .badge {
+        font-size: 14px;
+        padding: 5px 20px;
+    }
+    
+    .header {
+        flex-wrap: wrap;
+    }
+    
+    .search-wrapper {
+        min-width: 250px;
+        max-width: 350px;
+    }
+    
+    .filter-btn {
+        white-space: nowrap;
+        padding: 8px 14px;
+    }
+}
+
+/* СРЕДНИЙ ДИАПАЗОН - планшеты в альбомной ориентации */
+@media (min-width: 771px) and (max-width: 970px) {
+    .main-content {
+        grid-template-columns: 360px 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+    
+    .profile-card {
+        padding: 14px;
+        gap: 14px;
+        height: 100%;
+    }
+    
+    .avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 28px;
+        border-width: 3px;
+    }
+    
+    .full-name {
+        font-size: 18px;
+    }
+    
+    .username {
+        font-size: 12px;
+        margin-top: -4px;
+    }
+    
+    .username i {
+        font-size: 12px;
+    }
+    
+    .badge {
+        font-size: 12px;
+        padding: 4px 14px;
+    }
+    
+    .badge i {
+        margin-right: 4px;
+        font-size: 12px;
+    }
+    
+    .github-link {
+        padding: 6px;
+        font-size: 12px;
+    }
+    
+    .github-link i {
+        font-size: 16px;
+    }
+    
+    .download-resume {
+        padding: 8px;
+        font-size: 12px;
+        gap: 6px;
+    }
+    
+    .download-resume i {
+        font-size: 14px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 11px;
+        gap: 4px;
+    }
+    
+    .edu-icon-small {
+        width: 16px;
+        font-size: 11px;
+    }
+    
+    .activity-section {
+        grid-template-columns: 1fr; /* Включаем 1 колонку */
+        gap: 14px;
+        height: auto;   
+    }
+    
+    .science-card {
+        padding: 14px;
+    }
+    
+    .card-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+    }
+    
+    .title-left i {
+        font-size: 14px;
+    }
+    
+    .add-button {
+        padding: 4px 10px;
+        font-size: 10px;
+        gap: 4px;
+    }
+    
+    .add-button i {
+        font-size: 9px;
+    }
+    
+    .publications-list {
+        gap: 2px;
+    }
+    
+    .publication-item {
+        padding: 6px 0;
+        gap: 6px;
+    }
+    
+    .pub-icon {
+        font-size: 14px;
+        min-width: 20px;
+    }
+    
+    .pub-title {
+        font-size: 12px;
+        margin-bottom: 1px;
+    }
+    
+    .pub-meta {
+        font-size: 10px;
+        gap: 6px;
+    }
+    
+    .pub-meta i {
+        font-size: 9px;
+    }
+    
+    .skill-card {
+        padding: 14px;
+        height: 100%;
+    }
+    
+    .tags-cloud {
+        gap: 6px;
+        flex: 1;
+        align-content: flex-start;
+    }
+    
+    .tag {
+        padding: 3px 10px;
+        font-size: 11px;
+    }
+    
+    .stack-tag i {
+        font-size: 10px;
+        margin-right: 3px;
+    }
+    
+    /* Хедер и поиск для этого диапазона */
+    .header {
+        flex-wrap: wrap;
+        padding: 16px 20px;
+        gap: 12px;
+    }
+    
+    .logo-area {
+        flex: 1;
+    }
+
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .search-wrapper {
+        order: 3;
+        max-width: 100%;
+        min-width: 100%;
+        margin-top: 4px;
+        padding: 3px 3px 3px 16px;
+    }
+    
+    .search-wrapper i {
+        font-size: 14px;
+    }
+    
+    .search-wrapper input {
+        padding: 8px 8px 8px 4px;
+        font-size: 14px;
+        min-width: 120px;
+    }
+    
+    .filter-btn {
+        padding: 6px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+        background: white;
+        border: 1px solid #dbe0e6;
+        margin-left: 4px;
+        flex-shrink: 0;
+        gap: 6px;
+    }
+    
+    .filter-btn i {
+        font-size: 12px;
+    }
+    
+    .control-buttons {
+        flex-shrink: 0;
+        gap: 8px;
+    }
+    
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .footer {
+        padding: 14px 20px;
+        font-size: 12px;
+    }
+}
+
+/* Планшеты (вертикальные) */
+@media (max-width: 770px) {
+    body {
+        padding: 10px;
+    }
+    
+    .portfolio-container {
+        border-radius: 20px;
+    }
+    
+    /* === ИЗМЕНЕНИЯ ЗДЕСЬ === */
+    .header {
+        display: grid;
+        /* Два ряда: верх (логотип + кнопки), низ (поиск) */
+        grid-template-rows: auto auto; 
+        /* Три колонки: логотип, пустота, кнопки */
+        grid-template-columns: 1fr auto 1fr; 
+        padding: 14px;
+        gap: 12px;
+    }
+    
+    /* Логотип в левую колонку */
+    .logo-area {
+        grid-column: 1 / 2;
+        justify-self: start;
+        gap: 15px;
+    }
+    
+    /* Кнопки в правую колонку (на одном уровне с лого) */
+    .control-buttons {
+        grid-column: 3 / 4;
+        justify-self: end;
+        margin-top: 0; /* Убираем отступ, если был */
+        gap: 10px;
+    }
+    
+    /* Поиск на всю ширину во втором ряду */
+    .search-wrapper {
+        grid-column: 1 / -1; /* Растягиваем от начала до конца */
+        width: 100%;
+        max-width: 100%;
+        padding: 3px 3px 3px 16px;
+        order: 3; /* Гарантируем, что поиск будет внизу */
+    }
+    /* ======================= */
+    
+    .logo-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+    
+    .logo-text {
+        font-size: 16px;
+    }
+    
+    .search-wrapper i {
+        font-size: 14px;
+    }
+    
+    .search-wrapper input {
+        padding: 10px 8px 10px 4px;
+        font-size: 14px;
+        min-width: 100px;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        margin-left: 4px;
+        gap: 8px;
+    }
+    
+    .filter-btn i {
+        font-size: 13px;
+    }
+    
+    .icon-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+    
     .main-content {
         grid-template-columns: 1fr;
         padding: 14px;
         gap: 14px;
     }
     
-    .activity-section {
-        grid-template-columns: 1fr;
-        gap: 14px;
+    .profile-card {
+        padding: 18px;
+        gap: 10px;
     }
     
-    .course-progress-bar-wrapper {
-        height: 28px;
+    .avatar {
+        width: 85px;
+        height: 85px;
+        font-size: 34px;
+        border-width: 3px;
     }
     
-    .course-progress-bar-wrapper::after {
-        font-size: 11px;
+    .full-name {
+        font-size: 20px;
     }
     
-    .verified-icon {
-        font-size: 16px;
+    .username {
+        font-size: 13px;
     }
     
-    .tooltip-text {
-        width: 240px;
-        font-size: 11px;
-        white-space: normal;
-        right: -50%;
-        bottom: 130%;
+    .badge {
+        font-size: 14px;
+        padding: 5px 18px;
     }
     
-    .tooltip-text::after {
-        right: 20%;
-    }
-    
-    .header {
-        display: grid;
-        grid-template-rows: auto auto;
-        grid-template-columns: 1fr auto 1fr;
-        padding: 14px;
-        gap: 12px;
-    }
-    
-    .logo-area {
-        grid-column: 1 / 2;
-        justify-self: start;
-    }
-    
-    .control-buttons {
-        grid-column: 3 / 4;
-        justify-self: end;
-    }
-    
-    .search-wrapper {
-        grid-column: 1 / -1;
-        width: 100%;
-        max-width: 100%;
-        order: 3;
-    }
-}
-
-@media (max-width: 480px) {
-    .course-progress-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .course-header-right {
-        align-self: flex-start;
-    }
-    
-    .course-progress-bar-wrapper {
-        height: 26px;
-    }
-    
-    .course-progress-bar-wrapper::after {
-        font-size: 10px;
-    }
-    
-    .verified-icon {
+    .github-link {
+        padding: 10px;
         font-size: 14px;
     }
     
-    .tooltip-text {
-        width: 200px;
-        font-size: 10px;
-        right: -80%;
+    .download-resume {
+        padding: 10px;
+        font-size: 14px;
     }
     
-    .tooltip-text::after {
-        right: 30%;
+    .education-compact .edu-row {
+        font-size: 12px;
+    }
+    
+    .activity-section {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 14px;
+    }
+    
+    .science-card {
+        padding: 16px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+    }
+    
+    .add-button {
+        padding: 5px 12px;
+        font-size: 11px;
+    }
+    
+    .publication-item {
+        padding: 8px 0;
+    }
+    
+    .pub-title {
+        font-size: 13px;
+    }
+    
+    .pub-meta {
+        font-size: 11px;
+    }
+    
+    .skill-card {
+        height: auto;
+        padding: 16px;
+    }
+    
+    .tags-cloud {
+        flex: none;
+        gap: 8px;
+    }
+    
+    .tag {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+    
+    .footer {
+        padding: 14px 16px;
+        text-align: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+}
+
+/* Маленькие телефоны */
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    .portfolio-container {
+        border-radius: 18px;
+    }
+    
+    .header {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .logo-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    
+    .logo-text {
+        font-size: 14px;
+    }
+    
+    .search-wrapper {
+        padding: 2px 2px 2px 12px;
+    }
+    
+    .search-wrapper i {
+        font-size: 12px;
+    }
+    
+    .search-wrapper input {
+        padding: 8px 6px 8px 4px;
+        font-size: 13px;
+        min-width: 80px;
+    }
+    
+    .filter-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        gap: 4px;
+    }
+    
+    .filter-btn i {
+        font-size: 11px;
+    }
+    
+    .control-buttons {
+        gap: 6px;
+    }
+    
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .main-content {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .profile-card {
+        padding: 16px;
+        gap: 8px;
+    }
+    
+    .avatar {
+        width: 75px;
+        height: 75px;
+        font-size: 30px;
+    }
+    
+    .full-name {
+        font-size: 18px;
+    }
+    
+    .username {
+        font-size: 12px;
+    }
+    
+    .badge {
+        font-size: 12px;
+        padding: 4px 14px;
+    }
+    
+    .github-link {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .github-link i {
+        font-size: 16px;
+    }
+    
+    .download-resume {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 11px;
+        gap: 4px;
+    }
+    
+    .edu-icon-small {
+        width: 16px;
+        font-size: 11px;
+    }
+    
+    .science-card {
+        padding: 14px;
+    }
+    
+    .card-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+    }
+    
+    .title-left i {
+        font-size: 14px;
+    }
+    
+    .add-button {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+    
+    .publication-item {
+        padding: 6px 0;
+        gap: 6px;
+    }
+    
+    .pub-icon {
+        font-size: 14px;
+        min-width: 20px;
+    }
+    
+    .pub-title {
+        font-size: 12px;
+    }
+    
+    .pub-meta {
+        font-size: 10px;
+        gap: 6px;
+    }
+    
+    .skill-card {
+        padding: 14px;
+    }
+    
+    .tag {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+    
+    .footer {
+        padding: 12px;
+        font-size: 11px;
+    }
+}
+
+/* Очень маленькие телефоны */
+/* Очень маленькие телефоны */
+@media (max-width: 360px) {
+    body {
+        padding: 5px;
+    }
+    
+    .portfolio-container {
+        border-radius: 18px;
+        overflow: visible; /* Убираем скрытие переполнения */
+    }
+    
+    /* === ИСПРАВЛЕННЫЙ ХЕДЕР === */
+    .header {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: auto auto auto;
+        padding: 8px;
+        gap: 6px;
+        overflow: visible; /* Важно! */
+    }
+    
+    /* Логотип */
+    .logo-area {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        justify-self: start;
+        gap: 6px;
+        display: flex;
+        align-items: center;
+        min-width: 0;
+    }
+    
+    .logo-icon {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+    
+    .logo-text {
+        font-size: 11px;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+    }
+    
+    /* Кнопки управления - ПЕРВАЯ ЛИНИЯ СПРАВА */
+    .control-buttons {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        justify-self: end;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        flex-shrink: 0;
+        min-width: 0;
+    }
+    
+    .icon-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+        flex-shrink: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .icon-btn i {
+        margin: 0;
+    }
+    
+    /* Поиск - ВТОРАЯ ЛИНИЯ */
+    .search-wrapper {
+        grid-column: 1 / -1;
+        grid-row: 2 / 3;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0;
+        background: transparent;
+        border: none;
+        gap: 4px;
+        min-width: 0;
+    }
+    
+    .search-wrapper i {
+        display: none;
+    }
+    
+    .search-wrapper input {
+        background-color: #f1f5f9;
+        border: 1px solid #dbe0e6;
+        border-radius: 30px;
+        padding: 8px 10px;
+        font-size: 12px;
+        min-width: 0;
+    }
+    
+    body.dark-mode .search-wrapper input {
+        background-color: #0f172a;
+        border-color: #475569;
+    }
+    
+    /* Кнопка фильтра - ТРЕТЬЯ ЛИНИЯ */
+    .filter-btn {
+        grid-column: 1 / -1;
+        grid-row: 3 / 4;
+        width: 20%;
+        margin-left: 0;
+        justify-content: center;
+        padding: 8px;
+        font-size: 0;
+        gap: 0;
+        height: 36px;
+        flex-shrink: 0;
+        order: 3;
+    }
+    
+    .filter-btn i {
+        font-size: 14px;
+        margin: 0;
+        display: block;
+    }
+    
+    /* Принудительно показываем элементы */
+    .control-buttons,
+    .control-buttons .icon-btn,
+    .burger-menu,
+    .filter-btn {
+        display: flex;
+        visibility: visible;
+        opacity: 1
+    }
+    /* ========================= */
+    
+    .main-content {
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .profile-card {
+        padding: 12px;
+    }
+    
+    .avatar {
+        width: 65px;
+        height: 65px;
+        font-size: 26px;
+    }
+    
+    .full-name {
+        font-size: 16px;
+    }
+    
+    .username {
+        font-size: 11px;
+    }
+    
+    .badge {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+    
+    .github-link {
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    .download-resume {
+        padding: 6px;
+        font-size: 11px;
+    }
+    
+    .education-compact .edu-row {
+        font-size: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .science-card {
+        padding: 12px;
+    }
+    
+    .card-title {
+        font-size: 13px;
+    }
+    
+    .add-button {
+        padding: 3px 8px;
+        font-size: 9px;
+    }
+    
+    .publication-item {
+        padding: 5px 0;
+    }
+    
+    .pub-title {
+        font-size: 11px;
+    }
+    
+    .pub-meta {
+        font-size: 9px;
+    }
+    
+    .skill-card {
+        padding: 12px;
+    }
+    
+    .tag {
+        padding: 3px 8px;
+        font-size: 10px;
+    }
+    
+    .footer {
+        padding: 10px;
+        font-size: 10px;
+    }
+}
+
+/* Для очень широких экранов */
+@media (min-width: 1800px) {
+    .portfolio-container {
+        max-width: 1600px;
+    }
+    
+    .main-content {
+        grid-template-columns: 400px 1fr;
+        gap: 40px;
+        padding: 40px;
+    }
+    
+    .profile-card {
+        padding: 30px;
+    }
+    
+    .avatar {
+        width: 130px;
+        height: 130px;
+        font-size: 52px;
+    }
+    
+    .full-name {
+        font-size: 28px;
+    }
+    
+    .science-card, .skill-card {
+        padding: 24px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+    }
+    
+    .tag {
+        padding: 6px 18px;
+        font-size: 14px;
     }
 }

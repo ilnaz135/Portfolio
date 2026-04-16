@@ -41,14 +41,18 @@
                 
                 <div class="control-buttons">
                     <div class="icon-btn" id="themeToggle"><i class="fas fa-moon"></i></div>
-                    <div class="icon-btn"><i class="fas fa-cog"></i></div>
+                    <div class="settings-menu-wrapper" id="settingsMenuWrapper">
+                        <div class="icon-btn" id="settingsBtn"><i class="fas fa-cog"></i></div>
+                        <div class="dropdown-menu" id="settingsDropdown">
+                            <a href="#" id="logoutBtn" class="logout-item"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                        </div>
+                    </div>
                     <div class="burger-menu">
                         <div class="icon-btn"><i class="fas fa-bars"></i></div>
                         <div class="dropdown-menu">
                             <a href="#" class="active">Главное меню</a>
                             <a href="#">Список студентов</a>
                             <a href="#">Проекты</a>
-                            <a href="loginindex.html" class="logout-button">Выйти</a>
                         </div>
                     </div>
                 </div>
@@ -124,13 +128,11 @@
                                 </div>
                             </div> -->
                         </div>
-                        <button class="more-button"><i class="fas fa-eye"></i>Посмотреть ещё</button>
                     </div>
 
                     <div class="skill-card">
                         <div class="card-title">
                             <div class="title-left"><i class="fas fa-graduation-cap"></i><a href="#">Специализации</a></div>
-                            <button class="add-button"><i class="fas fa-plus-circle"></i> Добавить</button>
                         </div>
                         <div class="tags-cloud">
                             <!-- <a href="#"><span class="tag">Фронтенд разработчик</span></a>
