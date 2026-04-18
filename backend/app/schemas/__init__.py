@@ -1,116 +1,187 @@
-"""
-Portfolio Backend API - Pydantic Schemas
+"""Pydantic schemas for the portfolio backend."""
 
-Этот модуль содержит все Pydantic схемы для валидации данных API,
-сериализации и документации.
-"""
+from __future__ import annotations
 
+from datetime import date
 from typing import List
-from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
-# --- Схемы направлений ---
-
 class UserDirectionCreateSchema(BaseModel):
-    """
-    Схема для создания нового направления пользователя.
-
-    Поля:
-    - other_directions: Дополнительное академическое направление
-    """
     other_directions: str = Field(..., min_length=1, max_length=150)
 
 
 class UserDirectionSchema(UserDirectionCreateSchema):
-    """
-    Схема для возврата данных направления из API.
-    Включает все поля плюс ID.
-    """
     id: int
 
     class Config:
         from_attributes = True
 
 
-# --- Схемы курсов ---
-
 class UserCourseCreateSchema(BaseModel):
-    """
-    Схема для создания нового курса пользователя.
-
-    Поля:
-    - name_course: Название/заголовок курса
-    - url_course: URL ссылка на курс или сертификат
-    """
     name_course: str = Field(..., min_length=1, max_length=200)
     url_course: str = Field(..., min_length=1, max_length=500)
 
 
 class UserCourseSchema(UserCourseCreateSchema):
-    """
-    Схема для возврата данных курса из API.
-    Включает все поля плюс ID.
-    """
     id: int
 
     class Config:
         from_attributes = True
 
 
-# --- Схемы научных достижений ---
+class AchievementSummarySchema(BaseModel):
+    name: str
+    type: str
+    date: date
+    category: str
+    status: str
+    points: int
 
-class UserScientificAchievementCreateSchema(BaseModel):
-    """
-    Схема для создания нового научного достижения.
-
-    Поля:
-    - name: Название/заголовок достижения
-    - type: Тип достижения (публикация, награда, презентация и т.д.)
-    - date: Дата достижения
-    """
-    name: str = Field(..., min_length=1, max_length=300)
-    type: str = Field(..., min_length=1, max_length=100)
-    date: datetime
+    class Config:
+        from_attributes = True
 
 
-class UserScientificAchievementSchema(UserScientificAchievementCreateSchema):
-    """
-    Схема для возврата данных научного достижения из API.
-    Включает все поля плюс ID.
-    """
+class UserPublicationCreateSchema(BaseModel):
+    placement_date: date
+    title: str = Field(..., min_length=1, max_length=300)
+    publication_type: str = Field(..., min_length=1, max_length=120)
+    indexation_date: date
+    status: str = Field(..., min_length=1, max_length=120)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserPublicationSchema(UserPublicationCreateSchema):
     id: int
 
     class Config:
         from_attributes = True
 
 
-# --- Схемы пользователей ---
+class UserEventCreateSchema(BaseModel):
+    placement_date: date
+    title: str = Field(..., min_length=1, max_length=300)
+    event_type: str = Field(..., min_length=1, max_length=120)
+    event_date: str = Field(..., min_length=1, max_length=120)
+    status: str = Field(..., min_length=1, max_length=120)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserEventSchema(UserEventCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserGrantCreateSchema(BaseModel):
+    placement_date: date
+    title: str = Field(..., min_length=1, max_length=300)
+    work_type: str = Field(..., min_length=1, max_length=150)
+    grant_year: int = Field(..., ge=1900, le=2100)
+    status: str = Field(..., min_length=1, max_length=120)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserGrantSchema(UserGrantCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserIntellectualPropertyCreateSchema(BaseModel):
+    placement_date: date
+    title: str = Field(..., min_length=1, max_length=300)
+    intellectual_type: str = Field(..., min_length=1, max_length=150)
+    issue_date: date
+    status: str = Field(..., min_length=1, max_length=120)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserIntellectualPropertySchema(UserIntellectualPropertyCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserInnovationCreateSchema(BaseModel):
+    placement_date: date
+    title: str = Field(..., min_length=1, max_length=300)
+    implementation_year: int = Field(..., ge=1900, le=2100)
+    status: str = Field(..., min_length=1, max_length=150)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserInnovationSchema(UserInnovationCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserScholarshipCreateSchema(BaseModel):
+    placement_date: date
+    scholarship_type: str = Field(..., min_length=1, max_length=300)
+    academic_year: str = Field(..., min_length=1, max_length=50)
+    status: str = Field(..., min_length=1, max_length=120)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserScholarshipSchema(UserScholarshipCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserInternshipCreateSchema(BaseModel):
+    placement_date: date
+    organization: str = Field(..., min_length=1, max_length=300)
+    city: str = Field(..., min_length=1, max_length=120)
+    start_date: date
+    end_date: date
+    status: str = Field(..., min_length=1, max_length=120)
+    points: int = Field(..., ge=0, le=1000)
+
+
+class UserInternshipSchema(UserInternshipCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserAchievementCollectionsSchema(BaseModel):
+    publications: List[UserPublicationSchema] = Field(default_factory=list)
+    events: List[UserEventSchema] = Field(default_factory=list)
+    grants: List[UserGrantSchema] = Field(default_factory=list)
+    intellectual_properties: List[UserIntellectualPropertySchema] = Field(
+        default_factory=list
+    )
+    innovations: List[UserInnovationSchema] = Field(default_factory=list)
+    scholarships: List[UserScholarshipSchema] = Field(default_factory=list)
+    internships: List[UserInternshipSchema] = Field(default_factory=list)
+    scientific_achievements: List[AchievementSummarySchema] = Field(default_factory=list)
+
+    class Config:
+        from_attributes = True
+
+
+class UserAchievementsSchema(UserAchievementCollectionsSchema):
+    pass
+
 
 class UserCreateSchema(BaseModel):
-    """
-    Схема для создания нового пользователя.
-
-    Поля:
-    - username: Уникальное имя пользователя для аутентификации
-    - password: Пароль пользователя
-    - email: Email пользователя
-    - first_name: Имя пользователя
-    - last_name: Фамилия пользователя
-    - patronymic: Отчество пользователя (среднее имя)
-    - cloude_storage: URL облачного хранилища (GitHub, GitLab и т.д.)
-    - academic_direction: Основная академическая специализация
-    - user_directions: Одно академическое направление пользователя
-    - class_: Номер класса/группы
-    - avg_score: Средний академический балл/GPA (от 0 до 100)
-    """
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=6, max_length=255)
     email: str = Field(..., min_length=5, max_length=255)
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
-    patronymic: str = Field(None, max_length=100)
-    cloude_storage: str = Field(None, max_length=255)
+    patronymic: str | None = Field(None, max_length=100)
+    cloude_storage: str | None = Field(None, max_length=255)
     academic_direction: str = Field(..., max_length=150)
     user_directions: str | None = Field(None, max_length=500)
     class_: str = Field(..., alias="class", max_length=50)
@@ -121,53 +192,33 @@ class UserCreateSchema(BaseModel):
 
 
 class UserUpdateSchema(BaseModel):
-    """
-    Схема для обновления информации о пользователе.
-    Все поля опциональны для поддержки частичных обновлений.
-    """
-    password: str = Field(None, min_length=6, max_length=255)
-    email: str = Field(None, min_length=5, max_length=255)
-    first_name: str = Field(None, min_length=1, max_length=100)
-    last_name: str = Field(None, min_length=1, max_length=100)
-    patronymic: str = Field(None, max_length=100)
-    cloude_storage: str = Field(None, max_length=255)
-    academic_direction: str = Field(None, min_length=1, max_length=150)
+    password: str | None = Field(None, min_length=6, max_length=255)
+    email: str | None = Field(None, min_length=5, max_length=255)
+    first_name: str | None = Field(None, min_length=1, max_length=100)
+    last_name: str | None = Field(None, min_length=1, max_length=100)
+    patronymic: str | None = Field(None, max_length=100)
+    cloude_storage: str | None = Field(None, max_length=255)
+    academic_direction: str | None = Field(None, min_length=1, max_length=150)
     user_directions: str | None = Field(None, max_length=500)
-    class_: str = Field(None, alias="class", min_length=1, max_length=50)
-    avg_score: float = Field(None, ge=0, le=100)
+    class_: str | None = Field(None, alias="class", min_length=1, max_length=50)
+    avg_score: float | None = Field(None, ge=0, le=100)
 
     class Config:
         populate_by_name = True
 
 
-# --- Схемы стеков ---
-
 class UserStackCreateSchema(BaseModel):
-    """
-    Схема для создания нового стека пользователя.
-
-    Поля:
-    - stack: Название технологического стека/языка программирования
-    """
     stack: str = Field(..., min_length=1, max_length=100)
 
 
 class UserStackSchema(UserStackCreateSchema):
-    """
-    Схема для возврата данных стека из API.
-    Включает все поля плюс ID.
-    """
     id: int
 
     class Config:
         from_attributes = True
 
 
-class UserSchema(BaseModel):
-    """
-    Схема для возврата полных данных пользователя из API.
-    Включает все поля пользователя плюс связанные данные (направления, курсы, достижения, стеки).
-    """
+class UserSchema(UserAchievementCollectionsSchema):
     id: int
     username: str
     password: str
@@ -182,7 +233,6 @@ class UserSchema(BaseModel):
     avg_score: float
     directions: List[UserDirectionSchema] = Field(default_factory=list)
     courses: List[UserCourseSchema] = Field(default_factory=list)
-    scientific_achievements: List[UserScientificAchievementSchema] = Field(default_factory=list)
     stacks: List[UserStackSchema] = Field(default_factory=list)
 
     class Config:
@@ -190,47 +240,19 @@ class UserSchema(BaseModel):
         populate_by_name = True
 
 
-# --- Схемы аутентификации ---
-
 class UserLoginSchema(BaseModel):
-    """
-    Схема для проверки логина и пароля пользователя.
-
-    Поля:
-    - username: Имя пользователя (логин)
-    - password: Пароль пользователя
-    """
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=6, max_length=255)
 
 
 class UserEmailLoginSchema(BaseModel):
-    """
-    Схема для проверки email и пароля пользователя.
-
-    Поля:
-    - email: Email пользователя
-    - password: Пароль пользователя
-    """
     email: str = Field(..., min_length=5, max_length=255)
     password: str = Field(..., min_length=6, max_length=255)
 
 
 class UsernameCheckSchema(BaseModel):
-    """
-    Схема для проверки занятости username.
-
-    Поля:
-    - username: Имя пользователя
-    """
     username: str = Field(..., min_length=3, max_length=50)
 
 
 class EmailCheckSchema(BaseModel):
-    """
-    Схема для проверки занятости email.
-
-    Поля:
-    - email: Email пользователя
-    """
     email: str = Field(..., min_length=5, max_length=255)

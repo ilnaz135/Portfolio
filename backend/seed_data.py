@@ -1,43 +1,198 @@
-"""
-Скрипт для добавления искусственных данных в базу данных портфолио.
+"""Seed demo data for the portfolio backend."""
 
-Этот скрипт создает тестовых пользователей с различными академическими курсами
-(от 1-го до 4-го), направлениями, стеками технологий, курсами и достижениями.
-"""
+from __future__ import annotations
 
 import asyncio
+from datetime import date
 from pathlib import Path
-from datetime import datetime
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from app.core.database import ensure_database_schema
-from app.models import UserModel, UserDirectionModel, UserCourseModel, UserScientificAchievementModel, UserStackModel
+from app.models import (
+    UserCourseModel,
+    UserDirectionModel,
+    UserEventModel,
+    UserGrantModel,
+    UserInnovationModel,
+    UserIntellectualPropertyModel,
+    UserInternshipModel,
+    UserModel,
+    UserPublicationModel,
+    UserScholarshipModel,
+    UserStackModel,
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 
-
-# Конфигурация базы данных, сохраняется в backend/portfolio.db
 engine = create_async_engine(
     f"sqlite+aiosqlite:///{BASE_DIR / 'portfolio.db'}",
     echo=False,
-    future=True
+    future=True,
 )
 
 new_async_session = async_sessionmaker(
     engine,
     class_=AsyncSession,
-    expire_on_commit=False
+    expire_on_commit=False,
 )
 
+INTERNSHIP_COMPANIES = [
+    ('ООО "Яндекс"', "Москва"),
+    ("СКБ Контур", "Екатеринбург"),
+    ("Сбер", "Москва"),
+    ("Naumen", "Екатеринбург"),
+    ("VK", "Санкт-Петербург"),
+    ("Тензор", "Ярославль"),
+    ("Positive Technologies", "Москва"),
+    ("Газпром нефть", "Санкт-Петербург"),
+]
 
-async def seed_database():
-    """
-    Заполнить базу данных искусственными данными.
-    """
+
+def build_user_achievement_catalog(user: UserModel, index: int) -> dict[str, list[dict]]:
+    """Build tab-specific achievement records for one user."""
+
+    topic = (user.user_directions or user.academic_direction).strip()
+    day_offset = index % 4
+    score_offset = index % 5
+    company_one = INTERNSHIP_COMPANIES[index % len(INTERNSHIP_COMPANIES)]
+    company_two = INTERNSHIP_COMPANIES[(index + 1) % len(INTERNSHIP_COMPANIES)]
+
+    return {
+        "publications": [
+            {
+                "placement_date": date(2024, 3, 12 + day_offset),
+                "title": f'Оптимизация алгоритмов в области "{topic}"',
+                "publication_type": "Статья (ВАК)",
+                "indexation_date": date(2024, 5, 15 + day_offset),
+                "status": "Опубликовано",
+                "points": 15 + score_offset,
+            },
+            {
+                "placement_date": date(2024, 9, 1),
+                "title": f'Цифровая трансформация сервисов обучения для направления "{topic}"',
+                "publication_type": "Тезисы доклада",
+                "indexation_date": date(2024, 10, 20),
+                "status": "Принято",
+                "points": 8 + score_offset,
+            },
+        ],
+        "events": [
+            {
+                "placement_date": date(2025, 1, 10),
+                "title": f'Международная конференция по направлению "{topic}"',
+                "event_type": "Конференция",
+                "event_date": "14-15.02.2025",
+                "status": "Участие с докладом",
+                "points": 12 + score_offset,
+            },
+            {
+                "placement_date": date(2024, 6, 5),
+                "title": f'Хакатон "Цифровые решения для {topic}"',
+                "event_type": "Хакатон",
+                "event_date": "20-22.06.2024",
+                "status": "Диплом 2 степени",
+                "points": 20 + score_offset,
+            },
+        ],
+        "grants": [
+            {
+                "placement_date": date(2024, 3, 1),
+                "title": f'Грантовый проект по направлению "{topic}"',
+                "work_type": "Научный проект",
+                "grant_year": 2024,
+                "status": "Получен",
+                "points": 30 + score_offset,
+            },
+            {
+                "placement_date": date(2024, 8, 15),
+                "title": f'Исследование цифровых инструментов для области "{topic}"',
+                "work_type": "Исследовательская работа",
+                "grant_year": 2024,
+                "status": "Поддержан",
+                "points": 25 + score_offset,
+            },
+        ],
+        "intellectual_properties": [
+            {
+                "placement_date": date(2025, 2, 10),
+                "title": f'Система анализа образовательных траекторий для "{topic}"',
+                "intellectual_type": "Свидетельство о регистрации ПО",
+                "issue_date": date(2025, 2, 25),
+                "status": "Зарегистрировано",
+                "points": 18 + score_offset,
+            },
+            {
+                "placement_date": date(2024, 11, 20),
+                "title": f'Метод прогнозирования успеваемости в области "{topic}"',
+                "intellectual_type": "Патент на изобретение",
+                "issue_date": date(2024, 12, 10),
+                "status": "Выдан",
+                "points": 40 + score_offset,
+            },
+        ],
+        "innovations": [
+            {
+                "placement_date": date(2024, 5, 5),
+                "title": f'Платформа цифрового портфолио для направления "{topic}"',
+                "implementation_year": 2024,
+                "status": "Внедрено в учебный процесс",
+                "points": 35 + score_offset,
+            },
+            {
+                "placement_date": date(2024, 9, 12),
+                "title": f'Чат-бот сопровождения студентов по направлению "{topic}"',
+                "implementation_year": 2024,
+                "status": "Пилотное тестирование",
+                "points": 15 + score_offset,
+            },
+        ],
+        "scholarships": [
+            {
+                "placement_date": date(2024, 9, 1),
+                "scholarship_type": "Повышенная государственная академическая стипендия",
+                "academic_year": "2024/2025",
+                "status": "Назначена",
+                "points": 10 + score_offset,
+            },
+            {
+                "placement_date": date(2025, 1, 15),
+                "scholarship_type": f'Именная стипендия за достижения в области "{topic}"',
+                "academic_year": "2025",
+                "status": "Получена",
+                "points": 15 + score_offset,
+            },
+        ],
+        "internships": [
+            {
+                "placement_date": date(2024, 12, 20),
+                "organization": company_one[0],
+                "city": company_one[1],
+                "start_date": date(2025, 1, 10),
+                "end_date": date(2025, 2, 10),
+                "status": "Завершена",
+                "points": 25 + score_offset,
+            },
+            {
+                "placement_date": date(2024, 5, 15),
+                "organization": company_two[0],
+                "city": company_two[1],
+                "start_date": date(2024, 6, 1),
+                "end_date": date(2024, 8, 31),
+                "status": "Успешно",
+                "points": 30 + score_offset,
+            },
+        ],
+    }
+
+
+async def seed_database() -> None:
+    """Populate the database with demo data."""
+
     async with new_async_session() as session:
         try:
-            print("🌱 Начинаем заполнение базы данных искусственными данными...")
+            print("Starting database seed...")
 
-            # Создаем пользователей с разными курсами (1-4)
             users_data = [
                 {
                     "username": "ivan_petrov_1",
@@ -50,7 +205,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/ivanpetrov",
                     "academic_direction": "Информатика и вычислительная техника",
                     "class_": "1 курс",
-                    "avg_score": 85.5
+                    "avg_score": 85.5,
                 },
                 {
                     "username": "maria_ivanova_2",
@@ -63,7 +218,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/mariaivanova",
                     "academic_direction": "Программная инженерия",
                     "class_": "2 курс",
-                    "avg_score": 92.3
+                    "avg_score": 92.3,
                 },
                 {
                     "username": "alexey_smirnov_3",
@@ -76,7 +231,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/alexeysmirnov",
                     "academic_direction": "Компьютерные науки",
                     "class_": "3 курс",
-                    "avg_score": 88.7
+                    "avg_score": 88.7,
                 },
                 {
                     "username": "elena_kuznetsova_4",
@@ -89,7 +244,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/elenakuznetsova",
                     "academic_direction": "Информационные системы",
                     "class_": "4 курс",
-                    "avg_score": 95.1
+                    "avg_score": 95.1,
                 },
                 {
                     "username": "dmitry_volkov_1",
@@ -102,7 +257,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/dmitryvolkov",
                     "academic_direction": "Искусственный интеллект",
                     "class_": "1 курс",
-                    "avg_score": 87.4
+                    "avg_score": 87.4,
                 },
                 {
                     "username": "anna_sokolova_2",
@@ -115,7 +270,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/annasokolova",
                     "academic_direction": "Веб-разработка",
                     "class_": "2 курс",
-                    "avg_score": 91.8
+                    "avg_score": 91.8,
                 },
                 {
                     "username": "sergey_morozov_3",
@@ -128,7 +283,7 @@ async def seed_database():
                     "cloude_storage": "https://github.com/sergeymorozov",
                     "academic_direction": "Облачные технологии",
                     "class_": "3 курс",
-                    "avg_score": 89.2
+                    "avg_score": 89.2,
                 },
                 {
                     "username": "olga_novikova_4",
@@ -141,26 +296,22 @@ async def seed_database():
                     "cloude_storage": "https://github.com/olganovikova",
                     "academic_direction": "Бэкенд-разработка",
                     "class_": "4 курс",
-                    "avg_score": 93.6
-                }
+                    "avg_score": 93.6,
+                },
             ]
 
-            # Создаем пользователей
-            users = []
+            users: list[UserModel] = []
             for user_data in users_data:
                 user = UserModel(**user_data)
                 session.add(user)
                 users.append(user)
 
             await session.commit()
-
-            # Обновляем пользователей с ID
             for user in users:
                 await session.refresh(user)
 
-            print(f"✅ Создано {len(users)} пользователей")
+            print(f"Created {len(users)} users")
 
-            # Добавляем стеки для пользователей
             stacks_data = [
                 (users[0], ["Python", "Django", "PostgreSQL"]),
                 (users[1], ["JavaScript", "React", "Node.js"]),
@@ -169,23 +320,18 @@ async def seed_database():
                 (users[4], ["Python", "FastAPI", "Docker"]),
                 (users[5], ["HTML", "CSS", "JavaScript", "Vue.js"]),
                 (users[6], ["Go", "Kubernetes", "AWS"]),
-                (users[7], ["PHP", "Laravel", "Redis"])
+                (users[7], ["PHP", "Laravel", "Redis"]),
             ]
 
             stacks_count = 0
             for user, stack_list in stacks_data:
                 for stack in stack_list:
-                    stack_obj = UserStackModel(
-                        user_id=user.id,
-                        stack=stack
-                    )
-                    session.add(stack_obj)
+                    session.add(UserStackModel(user_id=user.id, stack=stack))
                     stacks_count += 1
 
             await session.commit()
-            print(f"✅ Добавлено {stacks_count} стеков технологий")
+            print(f"Added {stacks_count} stack entries")
 
-            # Добавляем направления для пользователей
             directions_data = [
                 (users[0], ["Машинное обучение", "Большие данные"]),
                 (users[1], ["Фронтенд-разработка", "UX/UI дизайн"]),
@@ -194,141 +340,136 @@ async def seed_database():
                 (users[4], ["Нейронные сети", "Компьютерное зрение"]),
                 (users[5], ["Веб-дизайн", "Адаптивная верстка"]),
                 (users[6], ["Микросервисы", "Контейнеризация"]),
-                (users[7], ["API разработка", "Тестирование"])
+                (users[7], ["API разработка", "Тестирование"]),
             ]
 
             directions_count = 0
             for user, direction_list in directions_data:
                 for direction in direction_list:
-                    dir_obj = UserDirectionModel(
-                        user_id=user.id,
-                        other_directions=direction
+                    session.add(
+                        UserDirectionModel(
+                            user_id=user.id,
+                            other_directions=direction,
+                        )
                     )
-                    session.add(dir_obj)
                     directions_count += 1
 
             await session.commit()
-            print(f"✅ Добавлено {directions_count} направлений")
+            print(f"Added {directions_count} directions")
 
-            # Добавляем курсы для пользователей
             courses_data = [
                 (users[0], [
                     ("Python для начинающих", "https://stepik.org/course/python-basics"),
-                    ("Алгоритмы и структуры данных", "https://coursera.org/algorithms")
+                    ("Алгоритмы и структуры данных", "https://coursera.org/algorithms"),
                 ]),
                 (users[1], [
                     ("JavaScript основы", "https://learn.javascript.ru"),
-                    ("React разработка", "https://react.dev/learn")
+                    ("React разработка", "https://react.dev/learn"),
                 ]),
                 (users[2], [
                     ("Системное программирование на C++", "https://cppreference.com"),
-                    ("Операционные системы", "https://os-course.org")
+                    ("Операционные системы", "https://os-course.org"),
                 ]),
                 (users[3], [
                     ("Базы данных SQL", "https://sqlzoo.net"),
-                    ("Docker для разработчиков", "https://docker.com/get-started")
+                    ("Docker для разработчиков", "https://docker.com/get-started"),
                 ]),
                 (users[4], [
                     ("Машинное обучение", "https://mlcourse.ai"),
-                    ("Глубокое обучение", "https://deeplearning.ai")
+                    ("Глубокое обучение", "https://deeplearning.ai"),
                 ]),
                 (users[5], [
                     ("HTML и CSS", "https://htmlacademy.ru"),
-                    ("Vue.js основы", "https://vuejs.org/guide")
+                    ("Vue.js основы", "https://vuejs.org/guide"),
                 ]),
                 (users[6], [
                     ("Go программирование", "https://golang.org/learn"),
-                    ("Kubernetes основы", "https://kubernetes.io/docs/tutorials")
+                    ("Kubernetes основы", "https://kubernetes.io/docs/tutorials"),
                 ]),
                 (users[7], [
                     ("Laravel фреймворк", "https://laravel.com/docs"),
-                    ("PHP продвинутый", "https://php.net/manual")
-                ])
+                    ("PHP продвинутый", "https://php.net/manual"),
+                ]),
             ]
 
             courses_count = 0
             for user, course_list in courses_data:
                 for name_course, url_course in course_list:
-                    course_obj = UserCourseModel(
-                        user_id=user.id,
-                        name_course=name_course,
-                        url_course=url_course
+                    session.add(
+                        UserCourseModel(
+                            user_id=user.id,
+                            name_course=name_course,
+                            url_course=url_course,
+                        )
                     )
-                    session.add(course_obj)
                     courses_count += 1
 
             await session.commit()
-            print(f"✅ Добавлено {courses_count} курсов")
+            print(f"Added {courses_count} courses")
 
-            # Добавляем достижения для пользователей
-            achievements_data = [
-                (users[0], [
-                    ("Статья в студенческом журнале", "публикация", datetime(2024, 3, 15)),
-                    ("Участие в хакатоне", "конкурс", datetime(2024, 2, 20))
-                ]),
-                (users[1], [
-                    ("Диплом на конференции по веб-разработке", "награда", datetime(2024, 4, 10)),
-                    ("Открытый исходный код проект", "проект", datetime(2024, 1, 30))
-                ]),
-                (users[2], [
-                    ("Исследование по кибербезопасности", "публикация", datetime(2024, 3, 5)),
-                    ("Сертификат по Linux", "сертификат", datetime(2024, 2, 15))
-                ]),
-                (users[3], [
-                    ("Доклад на DevOps конференции", "презентация", datetime(2024, 4, 1)),
-                    ("Вклад в open source", "проект", datetime(2024, 1, 20))
-                ]),
-                (users[4], [
-                    ("Публикация по ИИ", "публикация", datetime(2024, 3, 25)),
-                    ("Участие в ML соревновании", "конкурс", datetime(2024, 2, 10))
-                ]),
-                (users[5], [
-                    ("Портфолио веб-дизайна", "проект", datetime(2024, 4, 5)),
-                    ("Сертификат по UX", "сертификат", datetime(2024, 1, 25))
-                ]),
-                (users[6], [
-                    ("Доклад по микросервисам", "презентация", datetime(2024, 3, 30)),
-                    ("Проект на Go", "проект", datetime(2024, 2, 5))
-                ]),
-                (users[7], [
-                    ("Статья по PHP", "публикация", datetime(2024, 4, 15)),
-                    ("Вклад в Laravel", "проект", datetime(2024, 1, 15))
-                ])
-            ]
+            achievement_counts = {
+                "publications": 0,
+                "events": 0,
+                "grants": 0,
+                "intellectual_properties": 0,
+                "innovations": 0,
+                "scholarships": 0,
+                "internships": 0,
+            }
 
-            achievements_count = 0
-            for user, achievement_list in achievements_data:
-                for name, type_, date in achievement_list:
-                    achievement_obj = UserScientificAchievementModel(
-                        user_id=user.id,
-                        name=name,
-                        type=type_,
-                        date=date
-                    )
-                    session.add(achievement_obj)
-                    achievements_count += 1
+            for index, user in enumerate(users):
+                catalog = build_user_achievement_catalog(user, index)
+
+                for payload in catalog["publications"]:
+                    session.add(UserPublicationModel(user_id=user.id, **payload))
+                    achievement_counts["publications"] += 1
+
+                for payload in catalog["events"]:
+                    session.add(UserEventModel(user_id=user.id, **payload))
+                    achievement_counts["events"] += 1
+
+                for payload in catalog["grants"]:
+                    session.add(UserGrantModel(user_id=user.id, **payload))
+                    achievement_counts["grants"] += 1
+
+                for payload in catalog["intellectual_properties"]:
+                    session.add(UserIntellectualPropertyModel(user_id=user.id, **payload))
+                    achievement_counts["intellectual_properties"] += 1
+
+                for payload in catalog["innovations"]:
+                    session.add(UserInnovationModel(user_id=user.id, **payload))
+                    achievement_counts["innovations"] += 1
+
+                for payload in catalog["scholarships"]:
+                    session.add(UserScholarshipModel(user_id=user.id, **payload))
+                    achievement_counts["scholarships"] += 1
+
+                for payload in catalog["internships"]:
+                    session.add(UserInternshipModel(user_id=user.id, **payload))
+                    achievement_counts["internships"] += 1
 
             await session.commit()
-            print(f"✅ Добавлено {achievements_count} достижений")
 
-            print(f"🎉 База данных успешно заполнена искусственными данными в папке {BASE_DIR}!")
-            print(f"📊 Итого: {len(users)} пользователей, {directions_count} направлений, {courses_count} курсов, {achievements_count} достижений")
+            total_achievement_rows = sum(achievement_counts.values())
+            print(f"Added {total_achievement_rows} achievement records")
+            print(
+                "Seed completed: "
+                f"{len(users)} users, "
+                f"{directions_count} directions, "
+                f"{courses_count} courses, "
+                f"{stacks_count} stack entries, "
+                f"{total_achievement_rows} achievement rows"
+            )
 
-        except Exception as e:
+        except Exception as exc:
             await session.rollback()
-            print(f"❌ Ошибка при заполнении базы данных: {str(e)}")
+            print(f"Seed failed: {exc}")
             raise
 
 
-async def main():
-    """
-    Основная функция для запуска скрипта сидинга.
-    """
-    # Создаем таблицы, если они не существуют
+async def main() -> None:
     await ensure_database_schema(engine)
-    print("📋 Таблицы базы данных проверены/созданы")
-
-    # Заполняем данными
+    print("Database schema is up to date")
     await seed_database()
 
 
