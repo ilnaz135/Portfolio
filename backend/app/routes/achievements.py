@@ -8,6 +8,11 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth import (
+    CurrentUserDep,
+    authorize_record_owner,
+    authorize_user_access,
+)
 from app.core.database import get_db_session
 from app.models import (
     UserEventModel,
@@ -87,6 +92,7 @@ async def delete_user_record(
     session: AsyncSession,
     model: type[Any],
     record_name: str,
+    current_user: UserModel,
 ) -> Response:
     result = await session.execute(select(model).where(model.id == record_id))
     record = result.scalars().first()
@@ -96,33 +102,30 @@ async def delete_user_record(
             detail=f"{record_name} with id {record_id} was not found",
         )
 
+    authorize_record_owner(record.user_id, current_user)
     await session.delete(record)
     await session.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.get(
-    "/{user_id}/achievements",
-    response_model=UserAchievementsSchema,
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements", response_model=UserAchievementsSchema)
 async def get_user_achievements(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserModel:
+    authorize_user_access(user_id, current_user)
     return await UserService(session).get_user_by_id(user_id)
 
 
-@router.get(
-    "/{user_id}/achievements/publications",
-    response_model=list[UserPublicationSchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/publications", response_model=list[UserPublicationSchema])
 async def get_user_publications(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserPublicationModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -134,14 +137,15 @@ async def get_user_publications(
 @router.post(
     "/{user_id}/achievements/publications",
     response_model=UserPublicationSchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_publication(
     user_id: int,
     publication_data: UserPublicationCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserPublicationModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -150,13 +154,10 @@ async def create_user_publication(
     )
 
 
-@router.delete(
-    "/achievements/publications/{publication_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/publications/{publication_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_publication(
     publication_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -164,19 +165,18 @@ async def delete_user_publication(
         session=session,
         model=UserPublicationModel,
         record_name="Publication",
+        current_user=current_user,
     )
 
 
-@router.get(
-    "/{user_id}/achievements/events",
-    response_model=list[UserEventSchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/events", response_model=list[UserEventSchema])
 async def get_user_events(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserEventModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -188,14 +188,15 @@ async def get_user_events(
 @router.post(
     "/{user_id}/achievements/events",
     response_model=UserEventSchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_event(
     user_id: int,
     event_data: UserEventCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserEventModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -204,13 +205,10 @@ async def create_user_event(
     )
 
 
-@router.delete(
-    "/achievements/events/{event_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/events/{event_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_event(
     event_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -218,19 +216,18 @@ async def delete_user_event(
         session=session,
         model=UserEventModel,
         record_name="Event",
+        current_user=current_user,
     )
 
 
-@router.get(
-    "/{user_id}/achievements/grants",
-    response_model=list[UserGrantSchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/grants", response_model=list[UserGrantSchema])
 async def get_user_grants(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserGrantModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -242,14 +239,15 @@ async def get_user_grants(
 @router.post(
     "/{user_id}/achievements/grants",
     response_model=UserGrantSchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_grant(
     user_id: int,
     grant_data: UserGrantCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserGrantModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -258,13 +256,10 @@ async def create_user_grant(
     )
 
 
-@router.delete(
-    "/achievements/grants/{grant_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/grants/{grant_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_grant(
     grant_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -272,19 +267,18 @@ async def delete_user_grant(
         session=session,
         model=UserGrantModel,
         record_name="Grant",
+        current_user=current_user,
     )
 
 
-@router.get(
-    "/{user_id}/achievements/intellectual",
-    response_model=list[UserIntellectualPropertySchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/intellectual", response_model=list[UserIntellectualPropertySchema])
 async def get_user_intellectual_properties(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserIntellectualPropertyModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -296,14 +290,15 @@ async def get_user_intellectual_properties(
 @router.post(
     "/{user_id}/achievements/intellectual",
     response_model=UserIntellectualPropertySchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_intellectual_property(
     user_id: int,
     intellectual_data: UserIntellectualPropertyCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserIntellectualPropertyModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -312,13 +307,10 @@ async def create_user_intellectual_property(
     )
 
 
-@router.delete(
-    "/achievements/intellectual/{intellectual_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/intellectual/{intellectual_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_intellectual_property(
     intellectual_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -326,19 +318,18 @@ async def delete_user_intellectual_property(
         session=session,
         model=UserIntellectualPropertyModel,
         record_name="Intellectual property",
+        current_user=current_user,
     )
 
 
-@router.get(
-    "/{user_id}/achievements/innovation",
-    response_model=list[UserInnovationSchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/innovation", response_model=list[UserInnovationSchema])
 async def get_user_innovations(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserInnovationModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -350,14 +341,15 @@ async def get_user_innovations(
 @router.post(
     "/{user_id}/achievements/innovation",
     response_model=UserInnovationSchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_innovation(
     user_id: int,
     innovation_data: UserInnovationCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserInnovationModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -366,13 +358,10 @@ async def create_user_innovation(
     )
 
 
-@router.delete(
-    "/achievements/innovation/{innovation_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/innovation/{innovation_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_innovation(
     innovation_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -380,19 +369,18 @@ async def delete_user_innovation(
         session=session,
         model=UserInnovationModel,
         record_name="Innovation",
+        current_user=current_user,
     )
 
 
-@router.get(
-    "/{user_id}/achievements/scholarships",
-    response_model=list[UserScholarshipSchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/scholarships", response_model=list[UserScholarshipSchema])
 async def get_user_scholarships(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserScholarshipModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -404,14 +392,15 @@ async def get_user_scholarships(
 @router.post(
     "/{user_id}/achievements/scholarships",
     response_model=UserScholarshipSchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_scholarship(
     user_id: int,
     scholarship_data: UserScholarshipCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserScholarshipModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -420,13 +409,10 @@ async def create_user_scholarship(
     )
 
 
-@router.delete(
-    "/achievements/scholarships/{scholarship_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/scholarships/{scholarship_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_scholarship(
     scholarship_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -434,19 +420,18 @@ async def delete_user_scholarship(
         session=session,
         model=UserScholarshipModel,
         record_name="Scholarship",
+        current_user=current_user,
     )
 
 
-@router.get(
-    "/{user_id}/achievements/internships",
-    response_model=list[UserInternshipSchema],
-    tags=["Achievements"],
-)
+@router.get("/{user_id}/achievements/internships", response_model=list[UserInternshipSchema])
 async def get_user_internships(
     user_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
     limit: int = -1,
 ) -> list[UserInternshipModel]:
+    authorize_user_access(user_id, current_user)
     return await list_user_records(
         user_id=user_id,
         session=session,
@@ -458,14 +443,15 @@ async def get_user_internships(
 @router.post(
     "/{user_id}/achievements/internships",
     response_model=UserInternshipSchema,
-    tags=["Achievements"],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user_internship(
     user_id: int,
     internship_data: UserInternshipCreateSchema,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> UserInternshipModel:
+    authorize_user_access(user_id, current_user)
     return await create_user_record(
         user_id=user_id,
         session=session,
@@ -474,13 +460,10 @@ async def create_user_internship(
     )
 
 
-@router.delete(
-    "/achievements/internships/{internship_id}",
-    tags=["Achievements"],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
+@router.delete("/achievements/internships/{internship_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_internship(
     internship_id: int,
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
 ) -> Response:
     return await delete_user_record(
@@ -488,4 +471,5 @@ async def delete_user_internship(
         session=session,
         model=UserInternshipModel,
         record_name="Internship",
+        current_user=current_user,
     )

@@ -1,53 +1,53 @@
-"""
-Portfolio Backend API - Main Application
+"""Portfolio backend entrypoint."""
 
-Этот модуль создает и запускает основное FastAPI приложение,
-используя модульную архитектуру.
-"""
+from __future__ import annotations
+
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import settings
+from app.core.database import ensure_database_schema
+from app.core.exceptions import (
+    PortfolioException,
+    general_exception_handler,
+    portfolio_exception_handler,
+    sqlalchemy_exception_handler,
+)
 from app.core.logging import setup_logging
 from app.routes import api_router
 
 
-def create_application() -> FastAPI:
-    """
-    Создать и настроить FastAPI приложение.
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    """Ensure the database schema is ready before serving requests."""
 
-    Returns:
-        Настроенное FastAPI приложение
-    """
-    # Настроить логирование
+    await ensure_database_schema()
+    yield
+
+
+def create_application() -> FastAPI:
+    """Create and configure the FastAPI application."""
+
     setup_logging()
 
-    # Создать приложение FastAPI
     app = FastAPI(
         title=settings.app_name,
         description=settings.app_description,
         version=settings.app_version,
         docs_url="/docs",
         redoc_url="/redoc",
-        openapi_url="/openapi.json"
+        openapi_url="/openapi.json",
+        lifespan=lifespan,
     )
-
-    # Зарегистрировать обработчики исключений
-    from app.core.exceptions import (
-        portfolio_exception_handler,
-        sqlalchemy_exception_handler,
-        general_exception_handler,
-        PortfolioException
-    )
-    from sqlalchemy.exc import SQLAlchemyError
 
     app.add_exception_handler(PortfolioException, portfolio_exception_handler)
     app.add_exception_handler(SQLAlchemyError, sqlalchemy_exception_handler)
     app.add_exception_handler(Exception, general_exception_handler)
 
-    # Разрешить CORS для сайта 127.0.0.1:5500
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -56,27 +56,18 @@ def create_application() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Включить маршруты API
     app.include_router(api_router, prefix="/api/v1")
-
     return app
 
 
-# Создать экземпляр приложения
 app = create_application()
 
 
 if __name__ == "__main__":
-    """
-    Запустить FastAPI приложение с сервером Uvicorn.
-
-    Сервер будет доступен по адресу http://localhost:8000
-    Документация API автоматически доступна по адресу http://localhost:8000/docs
-    """
     uvicorn.run(
         "main:app",
         host=settings.host,
         port=settings.port,
         reload=settings.debug,
-        log_level="info"
+        log_level="info",
     )

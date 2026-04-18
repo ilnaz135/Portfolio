@@ -1,55 +1,47 @@
-"""
-Конфигурация приложения.
+"""Application settings."""
 
-Этот модуль содержит все настройки приложения, переменные окружения
-и конфигурацию базы данных.
-"""
+from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-class Settings(BaseSettings):
-    """
-    Настройки приложения, загружаемые из переменных окружения.
-    """
 
-    # Настройки приложения
+class Settings(BaseSettings):
+    """Application settings loaded from environment variables."""
+
     app_name: str = "Portfolio Backend API"
     app_version: str = "1.0.0"
-    app_description: str = "REST API для управления портфолио пользователей с академическими достижениями, курсами и научными успехами."
+    app_description: str = (
+        "REST API for user portfolio management with profile, courses and achievements."
+    )
 
-    # Настройки сервера
     host: str = "0.0.0.0"
     port: int = 8000
     debug: bool = False
 
-    # Настройки базы данных
     database_url: str = f"sqlite+aiosqlite:///{BASE_DIR / 'portfolio.db'}"
 
-    # Настройки CORS
     cors_origins: list[str] = ["*"]
     cors_allow_credentials: bool = True
     cors_allow_methods: list[str] = ["*"]
     cors_allow_headers: list[str] = ["*"]
 
-    # Настройки пагинации
     default_page_size: int = 10
     max_page_size: int = 100
+
+    access_token_ttl_minutes: int = 15
+    refresh_token_ttl_days: int = 7
+    refresh_token_ttl_days_remember_me: int = 30
+    password_pepper: str = "portfolio-pepper"
 
     @field_validator("debug", mode="before")
     @classmethod
     def parse_debug_value(cls, value: Any) -> bool:
-        """
-        Нормализовать значение DEBUG из окружения.
-
-        Поддерживает строковые режимы вроде `release` и `debug`,
-        чтобы приложение не падало на старте из-за нестандартного значения.
-        """
         if isinstance(value, bool):
             return value
 
@@ -67,5 +59,4 @@ class Settings(BaseSettings):
         case_sensitive = False
 
 
-# Создаем экземпляр настроек
 settings = Settings()

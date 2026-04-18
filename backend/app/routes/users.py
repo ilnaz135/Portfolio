@@ -1,197 +1,102 @@
-"""
-Portfolio Backend API - User Routes
+"""User routes."""
 
-Этот модуль содержит маршруты для управления пользователями.
-"""
+from __future__ import annotations
 
 from typing import List
-from fastapi import APIRouter, Depends
+
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth import CurrentUserDep, authorize_user_access, require_admin
 from app.core.database import get_db_session
-from app.services.user_service import UserService
 from app.schemas import (
+    EmailCheckSchema,
     UserCreateSchema,
-    UserUpdateSchema,
     UserSchema,
-    UserLoginSchema,
-    UserEmailLoginSchema,
+    UserUpdateSchema,
     UsernameCheckSchema,
-    EmailCheckSchema
 )
+from app.services.user_service import UserService
 
 router = APIRouter()
 SessionDep = Depends(get_db_session)
 
 
-@router.post("", response_model=UserSchema, tags=["Users"], status_code=201)
+@router.post("", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: UserCreateSchema,
-    session: AsyncSession = SessionDep
-):
-    """
-    Создать новый профиль пользователя.
+    session: AsyncSession = SessionDep,
+) -> UserSchema:
+    """Create a user profile."""
 
-    Args:
-        user_data: Данные для создания пользователя (имя пользователя должно быть уникальным)
-        session: Зависимость сессии базы данных
-
-    Returns:
-        Созданный объект пользователя со всеми полями
-    """
-    user_service = UserService(session)
-    return await user_service.create_user(user_data)
+    return await UserService(session).create_user(user_data)
 
 
-@router.get("/{user_id}", response_model=UserSchema, tags=["Users"])
+@router.post("/check-username", response_model=bool)
+async def check_username(
+    check_data: UsernameCheckSchema,
+    session: AsyncSession = SessionDep,
+) -> bool:
+    """Check whether a username is already used."""
+
+    return await UserService(session).username_exists(check_data.username)
+
+
+@router.post("/check-email", response_model=bool)
+async def check_email(
+    check_data: EmailCheckSchema,
+    session: AsyncSession = SessionDep,
+) -> bool:
+    """Check whether an email is already used."""
+
+    return await UserService(session).email_exists(check_data.email)
+
+
+@router.get("", response_model=List[UserSchema])
+async def get_all_users(
+    current_user: CurrentUserDep,
+    session: AsyncSession = SessionDep,
+    limit: int = 10,
+) -> List[UserSchema]:
+    """Return all users for administrators."""
+
+    require_admin(current_user)
+    return await UserService(session).get_all_users(limit)
+
+
+@router.get("/{user_id}", response_model=UserSchema)
 async def get_user(
     user_id: int,
-    session: AsyncSession = SessionDep
-):
-    """
-    Получить конкретного пользователя по ID со всеми связанными данными.
-
-    Args:
-        user_id: ID пользователя для получения
-        session: Зависимость сессии базы данных
-
-    Returns:
-        Объект пользователя со всеми связями (направления, курсы, достижения)
-    """
-    user_service = UserService(session)
-    return await user_service.get_user_by_id(user_id)
-
-
-@router.get("", response_model=List[UserSchema], tags=["Users"])
-async def get_all_users(
+    current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
-    limit: int = 10
-):
-    """
-    Получить всех пользователей, отсортированных по дате создания (сначала самые новые).
+) -> UserSchema:
+    """Return a user profile with related data."""
 
-    Args:
-        session: Зависимость сессии базы данных
-        limit: Максимальное количество пользователей для возврата (limit=-1 для всех)
-
-    Returns:
-        Список объектов пользователей, отсортированных по created_at desc
-    """
-    user_service = UserService(session)
-    return await user_service.get_all_users(limit)
+    authorize_user_access(user_id, current_user)
+    return await UserService(session).get_user_by_id(user_id)
 
 
-@router.put("/{user_id}", response_model=UserSchema, tags=["Users"])
+@router.put("/{user_id}", response_model=UserSchema)
 async def update_user(
     user_id: int,
     user_data: UserUpdateSchema,
-    session: AsyncSession = SessionDep
-):
-    """
-    Обновить информацию о пользователе (поддерживается частичное обновление).
+    current_user: CurrentUserDep,
+    session: AsyncSession = SessionDep,
+) -> UserSchema:
+    """Update a user profile."""
 
-    Args:
-        user_id: ID пользователя для обновления
-        user_data: Обновленные данные пользователя
-        session: Зависимость сессии базы данных
-
-    Returns:
-        Обновленный объект пользователя
-    """
-    user_service = UserService(session)
-    return await user_service.update_user(user_id, user_data)
+    authorize_user_access(user_id, current_user)
+    return await UserService(session).update_user(user_id, user_data)
 
 
-@router.delete("/{user_id}", tags=["Users"], status_code=204)
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
     user_id: int,
-    session: AsyncSession = SessionDep
-):
-    """
-    Удалить пользователя и все связанные данные (каскадное удаление).
+    current_user: CurrentUserDep,
+    session: AsyncSession = SessionDep,
+) -> Response:
+    """Delete a user profile."""
 
-    Args:
-        user_id: ID пользователя для удаления
-        session: Зависимость сессии базы данных
-    """
-    user_service = UserService(session)
-    await user_service.delete_user(user_id)
-
-
-@router.post("/login", response_model=int, tags=["Users"])
-async def login_user(
-    login_data: UserLoginSchema,
-    session: AsyncSession = SessionDep
-):
-    """
-    Проверить логин и пароль пользователя.
-
-    Args:
-        login_data: Данные для входа (username и password)
-        session: Зависимость сессии базы данных
-
-    Returns:
-        ID пользователя если пользователь найден и пароль верный, иначе -1
-    """
-    user_service = UserService(session)
-    return await user_service.authenticate_user(login_data.username, login_data.password)
-
-
-@router.post("/login/email", response_model=int, tags=["Users"])
-async def login_user_by_email(
-    login_data: UserEmailLoginSchema,
-    session: AsyncSession = SessionDep
-):
-    """
-    Проверить email и пароль пользователя.
-
-    Args:
-        login_data: Данные для входа (email и password)
-        session: Зависимость сессии базы данных
-
-    Returns:
-        ID пользователя если пользователь найден и пароль верный, иначе -1
-    """
-    user_service = UserService(session)
-    return await user_service.authenticate_user_by_email(
-        login_data.email,
-        login_data.password
-    )
-
-
-@router.post("/check-username", response_model=bool, tags=["Users"])
-async def check_username(
-    check_data: UsernameCheckSchema,
-    session: AsyncSession = SessionDep
-):
-    """
-    Проверить, занят ли username.
-
-    Args:
-        check_data: Данные для проверки username
-        session: Зависимость сессии базы данных
-
-    Returns:
-        True если username уже существует, иначе False
-    """
-    user_service = UserService(session)
-    return await user_service.username_exists(check_data.username)
-
-
-@router.post("/check-email", response_model=bool, tags=["Users"])
-async def check_email(
-    check_data: EmailCheckSchema,
-    session: AsyncSession = SessionDep
-):
-    """
-    Проверить, занят ли email.
-
-    Args:
-        check_data: Данные для проверки email
-        session: Зависимость сессии базы данных
-
-    Returns:
-        True если email уже существует, иначе False
-    """
-    user_service = UserService(session)
-    return await user_service.email_exists(check_data.email)
+    authorize_user_access(user_id, current_user)
+    await UserService(session).delete_user(user_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

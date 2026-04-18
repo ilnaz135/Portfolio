@@ -9,6 +9,7 @@ from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.database import ensure_database_schema
+from app.core.security import hash_password
 from app.models import (
     UserCourseModel,
     UserDirectionModel,
@@ -301,8 +302,15 @@ async def seed_database() -> None:
             ]
 
             users: list[UserModel] = []
-            for user_data in users_data:
-                user = UserModel(**user_data)
+            for index, user_data in enumerate(users_data):
+                payload = dict(user_data)
+                plain_password = payload.pop("password")
+                user = UserModel(
+                    **payload,
+                    password="__legacy_hidden__",
+                    password_hash=hash_password(plain_password),
+                    role="admin" if index == 0 else "user",
+                )
                 session.add(user)
                 users.append(user)
 

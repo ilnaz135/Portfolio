@@ -2,21 +2,24 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class ORMModel(BaseModel):
+    """Base schema configured for SQLAlchemy models."""
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class UserDirectionCreateSchema(BaseModel):
     other_directions: str = Field(..., min_length=1, max_length=150)
 
 
-class UserDirectionSchema(UserDirectionCreateSchema):
+class UserDirectionSchema(ORMModel, UserDirectionCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserCourseCreateSchema(BaseModel):
@@ -24,23 +27,17 @@ class UserCourseCreateSchema(BaseModel):
     url_course: str = Field(..., min_length=1, max_length=500)
 
 
-class UserCourseSchema(UserCourseCreateSchema):
+class UserCourseSchema(ORMModel, UserCourseCreateSchema):
     id: int
 
-    class Config:
-        from_attributes = True
 
-
-class AchievementSummarySchema(BaseModel):
+class AchievementSummarySchema(ORMModel):
     name: str
     type: str
     date: date
     category: str
     status: str
     points: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserPublicationCreateSchema(BaseModel):
@@ -52,11 +49,8 @@ class UserPublicationCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserPublicationSchema(UserPublicationCreateSchema):
+class UserPublicationSchema(ORMModel, UserPublicationCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserEventCreateSchema(BaseModel):
@@ -68,11 +62,8 @@ class UserEventCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserEventSchema(UserEventCreateSchema):
+class UserEventSchema(ORMModel, UserEventCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserGrantCreateSchema(BaseModel):
@@ -84,11 +75,8 @@ class UserGrantCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserGrantSchema(UserGrantCreateSchema):
+class UserGrantSchema(ORMModel, UserGrantCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserIntellectualPropertyCreateSchema(BaseModel):
@@ -100,11 +88,8 @@ class UserIntellectualPropertyCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserIntellectualPropertySchema(UserIntellectualPropertyCreateSchema):
+class UserIntellectualPropertySchema(ORMModel, UserIntellectualPropertyCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserInnovationCreateSchema(BaseModel):
@@ -115,11 +100,8 @@ class UserInnovationCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserInnovationSchema(UserInnovationCreateSchema):
+class UserInnovationSchema(ORMModel, UserInnovationCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserScholarshipCreateSchema(BaseModel):
@@ -130,11 +112,8 @@ class UserScholarshipCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserScholarshipSchema(UserScholarshipCreateSchema):
+class UserScholarshipSchema(ORMModel, UserScholarshipCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserInternshipCreateSchema(BaseModel):
@@ -147,14 +126,11 @@ class UserInternshipCreateSchema(BaseModel):
     points: int = Field(..., ge=0, le=1000)
 
 
-class UserInternshipSchema(UserInternshipCreateSchema):
+class UserInternshipSchema(ORMModel, UserInternshipCreateSchema):
     id: int
 
-    class Config:
-        from_attributes = True
 
-
-class UserAchievementCollectionsSchema(BaseModel):
+class UserAchievementCollectionsSchema(ORMModel):
     publications: List[UserPublicationSchema] = Field(default_factory=list)
     events: List[UserEventSchema] = Field(default_factory=list)
     grants: List[UserGrantSchema] = Field(default_factory=list)
@@ -165,9 +141,6 @@ class UserAchievementCollectionsSchema(BaseModel):
     scholarships: List[UserScholarshipSchema] = Field(default_factory=list)
     internships: List[UserInternshipSchema] = Field(default_factory=list)
     scientific_achievements: List[AchievementSummarySchema] = Field(default_factory=list)
-
-    class Config:
-        from_attributes = True
 
 
 class UserAchievementsSchema(UserAchievementCollectionsSchema):
@@ -187,8 +160,7 @@ class UserCreateSchema(BaseModel):
     class_: str = Field(..., alias="class", max_length=50)
     avg_score: float = Field(..., ge=0, le=100)
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class UserUpdateSchema(BaseModel):
@@ -198,30 +170,25 @@ class UserUpdateSchema(BaseModel):
     last_name: str | None = Field(None, min_length=1, max_length=100)
     patronymic: str | None = Field(None, max_length=100)
     cloude_storage: str | None = Field(None, max_length=255)
-    academic_direction: str | None = Field(None, min_length=1, max_length=150)
+    academic_direction: str | None = Field(None, max_length=150)
     user_directions: str | None = Field(None, max_length=500)
-    class_: str | None = Field(None, alias="class", min_length=1, max_length=50)
+    class_: str | None = Field(None, alias="class", max_length=50)
     avg_score: float | None = Field(None, ge=0, le=100)
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class UserStackCreateSchema(BaseModel):
     stack: str = Field(..., min_length=1, max_length=100)
 
 
-class UserStackSchema(UserStackCreateSchema):
+class UserStackSchema(ORMModel, UserStackCreateSchema):
     id: int
-
-    class Config:
-        from_attributes = True
 
 
 class UserSchema(UserAchievementCollectionsSchema):
     id: int
     username: str
-    password: str
     email: str
     user_directions: str | None
     first_name: str
@@ -231,23 +198,39 @@ class UserSchema(UserAchievementCollectionsSchema):
     academic_direction: str
     class_: str = Field(alias="class_")
     avg_score: float
+    role: str
+    is_active: bool
+    last_login_at: datetime | None
+    created_at: datetime
     directions: List[UserDirectionSchema] = Field(default_factory=list)
     courses: List[UserCourseSchema] = Field(default_factory=list)
     stacks: List[UserStackSchema] = Field(default_factory=list)
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+
+class AuthRegisterSchema(UserCreateSchema):
+    remember_me: bool = False
 
 
-class UserLoginSchema(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+class AuthLoginSchema(BaseModel):
+    login: str = Field(..., min_length=3, max_length=255)
     password: str = Field(..., min_length=6, max_length=255)
+    remember_me: bool = False
 
 
-class UserEmailLoginSchema(BaseModel):
-    email: str = Field(..., min_length=5, max_length=255)
-    password: str = Field(..., min_length=6, max_length=255)
+class AuthRefreshSchema(BaseModel):
+    refresh_token: str = Field(..., min_length=20, max_length=255)
+
+
+class AuthTokenSchema(BaseModel):
+    token_type: str = "Bearer"
+    access_token: str
+    refresh_token: str
+    access_expires_at: datetime
+    refresh_expires_at: datetime
+
+
+class AuthSessionSchema(AuthTokenSchema):
+    user: UserSchema
 
 
 class UsernameCheckSchema(BaseModel):

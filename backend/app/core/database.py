@@ -1,9 +1,6 @@
-"""
-Конфигурация базы данных.
+"""Database configuration and lightweight schema migration helpers."""
 
-Этот модуль содержит настройки подключения к базе данных,
-создание движка SQLAlchemy и фабрику сессий.
-"""
+from __future__ import annotations
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
@@ -16,39 +13,27 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
+from app.core.security import hash_password
 
 
 class Base(DeclarativeBase):
-    """
-    Базовый класс для всех моделей SQLAlchemy.
-    Предоставляет декларативную базовую конфигурацию.
-    """
-    pass
+    """Base class for SQLAlchemy models."""
 
 
-# Создание асинхронного движка базы данных
 engine = create_async_engine(
     settings.database_url,
     echo=settings.debug,
-    future=True
+    future=True,
 )
 
-# Фабрика асинхронных сессий для подключений к базе данных
 async_session_maker = async_sessionmaker(
     engine,
     class_=AsyncSession,
-    expire_on_commit=False
+    expire_on_commit=False,
 )
 
 
 async def get_db_session() -> AsyncSession:
-    """
-    Функция зависимости, которая предоставляет асинхронную сессию базы данных
-    для каждого запроса и обеспечивает правильную очистку.
-
-    Yields:
-        AsyncSession: Асинхронная сессия базы данных
-    """
     async with async_session_maker() as session:
         try:
             yield session
@@ -57,27 +42,16 @@ async def get_db_session() -> AsyncSession:
 
 
 async def ensure_database_schema(db_engine: AsyncEngine | None = None) -> None:
-    """
-    Создать таблицы и применить простые миграции схемы.
-
-    Args:
-        db_engine: Движок БД. Если не передан, используется основной engine.
-    """
     import app.models  # noqa: F401
 
     target_engine = db_engine or engine
     async with target_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await ensure_users_email_schema(conn)
+        await ensure_users_auth_schema(conn)
 
 
 async def ensure_users_email_schema(conn: AsyncConnection) -> None:
-    """
-    Убедиться, что таблица users содержит колонку email и уникальный индекс.
-
-    Args:
-        conn: Активное соединение с БД
-    """
     columns_result = await conn.exec_driver_sql("PRAGMA table_info(users)")
     columns = {row[1] for row in columns_result.fetchall()}
 
@@ -114,5 +88,91 @@ async def ensure_users_email_schema(conn: AsyncConnection) -> None:
         )
 
 
-# Тип аннотации для инъекции зависимости сессии
+async def ensure_users_auth_schema(conn: AsyncConnection) -> None:
+    columns_result = await conn.exec_driver_sql("PRAGMA table_info(users)")
+    columns = {row[1] for row in columns_result.fetchall()}
+
+    if "password_hash" not in columns:
+        await conn.execute(
+            text(
+                "ALTER TABLE users ADD COLUMN password_hash VARCHAR(255) NOT NULL DEFAULT ''"
+            )
+        )
+
+    if "role" not in columns:
+        await conn.execute(
+            text(
+                "ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user'"
+            )
+        )
+
+    if "is_active" not in columns:
+        await conn.execute(
+            text(
+                "ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT 1"
+            )
+        )
+
+    if "last_login_at" not in columns:
+        await conn.execute(
+            text("ALTER TABLE users ADD COLUMN last_login_at DATETIME NULL")
+        )
+
+    users_result = await conn.exec_driver_sql(
+        "SELECT id, password, password_hash FROM users"
+    )
+    for user_id, legacy_password, password_hash in users_result.fetchall():
+        if (password_hash or "").strip():
+            continue
+
+        if (legacy_password or "").strip():
+            await conn.execute(
+                text(
+                    """
+                    UPDATE users
+                    SET password_hash = :password_hash
+                    WHERE id = :user_id
+                    """
+                ),
+                {
+                    "password_hash": hash_password(legacy_password),
+                    "user_id": user_id,
+                },
+            )
+
+    await conn.execute(
+        text(
+            """
+            UPDATE users
+            SET role = 'user'
+            WHERE role IS NULL OR TRIM(role) = ''
+            """
+        )
+    )
+
+    await conn.execute(
+        text(
+            """
+            UPDATE users
+            SET is_active = 1
+            WHERE is_active IS NULL
+            """
+        )
+    )
+
+    await conn.execute(
+        text(
+            """
+            UPDATE users
+            SET password = '__legacy_hidden__'
+            WHERE password IS NOT NULL
+              AND TRIM(password) != ''
+              AND password != '__legacy_hidden__'
+              AND password_hash IS NOT NULL
+              AND TRIM(password_hash) != ''
+            """
+        )
+    )
+
+
 SessionDep = AsyncSession

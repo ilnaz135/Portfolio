@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from typing import List, Optional
+from typing import List
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -15,6 +15,7 @@ from app.core.exceptions import (
     UserNotFoundException,
     UsernameAlreadyExistsException,
 )
+from app.core.security import hash_password
 from app.models import UserModel
 from app.schemas import UserCreateSchema, UserUpdateSchema
 
@@ -27,7 +28,7 @@ PROFILE_GENERATION_VARIANTS = [
     ("Искусственный интеллект", "Нейронные сети"),
     ("Веб-разработка", "Веб-дизайн"),
     ("Облачные технологии", "Микросервисы"),
-    ("Бэкенд-разработка", "API разработка"),
+    ("Бэкенд-разработка", "API-разработка"),
 ]
 
 PROFILE_GENERATION_CLASSES = [
@@ -52,7 +53,7 @@ USER_RELATION_LOADS = (
 
 
 class UserService:
-    """Business logic for user CRUD and authentication."""
+    """Business logic for user CRUD."""
 
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -61,18 +62,19 @@ class UserService:
         try:
             user_data = self._apply_generated_profile_defaults(user_data)
 
-            existing_user = await self._get_user_by_username(user_data.username)
+            existing_user = await self.get_user_by_username(user_data.username)
             if existing_user:
                 raise UsernameAlreadyExistsException(user_data.username)
 
-            existing_email = await self._get_user_by_email(user_data.email)
+            existing_email = await self.get_user_by_email(user_data.email)
             if existing_email:
                 raise EmailAlreadyExistsException(user_data.email)
 
             new_user = UserModel(
                 username=user_data.username,
-                password=user_data.password,
-                email=user_data.email,
+                password="__legacy_hidden__",
+                password_hash=hash_password(user_data.password),
+                email=user_data.email.lower(),
                 user_directions=user_data.user_directions,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
@@ -133,11 +135,18 @@ class UserService:
             if (
                 "email" in update_data
                 and update_data["email"] is not None
-                and update_data["email"] != user.email
+                and update_data["email"].lower() != user.email
             ):
-                existing_email = await self._get_user_by_email(update_data["email"])
+                normalized_email = update_data["email"].lower()
+                existing_email = await self.get_user_by_email(normalized_email)
                 if existing_email and existing_email.id != user.id:
-                    raise EmailAlreadyExistsException(update_data["email"])
+                    raise EmailAlreadyExistsException(normalized_email)
+                update_data["email"] = normalized_email
+
+            password = update_data.pop("password", None)
+            if password:
+                user.password_hash = hash_password(password)
+                user.password = "__legacy_hidden__"
 
             for field, value in update_data.items():
                 if value is not None:
@@ -167,33 +176,21 @@ class UserService:
             await self.session.rollback()
             raise
 
-    async def authenticate_user(self, username: str, password: str) -> int:
-        user = await self._get_user_by_username(username)
-        if user and user.password == password:
-            return user.id
-        return -1
-
-    async def authenticate_user_by_email(self, email: str, password: str) -> int:
-        user = await self._get_user_by_email(email)
-        if user and user.password == password:
-            return user.id
-        return -1
-
     async def username_exists(self, username: str) -> bool:
-        user = await self._get_user_by_username(username)
+        user = await self.get_user_by_username(username)
         return user is not None
 
     async def email_exists(self, email: str) -> bool:
-        user = await self._get_user_by_email(email)
+        user = await self.get_user_by_email(email.lower())
         return user is not None
 
-    async def _get_user_by_username(self, username: str) -> Optional[UserModel]:
+    async def get_user_by_username(self, username: str) -> UserModel | None:
         stmt = select(UserModel).where(UserModel.username == username)
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def _get_user_by_email(self, email: str) -> Optional[UserModel]:
-        stmt = select(UserModel).where(UserModel.email == email)
+    async def get_user_by_email(self, email: str) -> UserModel | None:
+        stmt = select(UserModel).where(UserModel.email == email.lower())
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
@@ -202,13 +199,14 @@ class UserService:
         if not UserService._should_generate_profile_defaults(user_data):
             return user_data
 
-        academic_direction, _ = random.choice(PROFILE_GENERATION_VARIANTS)
+        academic_direction, generated_focus = random.choice(PROFILE_GENERATION_VARIANTS)
         generated_class = random.choice(PROFILE_GENERATION_CLASSES)
         generated_avg_score = round(random.uniform(70.0, 100.0), 1)
 
         return user_data.model_copy(
             update={
                 "academic_direction": academic_direction,
+                "user_directions": generated_focus,
                 "class_": generated_class,
                 "avg_score": generated_avg_score,
             }

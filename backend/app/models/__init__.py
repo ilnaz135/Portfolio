@@ -5,7 +5,16 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any, List
 
-from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -18,7 +27,9 @@ class UserModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(255), nullable=False)
+    # Legacy column kept for SQLite compatibility while auth uses password_hash.
+    password: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False, default="")
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     user_directions: Mapped[str | None] = mapped_column(Text, nullable=True)
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -28,6 +39,9 @@ class UserModel(Base):
     academic_direction: Mapped[str] = mapped_column(String(150), nullable=False)
     class_: Mapped[str] = mapped_column("class", String(50), nullable=False)
     avg_score: Mapped[float] = mapped_column(Float, nullable=False)
+    role: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -71,6 +85,10 @@ class UserModel(Base):
         cascade="all, delete-orphan",
     )
     stacks: Mapped[List["UserStackModel"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    auth_sessions: Mapped[List["AuthSessionModel"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
     )
@@ -173,6 +191,46 @@ class UserModel(Base):
 
         items.sort(key=lambda item: item["date"], reverse=True)
         return items
+
+
+class AuthSessionModel(Base):
+    """Server-side access/refresh token session."""
+
+    __tablename__ = "auth_sessions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    access_token_hash: Mapped[str] = mapped_column(
+        String(64),
+        unique=True,
+        nullable=False,
+    )
+    refresh_token_hash: Mapped[str] = mapped_column(
+        String(64),
+        unique=True,
+        nullable=False,
+    )
+    access_expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    refresh_expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    remember_me: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    user_agent: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    ip_address: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+    last_used_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    user: Mapped["UserModel"] = relationship(back_populates="auth_sessions")
 
 
 class UserDirectionModel(Base):
