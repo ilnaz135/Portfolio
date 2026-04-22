@@ -1,498 +1,328 @@
-// ======================== ОСНОВНОЙ КОД ========================
-
-const tabButtons = document.querySelectorAll(".tab-btn-achievement");
-const searchInput = document.getElementById("searchInput");
-const filterButton = document.querySelector(".filter-btn");
-const logoutButton = document.getElementById("logoutBtn");
-const settingsWrapper = document.getElementById("settingsMenuWrapper");
-const exportPortfolioBtn = document.getElementById("exportPortfolioBtn");
-const exportAchievementsBtn = document.getElementById("exportAchievementsBtn");
-
-const contentsMap = {
-  publications: document.getElementById("publications-content"),
-  events: document.getElementById("events-content"),
-  grants: document.getElementById("grants-content"),
-  intellectual: document.getElementById("intellectual-content"),
-  innovation: document.getElementById("innovation-content"),
-  scholarships: document.getElementById("scholarships-content"),
-  internships: document.getElementById("internships-content"),
-  all: document.getElementById("all-content"),
-};
-
-// Ссылки на таблицы для быстрого доступа
-const tablesMap = {
-  publications: document.getElementById("publications-table"),
-  events: document.getElementById("events-table"),
-  grants: document.getElementById("grants-table"),
-  intellectual: document.getElementById("intellectual-table"),
-  innovation: document.getElementById("innovation-table"),
-  scholarships: document.getElementById("scholarships-table"),
-  internships: document.getElementById("internships-table"),
-};
-
-let achievementsData = {
-  publications: [],
-  events: [],
-  grants: [],
-  intellectual_properties: [],
-  innovations: [],
-  scholarships: [],
-  internships: [],
-  scientific_achievements: []
-};
-
-let currentUserId = null;
-let isLoading = false;
-let dataLoaded = false;
-
-// ======================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ========================
-
-function escapeHtml(value) {
-  if (value === null || value === undefined) return "-";
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+/* Базовые стили для страницы */
+.achievements-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b2b5c;
+  margin: 0 0 4px 0;
+}
+body.dark-mode .achievements-header h1 {
+  color: #ffffff;
 }
 
-function formatDate(value) {
-  if (!value) return "-";
-  if (typeof value !== "string") return String(value);
-  const parts = value.split("-");
-  if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
-  return value;
+.main-content {
+  display: block;
+  padding: 24px 32px 40px;
 }
 
-function getBadgeClass(status) {
-  if (!status) return "";
-  const statusLower = status.toLowerCase();
-  if (statusLower.includes("опубликован") || statusLower === "published") return "published";
-  if (statusLower.includes("принят") || statusLower === "accepted") return "accepted";
-  if (statusLower.includes("рассмотр") || statusLower === "review") return "review";
-  return "";
+.tabs-container {
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 28px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+body.dark-mode .tabs-container {
+  background-color: #0f172a;
+  border-color: #334155;
 }
 
-function renderTableInElement(tableElement, rows, columns) {
-  if (!tableElement) return;
-  
-  const tbody = tableElement.querySelector("tbody");
-  if (!tbody) return;
+.tab-btn-achievement {
+  background: transparent;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  color: #475569;
+  cursor: pointer;
+  border-radius: 40px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+body.dark-mode .tab-btn-achievement {
+  color: #94a3b8;
+}
+.tab-btn-achievement:hover {
+  background-color: #f1f5f9;
+  color: #0b2b5c;
+}
+body.dark-mode .tab-btn-achievement:hover {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+.tab-btn-achievement.active {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  color: #1e3a8a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+body.dark-mode .tab-btn-achievement.active {
+  background: #1e293b;
+  color: #60a5fa;
+  border: 1px solid #3b82f6;
+}
 
-  if (!rows || rows.length === 0) {
-    tbody.innerHTML = `<tr class="empty-row"><td colspan="${columns.length}" style="text-align:center; padding:40px;"><i class="fas fa-folder-open"></i> Нет данных</td></tr>`;
-    return;
+/* Кнопки экспорта */
+.export-buttons {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+body.dark-mode .export-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+.export-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+body.dark-mode .export-btn:hover {
+  background: #334155;
+}
+.export-btn i {
+  font-size: 14px;
+}
+.btn-text {
+  display: inline;
+}
+
+/* Секции в "Все достижения" */
+.all-section {
+  margin-bottom: 40px;
+}
+.all-section:last-child {
+  margin-bottom: 0;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+.section-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0b2b5c;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.dark-mode .section-header h3 {
+  color: #f1f5f9;
+}
+.section-header h3 i {
+  color: #f97316;
+  font-size: 18px;
+}
+.section-count {
+  background: #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+body.dark-mode .section-count {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+.table-card {
+  background-color: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  transition: background-color 0.3s;
+  -webkit-overflow-scrolling: touch;
+}
+body.dark-mode .table-card {
+  background-color: #0f172a;
+  border-color: #334155;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.achievements-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 680px;
+}
+.achievements-table th {
+  text-align: left;
+  padding: 16px 16px 12px 16px;
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #0b2b5c;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+body.dark-mode .achievements-table th {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border-bottom-color: #334155;
+}
+.achievements-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef2f6;
+  color: #1e293b;
+  vertical-align: top;
+}
+body.dark-mode .achievements-table td {
+  border-bottom-color: #334155;
+  color: #cbd5e1;
+}
+.achievements-table tr:last-child td {
+  border-bottom: none;
+}
+
+.badge-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: #e2e8f0;
+  color: #334155;
+  white-space: nowrap;
+}
+body.dark-mode .badge-status {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+.badge-status.published { background: #dcfce7; color: #166534; }
+.badge-status.accepted { background: #fef08a; color: #854d0e; }
+.badge-status.review { background: #dbeafe; color: #1e40af; }
+
+body.dark-mode .badge-status.published { background: #14532d; color: #86efac; }
+body.dark-mode .badge-status.accepted { background: #854d0e; color: #fef08a; }
+body.dark-mode .badge-status.review { background: #1e3a8a; color: #93c5fd; }
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 1200px) {
+  .btn-text {
+    display: none;
   }
-
-  tbody.innerHTML = rows.map((row, idx) => {
-    const cells = columns.map(col => {
-      const value = col(row, idx);
-      if (value && typeof value === "object" && "badge" in value) {
-        const badgeClass = getBadgeClass(value.badge);
-        return `<td><span class="badge-status ${badgeClass}">${escapeHtml(value.badge)}</span></td>`;
-      }
-      return `<td>${escapeHtml(value)}</td>`;
-    }).join("");
-    return `<tr>${cells}</tr>`;
-  }).join("");
-}
-
-// ======================== КОЛОНКИ ДЛЯ ТАБЛИЦ ========================
-
-const publicationColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.title,
-  (row) => row.publication_type || "-",
-  (row) => formatDate(row.indexation_date),
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-const eventColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.title,
-  (row) => row.event_type || "-",
-  (row) => row.event_date || "-",
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-const grantColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.title,
-  (row) => row.work_type || "-",
-  (row) => row.grant_year || "-",
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-const intellectualColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.title,
-  (row) => row.intellectual_type || "-",
-  (row) => formatDate(row.issue_date),
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-const innovationColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.title,
-  (row) => row.implementation_year || "-",
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-const scholarshipColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.scholarship_type || "-",
-  (row) => row.academic_year || "-",
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-const internshipColumns = [
-  (row, idx) => idx + 1,
-  (row) => formatDate(row.placement_date),
-  (row) => row.organization || "-",
-  (row) => row.city || "-",
-  (row) => formatDate(row.start_date),
-  (row) => formatDate(row.end_date),
-  (row) => ({ badge: row.status || "Не указан" }),
-  (row) => row.points ?? 0,
-];
-
-// ======================== ЗАГРУЗКА ДАННЫХ ИЗ API ========================
-
-async function fetchAllAchievements() {
-  if (!currentUserId) return;
-  if (isLoading) return;
-  
-  isLoading = true;
-  
-  // Показываем спиннеры во всех таблицах
-  showLoadingInAllTables();
-  
-  try {
-    const response = await window.AuthClient.fetchJsonWithAuth(
-      `/users/${currentUserId}/achievements`
-    );
-    
-    achievementsData = {
-      publications: response.publications || [],
-      events: response.events || [],
-      grants: response.grants || [],
-      intellectual_properties: response.intellectual_properties || [],
-      innovations: response.innovations || [],
-      scholarships: response.scholarships || [],
-      internships: response.internships || [],
-      scientific_achievements: response.scientific_achievements || []
-    };
-    
-    dataLoaded = true;
-    
-    // Рендерим все таблицы
-    renderAllTables();
-    
-  } catch (error) {
-    console.error("Failed to fetch achievements:", error);
-    showErrorInAllTables();
-  } finally {
-    isLoading = false;
+  .export-btn {
+    padding: 8px 12px;
   }
-}
-
-function showLoadingInAllTables() {
-  const loadingHtml = `<tr class="loading-row"><td colspan="7" style="text-align:center; padding:40px;"><i class="fas fa-spinner fa-spin"></i> Загрузка данных...</td></tr>`;
-  
-  for (const tableId in tablesMap) {
-    const table = tablesMap[tableId];
-    if (table && table.querySelector("tbody")) {
-      table.querySelector("tbody").innerHTML = loadingHtml;
-    }
-  }
-}
-
-function showErrorInAllTables() {
-  const errorHtml = `<tr class="empty-row"><td colspan="7" style="text-align:center; padding:40px;"><i class="fas fa-exclamation-triangle"></i> Ошибка загрузки данных. Попробуйте позже.</td></tr>`;
-  
-  for (const tableId in tablesMap) {
-    const table = tablesMap[tableId];
-    if (table && table.querySelector("tbody")) {
-      table.querySelector("tbody").innerHTML = errorHtml;
-    }
-  }
-}
-
-function renderAllTables() {
-  // Рендерим обычные таблицы
-  renderTableInElement(tablesMap.publications, achievementsData.publications, publicationColumns);
-  renderTableInElement(tablesMap.events, achievementsData.events, eventColumns);
-  renderTableInElement(tablesMap.grants, achievementsData.grants, grantColumns);
-  renderTableInElement(tablesMap.intellectual, achievementsData.intellectual_properties, intellectualColumns);
-  renderTableInElement(tablesMap.innovation, achievementsData.innovations, innovationColumns);
-  renderTableInElement(tablesMap.scholarships, achievementsData.scholarships, scholarshipColumns);
-  renderTableInElement(tablesMap.internships, achievementsData.internships, internshipColumns);
-  
-  // Рендерим "Все достижения"
-  renderAllAchievements();
-}
-
-// ======================== РЕНДЕР ВСЕХ ДОСТИЖЕНИЙ (С ПОДРАЗДЕЛАМИ) ========================
-
-function renderAllAchievements() {
-  const container = document.getElementById("all-achievements-container");
-  if (!container) return;
-  
-  const sections = [
-    { title: "Публикации", icon: "fa-book-open", data: achievementsData.publications, columns: publicationColumns, id: "all-pub" },
-    { title: "Мероприятия", icon: "fa-calendar-alt", data: achievementsData.events, columns: eventColumns, id: "all-events" },
-    { title: "Гранты", icon: "fa-hand-holding-usd", data: achievementsData.grants, columns: grantColumns, id: "all-grants" },
-    { title: "Интеллектуальная собственность", icon: "fa-file-alt", data: achievementsData.intellectual_properties, columns: intellectualColumns, id: "all-intellectual" },
-    { title: "Инновационная деятельность", icon: "fa-lightbulb", data: achievementsData.innovations, columns: innovationColumns, id: "all-innovation" },
-    { title: "Стипендии", icon: "fa-graduation-cap", data: achievementsData.scholarships, columns: scholarshipColumns, id: "all-scholarships" },
-    { title: "Стажировки", icon: "fa-briefcase", data: achievementsData.internships, columns: internshipColumns, id: "all-internships" }
-  ];
-  
-  container.innerHTML = sections.map(section => `
-    <div class="all-section" data-section="${section.id}">
-      <div class="section-header">
-        <h3><i class="fas ${section.icon}"></i> ${section.title}</h3>
-        <span class="section-count" id="${section.id}-count">${section.data.length}</span>
-      </div>
-      <div class="table-card">
-        <table class="achievements-table" id="${section.id}-table">
-          <thead>
-            <tr>${getTableHeaders(section.columns.length)}</tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  `).join("");
-  
-  // Рендерим данные в каждую таблицу
-  sections.forEach(section => {
-    const tableElement = document.getElementById(`${section.id}-table`);
-    renderTableInElement(tableElement, section.data, section.columns);
-  });
-}
-
-function getTableHeaders(colCount) {
-  const headers = ["№", "Дата размещения", "Название", "Детали", "Доп. детали", "Состояние", "Балл"];
-  return headers.slice(0, colCount).map(h => `<th>${h}</th>`).join("");
-}
-
-// ======================== ПОИСК ========================
-
-function applySearchFilter() {
-  const query = searchInput?.value.trim().toLowerCase() || "";
-  const activeTabId = getActiveTabId();
-  
-  if (activeTabId === "all") {
-    const sections = document.querySelectorAll(".all-section");
-    sections.forEach(section => {
-      const table = section.querySelector(".achievements-table");
-      if (!table) return;
-      
-      const rows = table.querySelectorAll("tbody tr");
-      let hasVisible = false;
-      
-      rows.forEach(row => {
-        if (row.classList.contains("empty-row")) return;
-        const matches = query === "" || row.innerText.toLowerCase().includes(query);
-        row.style.display = matches ? "" : "none";
-        if (matches) hasVisible = true;
-      });
-      
-      section.style.display = hasVisible ? "" : "none";
-    });
-  } else {
-    const activeContent = contentsMap[activeTabId];
-    if (!activeContent) return;
-    
-    const table = activeContent.querySelector(".achievements-table");
-    if (!table) return;
-    
-    const rows = table.querySelectorAll("tbody tr");
-    rows.forEach(row => {
-      if (row.classList.contains("empty-row") || row.classList.contains("loading-row")) return;
-      const matches = query === "" || row.innerText.toLowerCase().includes(query);
-      row.style.display = matches ? "" : "none";
-    });
+  .export-btn i {
+    font-size: 16px;
+    margin: 0;
   }
 }
 
-// ======================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ========================
-
-function getActiveTabId() {
-  return document.querySelector(".tab-btn-achievement.active")?.getAttribute("data-tab") || "publications";
-}
-
-function switchTab(tabId) {
-  // Скрываем все контенты
-  Object.values(contentsMap).forEach(content => {
-    if (content) content.style.display = "none";
-  });
-  
-  // Показываем выбранный
-  if (contentsMap[tabId]) contentsMap[tabId].style.display = "block";
-  
-  // Обновляем активную кнопку
-  tabButtons.forEach(button => {
-    button.classList.toggle("active", button.getAttribute("data-tab") === tabId);
-  });
-  
-  // Если данные уже загружены, просто применяем поиск
-  // Таблицы уже отрендерены в renderAllTables()
-  applySearchFilter();
-}
-
-function setupTabs() {
-  tabButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      const tabId = button.getAttribute("data-tab");
-      if (tabId && contentsMap[tabId]) {
-        switchTab(tabId);
-      }
-    });
-  });
-}
-
-function setupSearch() {
-  if (searchInput) {
-    searchInput.addEventListener("input", applySearchFilter);
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 20px 24px 32px !important;
   }
 }
 
-// ======================== ЭКСПОРТ В PDF ========================
-
-async function exportToPDF(elementId, filename) {
-  const element = document.getElementById(elementId);
-  if (!element) return;
-  
-  const originalDisplay = element.style.display;
-  element.style.display = "block";
-  
-  const opt = {
-    margin: [10, 10, 10, 10],
-    filename: `${filename}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  
-  try {
-    await html2pdf().set(opt).from(element).save();
-  } catch (error) {
-    console.error("PDF export failed:", error);
-    alert("Ошибка при создании PDF");
-  } finally {
-    element.style.display = originalDisplay;
+@media (max-width: 768px) {
+  body {
+    padding: 12px !important;
+  }
+  .main-content {
+    padding: 16px 16px 24px !important;
+  }
+  .tabs-container {
+    padding: 12px 14px;
+    gap: 10px;
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+  }
+  .tab-btn-achievement {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  .section-header h3 {
+    font-size: 16px;
+  }
+  .achievements-table th,
+  .achievements-table td {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+  .export-buttons {
+    gap: 8px;
+  }
+  .export-btn {
+    padding: 6px 10px;
   }
 }
 
-function setupExportButtons() {
-  if (exportPortfolioBtn) {
-    exportPortfolioBtn.addEventListener("click", async () => {
-      const activeTabId = getActiveTabId();
-      const activeContent = contentsMap[activeTabId];
-      if (activeContent) {
-        await exportToPDF(activeContent.id, `portfolio_${activeTabId}_${new Date().toISOString().slice(0,10)}`);
-      }
-    });
+@media (max-width: 640px) {
+  .header {
+    flex-wrap: wrap !important;
   }
-  
-  if (exportAchievementsBtn) {
-    exportAchievementsBtn.addEventListener("click", async () => {
-      // Убеждаемся, что "Все достижения" отрендерены
-      if (!dataLoaded) {
-        await fetchAllAchievements();
-      }
-      await exportToPDF("all-content", `scientific_portfolio_${new Date().toISOString().slice(0,10)}`);
-    });
+  .search-wrapper {
+    order: 3;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 8px;
+  }
+  .control-buttons {
+    margin-left: auto;
+  }
+  .export-buttons {
+    margin-left: 0;
   }
 }
 
-// ======================== НАСТРОЙКИ МЕНЮ ========================
-
-function setupSettingsMenu() {
-  const settingsDropdown = document.getElementById("settingsDropdown");
-  if (!settingsWrapper || !settingsDropdown) return;
-
-  document.addEventListener("click", (event) => {
-    if (!settingsWrapper.contains(event.target)) {
-      settingsDropdown.style.display = "none";
-      return;
-    }
-    if (event.target.closest("#settingsBtn") || event.target.closest("#settingsMenuWrapper .icon-btn")) {
-      const isVisible = settingsDropdown.style.display === "flex";
-      settingsDropdown.style.display = isVisible ? "none" : "flex";
-    }
-  });
-
-  let hoverTimeout;
-  settingsWrapper.addEventListener("mouseenter", () => {
-    clearTimeout(hoverTimeout);
-    settingsDropdown.style.display = "flex";
-  });
-  settingsWrapper.addEventListener("mouseleave", () => {
-    hoverTimeout = setTimeout(() => {
-      if (!settingsWrapper.matches(":hover")) settingsDropdown.style.display = "none";
-    }, 100);
-  });
-}
-
-function setupLogout() {
-  if (logoutButton) {
-    logoutButton.addEventListener("click", async (event) => {
-      event.preventDefault();
-      await window.AuthClient.logout({ redirectTo: "../loginindex.html" });
-    });
+@media (max-width: 480px) {
+  .main-content {
+    padding: 14px 14px 20px !important;
+  }
+  .tab-btn-achievement {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+  .section-header h3 {
+    font-size: 14px;
+  }
+  .section-header h3 i {
+    font-size: 14px;
+  }
+  .achievements-table {
+    min-width: 620px;
+  }
+  .export-btn {
+    padding: 5px 8px;
+  }
+  .export-btn i {
+    font-size: 14px;
   }
 }
 
-function setupFiltersButton() {
-  if (filterButton) {
-    filterButton.addEventListener("click", () => {
-      alert("Расширенная фильтрация будет доступна в ближайшее время.");
-    });
-  }
+.loading-row td {
+  text-align: center;
+  padding: 40px !important;
+  color: #64748b;
 }
 
-// ======================== ИНИЦИАЛИЗАЦИЯ ========================
-
-async function initAchievementsPage() {
-  try {
-    const currentUser = await window.AuthClient.requireAuth({
-      loginPath: "../loginindex.html",
-    });
-    currentUserId = currentUser.id;
-    
-    // Загружаем данные
-    await fetchAllAchievements();
-    
-  } catch (error) {
-    console.error("Authentication failed:", error);
-    return;
-  }
-
-  setupTabs();
-  setupSearch();
-  setupLogout();
-  setupFiltersButton();
-  setupSettingsMenu();
-  setupExportButtons();
-  
-  // Показываем первую вкладку
-  switchTab("publications");
+.empty-row td {
+  text-align: center;
+  padding: 40px !important;
+  color: #64748b;
 }
-
-initAchievementsPage().catch(error => console.error("Achievements page initialization failed:", error));
