@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -108,14 +108,39 @@ async def delete_user_record(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+def build_user_achievements_response(
+    user: UserModel,
+    limit: int,
+) -> UserAchievementsSchema:
+    scientific_achievements = user.scientific_achievements
+    if limit != -1:
+        scientific_achievements = scientific_achievements[:limit]
+
+    # Keep tab-specific collections intact while limiting the flat summary feed.
+    return UserAchievementsSchema.model_validate(
+        {
+            "publications": user.publications,
+            "events": user.events,
+            "grants": user.grants,
+            "intellectual_properties": user.intellectual_properties,
+            "innovations": user.innovations,
+            "scholarships": user.scholarships,
+            "internships": user.internships,
+            "scientific_achievements": scientific_achievements,
+        }
+    )
+
+
 @router.get("/{user_id}/achievements", response_model=UserAchievementsSchema)
 async def get_user_achievements(
     user_id: int,
     current_user: CurrentUserDep,
     session: AsyncSession = SessionDep,
-) -> UserModel:
+    limit: int = Query(default=-1, ge=-1),
+) -> UserAchievementsSchema:
     authorize_user_access(user_id, current_user)
-    return await UserService(session).get_user_by_id(user_id)
+    user = await UserService(session).get_user_by_id(user_id)
+    return build_user_achievements_response(user, limit)
 
 
 @router.get("/{user_id}/achievements/publications", response_model=list[UserPublicationSchema])
