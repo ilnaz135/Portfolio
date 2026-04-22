@@ -5,6 +5,7 @@ const coursesCard = document.querySelector(".right-col .tags-cloud");
 const logoutBtn = document.getElementById("logoutBtn");
 const settingsWrapper = document.getElementById("settingsMenuWrapper");
 const settingsDropdown = document.getElementById("settingsDropdown");
+const moreAchievementButton = document.querySelector('.more-button')
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -99,9 +100,10 @@ function renderScientificAchievements(user) {
     return;
   }
 
-  user.scientific_achievements.forEach((achievement) => {
+  user.scientific_achievements.forEach((achievement, index) => {
     const year = String(achievement.date || "").slice(0, 4);
-    scienceCard.insertAdjacentHTML(
+    if (index <= 1) {
+      scienceCard.insertAdjacentHTML(
       "beforeend",
       `
         <div class="publication-item">
@@ -116,6 +118,7 @@ function renderScientificAchievements(user) {
         </div>
       `
     );
+    }
   });
 }
 
@@ -229,6 +232,10 @@ function setupEditModal() {
     modal.classList.remove("active");
   });
 }
+
+moreAchievementButton.addEventListener("click", (event) => {
+    window.location.href = 'achievementsindex.html'
+});
 
 async function initProfilePage() {
   setupLogout();
