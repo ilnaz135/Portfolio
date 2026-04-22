@@ -1,0 +1,328 @@
+/* Базовые стили для страницы */
+.achievements-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b2b5c;
+  margin: 0 0 4px 0;
+}
+body.dark-mode .achievements-header h1 {
+  color: #ffffff;
+}
+
+.main-content {
+  display: block;
+  padding: 24px 32px 40px;
+}
+
+.tabs-container {
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 28px;
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+body.dark-mode .tabs-container {
+  background-color: #0f172a;
+  border-color: #334155;
+}
+
+.tab-btn-achievement {
+  background: transparent;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  color: #475569;
+  cursor: pointer;
+  border-radius: 40px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+body.dark-mode .tab-btn-achievement {
+  color: #94a3b8;
+}
+.tab-btn-achievement:hover {
+  background-color: #f1f5f9;
+  color: #0b2b5c;
+}
+body.dark-mode .tab-btn-achievement:hover {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+.tab-btn-achievement.active {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  color: #1e3a8a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+body.dark-mode .tab-btn-achievement.active {
+  background: #1e293b;
+  color: #60a5fa;
+  border: 1px solid #3b82f6;
+}
+
+/* Кнопки экспорта */
+.export-buttons {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+body.dark-mode .export-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+.export-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+body.dark-mode .export-btn:hover {
+  background: #334155;
+}
+.export-btn i {
+  font-size: 14px;
+}
+.btn-text {
+  display: inline;
+}
+
+/* Секции в "Все достижения" */
+.all-section {
+  margin-bottom: 40px;
+}
+.all-section:last-child {
+  margin-bottom: 0;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+.section-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0b2b5c;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.dark-mode .section-header h3 {
+  color: #f1f5f9;
+}
+.section-header h3 i {
+  color: #f97316;
+  font-size: 18px;
+}
+.section-count {
+  background: #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+body.dark-mode .section-count {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+.table-card {
+  background-color: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  transition: background-color 0.3s;
+  -webkit-overflow-scrolling: touch;
+}
+body.dark-mode .table-card {
+  background-color: #0f172a;
+  border-color: #334155;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.achievements-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 680px;
+}
+.achievements-table th {
+  text-align: left;
+  padding: 16px 16px 12px 16px;
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #0b2b5c;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+body.dark-mode .achievements-table th {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border-bottom-color: #334155;
+}
+.achievements-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef2f6;
+  color: #1e293b;
+  vertical-align: top;
+}
+body.dark-mode .achievements-table td {
+  border-bottom-color: #334155;
+  color: #cbd5e1;
+}
+.achievements-table tr:last-child td {
+  border-bottom: none;
+}
+
+.badge-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: #e2e8f0;
+  color: #334155;
+  white-space: nowrap;
+}
+body.dark-mode .badge-status {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+.badge-status.published { background: #dcfce7; color: #166534; }
+.badge-status.accepted { background: #fef08a; color: #854d0e; }
+.badge-status.review { background: #dbeafe; color: #1e40af; }
+
+body.dark-mode .badge-status.published { background: #14532d; color: #86efac; }
+body.dark-mode .badge-status.accepted { background: #854d0e; color: #fef08a; }
+body.dark-mode .badge-status.review { background: #1e3a8a; color: #93c5fd; }
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 1200px) {
+  .btn-text {
+    display: none;
+  }
+  .export-btn {
+    padding: 8px 12px;
+  }
+  .export-btn i {
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 20px 24px 32px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 12px !important;
+  }
+  .main-content {
+    padding: 16px 16px 24px !important;
+  }
+  .tabs-container {
+    padding: 12px 14px;
+    gap: 10px;
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+  }
+  .tab-btn-achievement {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  .section-header h3 {
+    font-size: 16px;
+  }
+  .achievements-table th,
+  .achievements-table td {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+  .export-buttons {
+    gap: 8px;
+  }
+  .export-btn {
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-wrap: wrap !important;
+  }
+  .search-wrapper {
+    order: 3;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 8px;
+  }
+  .control-buttons {
+    margin-left: auto;
+  }
+  .export-buttons {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 14px 14px 20px !important;
+  }
+  .tab-btn-achievement {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+  .section-header h3 {
+    font-size: 14px;
+  }
+  .section-header h3 i {
+    font-size: 14px;
+  }
+  .achievements-table {
+    min-width: 620px;
+  }
+  .export-btn {
+    padding: 5px 8px;
+  }
+  .export-btn i {
+    font-size: 14px;
+  }
+}
+
+.loading-row td {
+  text-align: center;
+  padding: 40px !important;
+  color: #64748b;
+}
+
+.empty-row td {
+  text-align: center;
+  padding: 40px !important;
+  color: #64748b;
+}
