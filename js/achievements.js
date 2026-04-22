@@ -1,7 +1,12 @@
+// ======================== ОСНОВНОЙ КОД ========================
+
 const tabButtons = document.querySelectorAll(".tab-btn-achievement");
 const searchInput = document.getElementById("searchInput");
 const filterButton = document.querySelector(".filter-btn");
-const logoutButton = document.getElementById("logoutBtnAchiev");
+const logoutButton = document.getElementById("logoutBtn");
+const settingsWrapper = document.getElementById("settingsMenuWrapper");
+const exportPortfolioBtn = document.getElementById("exportPortfolioBtn");
+const exportAchievementsBtn = document.getElementById("exportAchievementsBtn");
 
 const contentsMap = {
   publications: document.getElementById("publications-content"),
@@ -11,93 +16,40 @@ const contentsMap = {
   innovation: document.getElementById("innovation-content"),
   scholarships: document.getElementById("scholarships-content"),
   internships: document.getElementById("internships-content"),
+  all: document.getElementById("all-content"),
 };
 
-const tabConfig = {
-  publications: {
-    endpoint: "publications",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.title,
-      (row) => row.publication_type,
-      (row) => formatDate(row.indexation_date),
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
-  events: {
-    endpoint: "events",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.title,
-      (row) => row.event_type,
-      (row) => row.event_date,
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
-  grants: {
-    endpoint: "grants",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.title,
-      (row) => row.work_type,
-      (row) => row.grant_year,
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
-  intellectual: {
-    endpoint: "intellectual",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.title,
-      (row) => row.intellectual_type,
-      (row) => formatDate(row.issue_date),
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
-  innovation: {
-    endpoint: "innovation",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.title,
-      (row) => row.implementation_year,
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
-  scholarships: {
-    endpoint: "scholarships",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.scholarship_type,
-      (row) => row.academic_year,
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
-  internships: {
-    endpoint: "internships",
-    columns: [
-      (row) => formatDate(row.placement_date),
-      (row) => row.organization,
-      (row) => row.city,
-      (row) => formatDate(row.start_date),
-      (row) => formatDate(row.end_date),
-      (row) => ({ badge: row.status }),
-      (row) => row.points,
-    ],
-  },
+// Ссылки на таблицы для быстрого доступа
+const tablesMap = {
+  publications: document.getElementById("publications-table"),
+  events: document.getElementById("events-table"),
+  grants: document.getElementById("grants-table"),
+  intellectual: document.getElementById("intellectual-table"),
+  innovation: document.getElementById("innovation-table"),
+  scholarships: document.getElementById("scholarships-table"),
+  internships: document.getElementById("internships-table"),
 };
 
-const achievementCache = {};
-const loadingTabs = new Set();
+let achievementsData = {
+  publications: [],
+  events: [],
+  grants: [],
+  intellectual_properties: [],
+  innovations: [],
+  scholarships: [],
+  internships: [],
+  scientific_achievements: []
+};
+
 let currentUserId = null;
+let isLoading = false;
+let dataLoaded = false;
+
+// ======================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ========================
 
 function escapeHtml(value) {
-  return String(value ?? "")
+  if (value === null || value === undefined) return "-";
+  return String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -106,233 +58,416 @@ function escapeHtml(value) {
 }
 
 function formatDate(value) {
-  if (!value) {
-    return "-";
-  }
-
-  if (typeof value !== "string") {
-    return String(value);
-  }
-
+  if (!value) return "-";
+  if (typeof value !== "string") return String(value);
   const parts = value.split("-");
-  if (parts.length === 3) {
-    return `${parts[2]}.${parts[1]}.${parts[0]}`;
-  }
-
+  if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
   return value;
 }
 
-function getContent(tabId) {
-  return contentsMap[tabId] || null;
+function getBadgeClass(status) {
+  if (!status) return "";
+  const statusLower = status.toLowerCase();
+  if (statusLower.includes("опубликован") || statusLower === "published") return "published";
+  if (statusLower.includes("принят") || statusLower === "accepted") return "accepted";
+  if (statusLower.includes("рассмотр") || statusLower === "review") return "review";
+  return "";
 }
 
-function getTableBody(tabId) {
-  return getContent(tabId)?.querySelector("tbody") || null;
-}
+function renderTableInElement(tableElement, rows, columns) {
+  if (!tableElement) return;
+  
+  const tbody = tableElement.querySelector("tbody");
+  if (!tbody) return;
 
-function getColumnCount(tabId) {
-  return getContent(tabId)?.querySelectorAll("thead th").length || 1;
-}
-
-function renderMessageRow(tabId, message, iconClass = "fa-info-circle") {
-  const tableBody = getTableBody(tabId);
-  if (!tableBody) {
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="${columns.length}" style="text-align:center; padding:40px;"><i class="fas fa-folder-open"></i> Нет данных</td></tr>`;
     return;
   }
 
-  tableBody.innerHTML = `
-    <tr class="table-message-row">
-      <td colspan="${getColumnCount(tabId)}" style="padding: 28px 16px; text-align: center; color: #64748b;">
-        <i class="fas ${iconClass}" style="margin-right: 8px;"></i>${escapeHtml(message)}
-      </td>
-    </tr>
-  `;
+  tbody.innerHTML = rows.map((row, idx) => {
+    const cells = columns.map(col => {
+      const value = col(row, idx);
+      if (value && typeof value === "object" && "badge" in value) {
+        const badgeClass = getBadgeClass(value.badge);
+        return `<td><span class="badge-status ${badgeClass}">${escapeHtml(value.badge)}</span></td>`;
+      }
+      return `<td>${escapeHtml(value)}</td>`;
+    }).join("");
+    return `<tr>${cells}</tr>`;
+  }).join("");
 }
 
-function renderRows(tabId, rows) {
-  const tableBody = getTableBody(tabId);
-  const config = tabConfig[tabId];
-  if (!tableBody || !config) {
-    return;
-  }
+// ======================== КОЛОНКИ ДЛЯ ТАБЛИЦ ========================
 
-  if (!rows.length) {
-    renderMessageRow(tabId, "Данные по этой вкладке пока отсутствуют.", "fa-folder-open");
-    return;
-  }
+const publicationColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.title,
+  (row) => row.publication_type || "-",
+  (row) => formatDate(row.indexation_date),
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
-  tableBody.innerHTML = rows
-    .map((row, index) => {
-      const cells = config.columns
-        .map((columnBuilder) => {
-          const value = columnBuilder(row);
-          if (value && typeof value === "object" && "badge" in value) {
-            return `<td><span class="badge-status">${escapeHtml(value.badge)}</span></td>`;
-          }
-          return `<td>${escapeHtml(value)}</td>`;
-        })
-        .join("");
+const eventColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.title,
+  (row) => row.event_type || "-",
+  (row) => row.event_date || "-",
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
-      return `<tr><td>${index + 1}</td>${cells}</tr>`;
-    })
-    .join("");
-}
+const grantColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.title,
+  (row) => row.work_type || "-",
+  (row) => row.grant_year || "-",
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
-async function fetchTabData(tabId) {
-  const config = tabConfig[tabId];
-  if (!config || !currentUserId) {
-    return [];
-  }
+const intellectualColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.title,
+  (row) => row.intellectual_type || "-",
+  (row) => formatDate(row.issue_date),
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
-  return window.AuthClient.fetchJsonWithAuth(
-    `/users/${currentUserId}/achievements/${config.endpoint}`
-  );
-}
+const innovationColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.title,
+  (row) => row.implementation_year || "-",
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
-async function ensureTabData(tabId) {
-  if (achievementCache[tabId]) {
-    return achievementCache[tabId];
-  }
+const scholarshipColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.scholarship_type || "-",
+  (row) => row.academic_year || "-",
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
-  if (loadingTabs.has(tabId)) {
-    return [];
-  }
+const internshipColumns = [
+  (row, idx) => idx + 1,
+  (row) => formatDate(row.placement_date),
+  (row) => row.organization || "-",
+  (row) => row.city || "-",
+  (row) => formatDate(row.start_date),
+  (row) => formatDate(row.end_date),
+  (row) => ({ badge: row.status || "Не указан" }),
+  (row) => row.points ?? 0,
+];
 
+// ======================== ЗАГРУЗКА ДАННЫХ ИЗ API ========================
+
+async function fetchAllAchievements() {
+  if (!currentUserId) return;
+  if (isLoading) return;
+  
+  isLoading = true;
+  
+  // Показываем спиннеры во всех таблицах
+  showLoadingInAllTables();
+  
   try {
-    loadingTabs.add(tabId);
-    renderMessageRow(tabId, "Загрузка данных...", "fa-spinner");
-    const rows = await fetchTabData(tabId);
-    achievementCache[tabId] = rows;
-    renderRows(tabId, rows);
-    applySearchFilter();
-    return rows;
+    const response = await window.AuthClient.fetchJsonWithAuth(
+      `/users/${currentUserId}/achievements`
+    );
+    
+    achievementsData = {
+      publications: response.publications || [],
+      events: response.events || [],
+      grants: response.grants || [],
+      intellectual_properties: response.intellectual_properties || [],
+      innovations: response.innovations || [],
+      scholarships: response.scholarships || [],
+      internships: response.internships || [],
+      scientific_achievements: response.scientific_achievements || []
+    };
+    
+    dataLoaded = true;
+    
+    // Рендерим все таблицы
+    renderAllTables();
+    
   } catch (error) {
-    console.error(`Failed to load ${tabId}:`, error);
-    renderMessageRow(tabId, "Не удалось загрузить данные из API.", "fa-triangle-exclamation");
-    return [];
+    console.error("Failed to fetch achievements:", error);
+    showErrorInAllTables();
   } finally {
-    loadingTabs.delete(tabId);
+    isLoading = false;
   }
 }
+
+function showLoadingInAllTables() {
+  const loadingHtml = `<tr class="loading-row"><td colspan="7" style="text-align:center; padding:40px;"><i class="fas fa-spinner fa-spin"></i> Загрузка данных...</td></tr>`;
+  
+  for (const tableId in tablesMap) {
+    const table = tablesMap[tableId];
+    if (table && table.querySelector("tbody")) {
+      table.querySelector("tbody").innerHTML = loadingHtml;
+    }
+  }
+}
+
+function showErrorInAllTables() {
+  const errorHtml = `<tr class="empty-row"><td colspan="7" style="text-align:center; padding:40px;"><i class="fas fa-exclamation-triangle"></i> Ошибка загрузки данных. Попробуйте позже.</td></tr>`;
+  
+  for (const tableId in tablesMap) {
+    const table = tablesMap[tableId];
+    if (table && table.querySelector("tbody")) {
+      table.querySelector("tbody").innerHTML = errorHtml;
+    }
+  }
+}
+
+function renderAllTables() {
+  // Рендерим обычные таблицы
+  renderTableInElement(tablesMap.publications, achievementsData.publications, publicationColumns);
+  renderTableInElement(tablesMap.events, achievementsData.events, eventColumns);
+  renderTableInElement(tablesMap.grants, achievementsData.grants, grantColumns);
+  renderTableInElement(tablesMap.intellectual, achievementsData.intellectual_properties, intellectualColumns);
+  renderTableInElement(tablesMap.innovation, achievementsData.innovations, innovationColumns);
+  renderTableInElement(tablesMap.scholarships, achievementsData.scholarships, scholarshipColumns);
+  renderTableInElement(tablesMap.internships, achievementsData.internships, internshipColumns);
+  
+  // Рендерим "Все достижения"
+  renderAllAchievements();
+}
+
+// ======================== РЕНДЕР ВСЕХ ДОСТИЖЕНИЙ (С ПОДРАЗДЕЛАМИ) ========================
+
+function renderAllAchievements() {
+  const container = document.getElementById("all-achievements-container");
+  if (!container) return;
+  
+  const sections = [
+    { title: "Публикации", icon: "fa-book-open", data: achievementsData.publications, columns: publicationColumns, id: "all-pub" },
+    { title: "Мероприятия", icon: "fa-calendar-alt", data: achievementsData.events, columns: eventColumns, id: "all-events" },
+    { title: "Гранты", icon: "fa-hand-holding-usd", data: achievementsData.grants, columns: grantColumns, id: "all-grants" },
+    { title: "Интеллектуальная собственность", icon: "fa-file-alt", data: achievementsData.intellectual_properties, columns: intellectualColumns, id: "all-intellectual" },
+    { title: "Инновационная деятельность", icon: "fa-lightbulb", data: achievementsData.innovations, columns: innovationColumns, id: "all-innovation" },
+    { title: "Стипендии", icon: "fa-graduation-cap", data: achievementsData.scholarships, columns: scholarshipColumns, id: "all-scholarships" },
+    { title: "Стажировки", icon: "fa-briefcase", data: achievementsData.internships, columns: internshipColumns, id: "all-internships" }
+  ];
+  
+  container.innerHTML = sections.map(section => `
+    <div class="all-section" data-section="${section.id}">
+      <div class="section-header">
+        <h3><i class="fas ${section.icon}"></i> ${section.title}</h3>
+        <span class="section-count" id="${section.id}-count">${section.data.length}</span>
+      </div>
+      <div class="table-card">
+        <table class="achievements-table" id="${section.id}-table">
+          <thead>
+            <tr>${getTableHeaders(section.columns.length)}</tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  `).join("");
+  
+  // Рендерим данные в каждую таблицу
+  sections.forEach(section => {
+    const tableElement = document.getElementById(`${section.id}-table`);
+    renderTableInElement(tableElement, section.data, section.columns);
+  });
+}
+
+function getTableHeaders(colCount) {
+  const headers = ["№", "Дата размещения", "Название", "Детали", "Доп. детали", "Состояние", "Балл"];
+  return headers.slice(0, colCount).map(h => `<th>${h}</th>`).join("");
+}
+
+// ======================== ПОИСК ========================
+
+function applySearchFilter() {
+  const query = searchInput?.value.trim().toLowerCase() || "";
+  const activeTabId = getActiveTabId();
+  
+  if (activeTabId === "all") {
+    const sections = document.querySelectorAll(".all-section");
+    sections.forEach(section => {
+      const table = section.querySelector(".achievements-table");
+      if (!table) return;
+      
+      const rows = table.querySelectorAll("tbody tr");
+      let hasVisible = false;
+      
+      rows.forEach(row => {
+        if (row.classList.contains("empty-row")) return;
+        const matches = query === "" || row.innerText.toLowerCase().includes(query);
+        row.style.display = matches ? "" : "none";
+        if (matches) hasVisible = true;
+      });
+      
+      section.style.display = hasVisible ? "" : "none";
+    });
+  } else {
+    const activeContent = contentsMap[activeTabId];
+    if (!activeContent) return;
+    
+    const table = activeContent.querySelector(".achievements-table");
+    if (!table) return;
+    
+    const rows = table.querySelectorAll("tbody tr");
+    rows.forEach(row => {
+      if (row.classList.contains("empty-row") || row.classList.contains("loading-row")) return;
+      const matches = query === "" || row.innerText.toLowerCase().includes(query);
+      row.style.display = matches ? "" : "none";
+    });
+  }
+}
+
+// ======================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ========================
 
 function getActiveTabId() {
   return document.querySelector(".tab-btn-achievement.active")?.getAttribute("data-tab") || "publications";
 }
 
-function toggleSearchEmptyMessage(activeContent, shouldShow) {
-  let emptyMessage = activeContent.querySelector(".search-empty-message");
-
-  if (shouldShow) {
-    if (!emptyMessage) {
-      emptyMessage = document.createElement("div");
-      emptyMessage.className = "table-card search-empty-message";
-      emptyMessage.style.marginTop = "16px";
-      emptyMessage.style.padding = "32px";
-      emptyMessage.style.textAlign = "center";
-      emptyMessage.style.color = "#64748b";
-      emptyMessage.innerHTML = '<i class="fas fa-search"></i> Ничего не найдено';
-      activeContent.appendChild(emptyMessage);
-    }
-    return;
-  }
-
-  emptyMessage?.remove();
-}
-
-function applySearchFilter() {
-  const query = searchInput?.value.trim().toLowerCase() || "";
-  const activeTabId = getActiveTabId();
-  const activeContent = getContent(activeTabId);
-  const table = activeContent?.querySelector("table");
-  if (!activeContent || !table) {
-    return;
-  }
-
-  const rows = table.querySelectorAll("tbody tr");
-  let hasVisibleRows = false;
-
-  rows.forEach((row) => {
-    const isMessageRow = row.classList.contains("table-message-row");
-    if (isMessageRow) {
-      row.style.display = "";
-      hasVisibleRows = true;
-      return;
-    }
-
-    const matches = query === "" || row.innerText.toLowerCase().includes(query);
-    row.style.display = matches ? "" : "none";
-    if (matches) {
-      hasVisibleRows = true;
-    }
+function switchTab(tabId) {
+  // Скрываем все контенты
+  Object.values(contentsMap).forEach(content => {
+    if (content) content.style.display = "none";
   });
-
-  const hasRealRows = Array.from(rows).some((row) => !row.classList.contains("table-message-row"));
-  toggleSearchEmptyMessage(activeContent, query !== "" && hasRealRows && !hasVisibleRows);
-}
-
-async function switchTab(tabId) {
-  Object.values(contentsMap).forEach((content) => {
-    if (content) {
-      content.style.display = "none";
-    }
-  });
-
-  if (contentsMap[tabId]) {
-    contentsMap[tabId].style.display = "block";
-  }
-
-  tabButtons.forEach((button) => {
+  
+  // Показываем выбранный
+  if (contentsMap[tabId]) contentsMap[tabId].style.display = "block";
+  
+  // Обновляем активную кнопку
+  tabButtons.forEach(button => {
     button.classList.toggle("active", button.getAttribute("data-tab") === tabId);
   });
-
-  await ensureTabData(tabId);
+  
+  // Если данные уже загружены, просто применяем поиск
+  // Таблицы уже отрендерены в renderAllTables()
   applySearchFilter();
 }
 
 function setupTabs() {
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", async () => {
+  tabButtons.forEach(button => {
+    button.addEventListener("click", () => {
       const tabId = button.getAttribute("data-tab");
       if (tabId && contentsMap[tabId]) {
-        await switchTab(tabId);
+        switchTab(tabId);
       }
     });
   });
 }
 
 function setupSearch() {
-  if (!searchInput) {
-    return;
+  if (searchInput) {
+    searchInput.addEventListener("input", applySearchFilter);
   }
+}
 
-  searchInput.addEventListener("input", applySearchFilter);
+// ======================== ЭКСПОРТ В PDF ========================
+
+async function exportToPDF(elementId, filename) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  
+  const originalDisplay = element.style.display;
+  element.style.display = "block";
+  
+  const opt = {
+    margin: [10, 10, 10, 10],
+    filename: `${filename}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  
+  try {
+    await html2pdf().set(opt).from(element).save();
+  } catch (error) {
+    console.error("PDF export failed:", error);
+    alert("Ошибка при создании PDF");
+  } finally {
+    element.style.display = originalDisplay;
+  }
+}
+
+function setupExportButtons() {
+  if (exportPortfolioBtn) {
+    exportPortfolioBtn.addEventListener("click", async () => {
+      const activeTabId = getActiveTabId();
+      const activeContent = contentsMap[activeTabId];
+      if (activeContent) {
+        await exportToPDF(activeContent.id, `portfolio_${activeTabId}_${new Date().toISOString().slice(0,10)}`);
+      }
+    });
+  }
+  
+  if (exportAchievementsBtn) {
+    exportAchievementsBtn.addEventListener("click", async () => {
+      // Убеждаемся, что "Все достижения" отрендерены
+      if (!dataLoaded) {
+        await fetchAllAchievements();
+      }
+      await exportToPDF("all-content", `scientific_portfolio_${new Date().toISOString().slice(0,10)}`);
+    });
+  }
+}
+
+// ======================== НАСТРОЙКИ МЕНЮ ========================
+
+function setupSettingsMenu() {
+  const settingsDropdown = document.getElementById("settingsDropdown");
+  if (!settingsWrapper || !settingsDropdown) return;
+
+  document.addEventListener("click", (event) => {
+    if (!settingsWrapper.contains(event.target)) {
+      settingsDropdown.style.display = "none";
+      return;
+    }
+    if (event.target.closest("#settingsBtn") || event.target.closest("#settingsMenuWrapper .icon-btn")) {
+      const isVisible = settingsDropdown.style.display === "flex";
+      settingsDropdown.style.display = isVisible ? "none" : "flex";
+    }
+  });
+
+  let hoverTimeout;
+  settingsWrapper.addEventListener("mouseenter", () => {
+    clearTimeout(hoverTimeout);
+    settingsDropdown.style.display = "flex";
+  });
+  settingsWrapper.addEventListener("mouseleave", () => {
+    hoverTimeout = setTimeout(() => {
+      if (!settingsWrapper.matches(":hover")) settingsDropdown.style.display = "none";
+    }, 100);
+  });
 }
 
 function setupLogout() {
-  if (!logoutButton) {
-    return;
+  if (logoutButton) {
+    logoutButton.addEventListener("click", async (event) => {
+      event.preventDefault();
+      await window.AuthClient.logout({ redirectTo: "../loginindex.html" });
+    });
   }
-
-  logoutButton.addEventListener("click", async (event) => {
-    event.preventDefault();
-    await window.AuthClient.logout({ redirectTo: "../loginindex.html" });
-  });
 }
 
 function setupFiltersButton() {
-  if (!filterButton) {
-    return;
+  if (filterButton) {
+    filterButton.addEventListener("click", () => {
+      alert("Расширенная фильтрация будет доступна в ближайшее время.");
+    });
   }
-
-  filterButton.addEventListener("click", () => {
-    alert("Расширенная фильтрация будет доступна в ближайшее время.");
-  });
 }
 
-async function preloadTabs() {
-  const tabsToPreload = Object.keys(tabConfig).filter((tabId) => tabId !== "publications");
-  await Promise.all(tabsToPreload.map((tabId) => ensureTabData(tabId)));
-}
+// ======================== ИНИЦИАЛИЗАЦИЯ ========================
 
 async function initAchievementsPage() {
   try {
@@ -340,6 +475,10 @@ async function initAchievementsPage() {
       loginPath: "../loginindex.html",
     });
     currentUserId = currentUser.id;
+    
+    // Загружаем данные
+    await fetchAllAchievements();
+    
   } catch (error) {
     console.error("Authentication failed:", error);
     return;
@@ -349,12 +488,11 @@ async function initAchievementsPage() {
   setupSearch();
   setupLogout();
   setupFiltersButton();
-  await switchTab("publications");
-  preloadTabs().catch((error) => {
-    console.error("Background tab preload failed:", error);
-  });
+  setupSettingsMenu();
+  setupExportButtons();
+  
+  // Показываем первую вкладку
+  switchTab("publications");
 }
 
-initAchievementsPage().catch((error) => {
-  console.error("Achievements page initialization failed:", error);
-});
+initAchievementsPage().catch(error => console.error("Achievements page initialization failed:", error));
