@@ -76,7 +76,7 @@ function renderProfileCard(user) {
       <a href="${escapeHtml(cloudUrl)}" class="github-link" id="displayCloud">
         <i class="fab fa-github"></i> ${escapeHtml(user.cloude_storage || "Не указано")}
       </a>
-      <button class="download-resume"><i class="fas fa-file-pdf"></i> Создать резюме</button>
+      <button onclick="alert('In progress')" class="download-resume"><i class="fas fa-file-pdf"></i> Создать резюме</button>
       <div class="education-compact">
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-university"></i></span><span class="edu-label-small">Направление:</span><span class="edu-value-small">${escapeHtml(user.academic_direction)}</span></div>
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span><span class="edu-label-small">Курс:</span><span class="edu-value-small">${escapeHtml(user.class_)}</span></div>
