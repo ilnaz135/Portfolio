@@ -310,10 +310,18 @@ function renderAllAchievements() {
     }
   ];
   
-  container.innerHTML = sections.map((section) => `
+  container.innerHTML = sections.map((section, index) => `
     <div class="all-section" data-section="${section.id}">
       <div class="section-header">
         <h3><i class="fas ${section.icon}"></i> ${section.title}</h3>
+        ${index == 0? `<div class="export-buttons">
+              <button class="export-btn" id="exportPortfolioBtn">
+                  <i class="fas fa-file-pdf"></i> <span class="btn-text">Публикации в PDF</span>
+              </button>
+              <button class="export-btn" id="exportAchievementsBtn">
+                <i class="fas fa-trophy"></i> <span class="btn-text">Научное портфолио в PDF</span>
+                </button>
+          </div>` : ''}
       </div>
       <div class="table-card">
         <table class="achievements-table" id="${section.id}-table">
