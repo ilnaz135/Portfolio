@@ -5,8 +5,8 @@ const searchInput = document.getElementById("searchInput");
 const filterButton = document.querySelector(".filter-btn");
 const logoutButton = document.getElementById("logoutBtn");
 const settingsWrapper = document.getElementById("settingsMenuWrapper");
-const exportPortfolioBtn = document.getElementById("exportPortfolioBtn");
-const exportAchievementsBtn = document.getElementById("exportAchievementsBtn");
+const mainMenuBtn = document.querySelector(".main_menu")
+const scienceMenuBtn = document.querySelector(".science-achievements")
 
 const contentsMap = {
   publications: document.getElementById("publications-content"),
@@ -252,42 +252,85 @@ function renderAllAchievements() {
   if (!container) return;
   
   const sections = [
-    { title: "Публикации", icon: "fa-book-open", data: achievementsData.publications, columns: publicationColumns, id: "all-pub" },
-    { title: "Мероприятия", icon: "fa-calendar-alt", data: achievementsData.events, columns: eventColumns, id: "all-events" },
-    { title: "Гранты", icon: "fa-hand-holding-usd", data: achievementsData.grants, columns: grantColumns, id: "all-grants" },
-    { title: "Интеллектуальная собственность", icon: "fa-file-alt", data: achievementsData.intellectual_properties, columns: intellectualColumns, id: "all-intellectual" },
-    { title: "Инновационная деятельность", icon: "fa-lightbulb", data: achievementsData.innovations, columns: innovationColumns, id: "all-innovation" },
-    { title: "Стипендии", icon: "fa-graduation-cap", data: achievementsData.scholarships, columns: scholarshipColumns, id: "all-scholarships" },
-    { title: "Стажировки", icon: "fa-briefcase", data: achievementsData.internships, columns: internshipColumns, id: "all-internships" }
+    { 
+      title: "Публикации", 
+      icon: "fa-book-open", 
+      data: achievementsData.publications, 
+      columns: publicationColumns, 
+      id: "all-pub",
+      headers: ["№", "Дата размещения", "Название", "Тип публикации", "Дата индексации", "Состояние", "Балл"]
+    },
+    { 
+      title: "Мероприятия", 
+      icon: "fa-calendar-alt", 
+      data: achievementsData.events, 
+      columns: eventColumns, 
+      id: "all-events",
+      headers: ["№", "Дата размещения", "Название", "Тип мероприятия", "Дата проведения", "Состояние", "Балл"]
+    },
+    { 
+      title: "Гранты", 
+      icon: "fa-hand-holding-usd", 
+      data: achievementsData.grants, 
+      columns: grantColumns, 
+      id: "all-grants",
+      headers: ["№", "Дата размещения", "Название", "Тип работы", "Год", "Состояние", "Балл"]
+    },
+    { 
+      title: "Интеллектуальная собственность", 
+      icon: "fa-file-alt", 
+      data: achievementsData.intellectual_properties, 
+      columns: intellectualColumns, 
+      id: "all-intellectual",
+      headers: ["№", "Дата размещения", "Название", "Тип ИС", "Дата выдачи", "Состояние", "Балл"]
+    },
+    { 
+      title: "Инновационная деятельность", 
+      icon: "fa-lightbulb", 
+      data: achievementsData.innovations, 
+      columns: innovationColumns, 
+      id: "all-innovation",
+      headers: ["№", "Дата размещения", "Название", "Год внедрения", "Состояние", "Балл"]
+    },
+    { 
+      title: "Стипендии", 
+      icon: "fa-graduation-cap", 
+      data: achievementsData.scholarships, 
+      columns: scholarshipColumns, 
+      id: "all-scholarships",
+      headers: ["№", "Дата размещения", "Тип стипендии", "Учебный год", "Состояние", "Балл"]
+    },
+    { 
+      title: "Стажировки", 
+      icon: "fa-briefcase", 
+      data: achievementsData.internships, 
+      columns: internshipColumns, 
+      id: "all-internships",
+      headers: ["№", "Дата размещения", "Организация", "Город", "Дата начала", "Дата окончания", "Состояние", "Балл"]
+    }
   ];
   
-  container.innerHTML = sections.map(section => `
+  container.innerHTML = sections.map((section) => `
     <div class="all-section" data-section="${section.id}">
       <div class="section-header">
         <h3><i class="fas ${section.icon}"></i> ${section.title}</h3>
-        <span class="section-count" id="${section.id}-count">${section.data.length}</span>
       </div>
       <div class="table-card">
         <table class="achievements-table" id="${section.id}-table">
           <thead>
-            <tr>${getTableHeaders(section.columns.length)}</tr>
+            <tr>${section.headers.map(h => `<th>${h}</th>`).join("")}</tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
   `).join("");
-  
+
   // Рендерим данные в каждую таблицу
   sections.forEach(section => {
     const tableElement = document.getElementById(`${section.id}-table`);
     renderTableInElement(tableElement, section.data, section.columns);
   });
-}
-
-function getTableHeaders(colCount) {
-  const headers = ["№", "Дата размещения", "Название", "Детали", "Доп. детали", "Состояние", "Балл"];
-  return headers.slice(0, colCount).map(h => `<th>${h}</th>`).join("");
 }
 
 // ======================== ПОИСК ========================
@@ -351,7 +394,6 @@ function switchTab(tabId) {
   });
   
   // Если данные уже загружены, просто применяем поиск
-  // Таблицы уже отрендерены в renderAllTables()
   applySearchFilter();
 }
 
@@ -400,6 +442,9 @@ async function exportToPDF(elementId, filename) {
 }
 
 function setupExportButtons() {
+  const exportPortfolioBtn = document.getElementById("exportPortfolioBtn");
+  const exportAchievementsBtn = document.getElementById("exportAchievementsBtn");
+  
   if (exportPortfolioBtn) {
     exportPortfolioBtn.addEventListener("click", async () => {
       const activeTabId = getActiveTabId();
@@ -412,7 +457,6 @@ function setupExportButtons() {
   
   if (exportAchievementsBtn) {
     exportAchievementsBtn.addEventListener("click", async () => {
-      // Убеждаемся, что "Все достижения" отрендерены
       if (!dataLoaded) {
         await fetchAllAchievements();
       }
@@ -483,6 +527,9 @@ async function initAchievementsPage() {
     console.error("Authentication failed:", error);
     return;
   }
+
+  if (mainMenuBtn) mainMenuBtn.classList.remove('active');
+  if (scienceMenuBtn) scienceMenuBtn.classList.add('active');
 
   setupTabs();
   setupSearch();

@@ -1,4 +1,45 @@
 /* Базовые стили для страницы */
+.portfolio-container {
+    max-width: 1600px;
+    width: 95%;
+    margin: 0 auto;
+}
+
+@media (min-width: 1920px) {
+    .portfolio-container {
+        max-width: 1800px;
+        width: 90%;
+    }
+}
+
+@media (min-width: 1600px) and (max-width: 1919px) {
+    .portfolio-container {
+        max-width: 1500px;
+        width: 92%;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+    .portfolio-container {
+        max-width: 1300px;
+        width: 94%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .portfolio-container {
+        max-width: 100%;
+        width: 98%;
+    }
+}
+
+@media (max-width: 767px) {
+    .portfolio-container {
+        width: 100%;
+        border-radius: 0;
+    }
+}
+
 .achievements-header h1 {
   font-size: 24px;
   font-weight: 700;
@@ -242,6 +283,10 @@ body.dark-mode .badge-status.review { background: #1e3a8a; color: #93c5fd; }
 @media (max-width: 768px) {
   body {
     padding: 12px !important;
+  }
+  .portfolio-container {
+    width: 100% !important;
+    border-radius: 0 !important;
   }
   .main-content {
     padding: 16px 16px 24px !important;
