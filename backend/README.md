@@ -35,13 +35,13 @@ python seed_data.py
 python main.py
 ```
 
-Сервер будет доступен по адресу: **http://localhost:8000**
+Сервер будет доступен по адресу: **http://localhost:8001**
 
 ### Интерактивная документация API
 
 После запуска сервера вы можете открыть интерактивную документацию:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI**: http://localhost:8001/docs
+- **ReDoc**: http://localhost:8001/redoc
 
 ## Структура базы данных
 
@@ -87,14 +87,14 @@ python main.py
 Создает все таблицы в БД. Вызовите один раз перед началом работы.
 
 ```bash
-curl -X POST http://localhost:8000/setup
+curl -X POST http://localhost:8001/setup
 ```
 
 ### Управление пользователями
 
 #### `POST /users` - Создать нового пользователя
 ```bash
-curl -X POST http://localhost:8000/users \
+curl -X POST http://localhost:8001/users \
   -H "Content-Type: application/json" \
   -d '{
     "username": "john_doe",
@@ -115,23 +115,23 @@ curl -X POST http://localhost:8000/users \
 
 #### `GET /users` - Получить всех пользователей
 ```bash
-curl http://localhost:8000/users
+curl http://localhost:8001/users
 ```
 
 Возвращает пользователей, отсортированных по дате создания (сначала самые новые):
 ```bash
-curl http://localhost:8000/users?limit=10  # Последние 10 пользователей
-curl http://localhost:8000/users?limit=-1  # Все пользователи
+curl http://localhost:8001/users?limit=10  # Последние 10 пользователей
+curl http://localhost:8001/users?limit=-1  # Все пользователи
 ```
 
 #### `GET /users/{user_id}` - Получить пользователя по ID
 ```bash
-curl http://localhost:8000/users/1
+curl http://localhost:8001/users/1
 ```
 
 #### `PUT /users/{user_id}` - Обновить пользователя
 ```bash
-curl -X PUT http://localhost:8000/users/1 \
+curl -X PUT http://localhost:8001/users/1 \
   -H "Content-Type: application/json" \
   -d '{
     "email": "jane_doe@portfolio.local",
@@ -142,12 +142,12 @@ curl -X PUT http://localhost:8000/users/1 \
 
 #### `DELETE /users/{user_id}` - Удалить пользователя
 ```bash
-curl -X DELETE http://localhost:8000/users/1
+curl -X DELETE http://localhost:8001/users/1
 ```
 
 #### `POST /users/login/email` - Проверить email и пароль пользователя
 ```bash
-curl -X POST http://localhost:8000/users/login/email \
+curl -X POST http://localhost:8001/users/login/email \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john_doe@portfolio.local",
@@ -159,7 +159,7 @@ curl -X POST http://localhost:8000/users/login/email \
 
 #### `POST /users/check-username` - Проверить занятость username
 ```bash
-curl -X POST http://localhost:8000/users/check-username \
+curl -X POST http://localhost:8001/users/check-username \
   -H "Content-Type: application/json" \
   -d '{
     "username": "ivan_petrov_1"
@@ -170,7 +170,7 @@ curl -X POST http://localhost:8000/users/check-username \
 
 #### `POST /users/check-email` - Проверить занятость email
 ```bash
-curl -X POST http://localhost:8000/users/check-email \
+curl -X POST http://localhost:8001/users/check-email \
   -H "Content-Type: application/json" \
   -d '{
     "email": "ivan_petrov_1@portfolio.local"
@@ -183,7 +183,7 @@ curl -X POST http://localhost:8000/users/check-email \
 
 #### `POST /users/{user_id}/directions` - Добавить направление
 ```bash
-curl -X POST http://localhost:8000/users/1/directions \
+curl -X POST http://localhost:8001/users/1/directions \
   -H "Content-Type: application/json" \
   -d '{
     "other_directions": "Machine Learning"
@@ -192,25 +192,25 @@ curl -X POST http://localhost:8000/users/1/directions \
 
 #### `GET /users/{user_id}/directions` - Получить все направления пользователя
 ```bash
-curl http://localhost:8000/users/1/directions
+curl http://localhost:8001/users/1/directions
 ```
 
 Возвращает направления, отсортированные по дате создания (сначала самые новые):
 ```bash
-curl http://localhost:8000/users/1/directions?limit=5   # Последние 5 направлений
-curl http://localhost:8000/users/1/directions?limit=-1  # Все направления
+curl http://localhost:8001/users/1/directions?limit=5   # Последние 5 направлений
+curl http://localhost:8001/users/1/directions?limit=-1  # Все направления
 ```
 
 #### `DELETE /directions/{direction_id}` - Удалить направление
 ```bash
-curl -X DELETE http://localhost:8000/directions/1
+curl -X DELETE http://localhost:8001/directions/1
 ```
 
 ### Управление курсами
 
 #### `POST /users/{user_id}/courses` - Добавить курс
 ```bash
-curl -X POST http://localhost:8000/users/1/courses \
+curl -X POST http://localhost:8001/users/1/courses \
   -H "Content-Type: application/json" \
   -d '{
     "name_course": "Python for Beginners",
@@ -220,25 +220,25 @@ curl -X POST http://localhost:8000/users/1/courses \
 
 #### `GET /users/{user_id}/courses` - Получить все курсы пользователя
 ```bash
-curl http://localhost:8000/users/1/courses
+curl http://localhost:8001/users/1/courses
 ```
 
 Возвращает курсы, отсортированные по дате создания (сначала самые новые):
 ```bash
-curl http://localhost:8000/users/1/courses?limit=5   # Последние 5 курсов
-curl http://localhost:8000/users/1/courses?limit=-1  # Все курсы
+curl http://localhost:8001/users/1/courses?limit=5   # Последние 5 курсов
+curl http://localhost:8001/users/1/courses?limit=-1  # Все курсы
 ```
 
 #### `DELETE /courses/{course_id}` - Удалить курс
 ```bash
-curl -X DELETE http://localhost:8000/courses/1
+curl -X DELETE http://localhost:8001/courses/1
 ```
 
 ### Управление научными достижениями
 
 #### `POST /users/{user_id}/achievements` - Добавить достижение
 ```bash
-curl -X POST http://localhost:8000/users/1/achievements \
+curl -X POST http://localhost:8001/users/1/achievements \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Research Paper on AI",
@@ -249,25 +249,25 @@ curl -X POST http://localhost:8000/users/1/achievements \
 
 #### `GET /users/{user_id}/achievements` - Получить все достижения пользователя
 ```bash
-curl http://localhost:8000/users/1/achievements
+curl http://localhost:8001/users/1/achievements
 ```
 
 Возвращает достижения, отсортированные по дате создания (сначала самые новые):
 ```bash
-curl http://localhost:8000/users/1/achievements?limit=5   # Последние 5 достижений
-curl http://localhost:8000/users/1/achievements?limit=-1  # Все достижения
+curl http://localhost:8001/users/1/achievements?limit=5   # Последние 5 достижений
+curl http://localhost:8001/users/1/achievements?limit=-1  # Все достижения
 ```
 
 #### `DELETE /achievements/{achievement_id}` - Удалить достижение
 ```bash
-curl -X DELETE http://localhost:8000/achievements/1
+curl -X DELETE http://localhost:8001/achievements/1
 ```
 
 ### Проверка здоровья сервера
 
 #### `GET /health` - Проверить статус сервера
 ```bash
-curl http://localhost:8000/health
+curl http://localhost:8001/health
 ```
 
 ## Обработка ошибок
@@ -310,3 +310,4 @@ API возвращает стандартные HTTP коды ошибок:
 - `test_api.py` - Скрипт для тестирования API эндпоинтов
 - `requirements.txt` - Список зависимостей Python
 - `README.md` - Документация проекта
+

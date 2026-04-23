@@ -350,7 +350,7 @@ async function handleLogin() {
     }, 800);
   } catch (error) {
     console.error("Login failed:", error);
-    showGlobalError("Бэкенд недоступен. Запустите API на http://localhost:8000");
+    showGlobalError("Бэкенд недоступен. Проверьте, что API отвечает по /api/v1");
   }
 }
 
@@ -457,7 +457,7 @@ async function handleRegister() {
     }, 1000);
   } catch (error) {
     console.error("Registration failed:", error);
-    showGlobalError("Бэкенд недоступен. Запустите API на http://localhost:8000");
+    showGlobalError("Бэкенд недоступен. Проверьте, что API отвечает по /api/v1");
   }
 }
 

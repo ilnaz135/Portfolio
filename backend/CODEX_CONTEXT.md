@@ -135,7 +135,7 @@ Important implementation detail:
 - PowerShell output may show mojibake for Russian text if console encoding is not UTF-8
 - Source files themselves are UTF-8; do not treat garbled terminal output as file corruption by default
 
-- `js/script.js` fetches `http://localhost:8000/api/v1/users`
+- `js/script.js` fetches `http://localhost:8001/api/v1/users`
 - `js/login.js` now logs in through `POST /api/v1/users/login/email`
 - Frontend currently expects the users endpoint to return a list and then indexes it with `currentAccountId = 3`
 - `GET /api/v1/users` is ordered by `created_at DESC`, so changing ordering may change which profile the frontend shows
@@ -159,11 +159,11 @@ python seed_data.py
 ```
 
 ```bash
-curl http://localhost:8000/api/v1/users
+curl http://localhost:8001/api/v1/users
 ```
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/setup
+curl -X POST http://localhost:8001/api/v1/setup
 ```
 
 ## Last Important State
@@ -172,3 +172,4 @@ curl -X POST http://localhost:8000/api/v1/setup
 - local `backend/portfolio.db` already contains `users.email`
 - existing users were backfilled with `username@portfolio.local`
 - duplicate email now returns HTTP 400 with a dedicated email error message
+

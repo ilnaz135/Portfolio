@@ -1,4 +1,21 @@
-const API_BASE = "http://localhost:8000/api/v1";
+function trimTrailingSlash(value) {
+  return String(value ?? "").replace(/\/+$/, "");
+}
+
+function resolveApiBase() {
+  const configuredBase = trimTrailingSlash(window.PORTFOLIO_API_BASE);
+  if (configuredBase) {
+    return configuredBase;
+  }
+
+  if (window.location?.origin && /^https?:/i.test(window.location.origin)) {
+    return `${trimTrailingSlash(window.location.origin)}/api/v1`;
+  }
+
+  return "/api/v1";
+}
+
+const API_BASE = resolveApiBase();
 const AUTH_STORAGE_KEY = "portfolio_auth_session";
 
 let refreshPromise = null;
