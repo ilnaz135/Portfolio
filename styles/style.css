@@ -5,18 +5,22 @@ body.dark-mode {
 }
 
 .portfolio-container {
-    max-width: 1280px;
-    margin: 0 auto;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
     background-color: #ffffff;
-    border-radius: 32px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border-radius: 0;
+    box-shadow: none;
     overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     transition: background-color 0.3s;
 }
 
 body.dark-mode .portfolio-container {
     background-color: #1e293b;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    box-shadow: none;
 }
 
 /* ===== ХЕДЕР ===== */
@@ -103,7 +107,7 @@ body.dark-mode .logo-text span {
     display: flex;
     align-items: center;
     background-color: #f1f5f9;
-    border-radius: 60px;
+    border-radius: 8px;
     border: 1px solid #dbe0e6;
     padding: 4px; /* Одинаковый внутренний отступ для всего содержимого */
     padding-left: 20px; /* Больше отступ слева для иконки лупы */
@@ -154,8 +158,8 @@ body.dark-mode .search-wrapper input::placeholder {
 .filter-btn {
     background: white;
     border: 1px solid #dbe0e6;
-    border-radius: 40px;
-    padding: 8px 18px; /* Высота кнопки теперь зависит только от этих падингов */
+    border-radius: 6px;
+    padding: 8px 18px;
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -252,7 +256,7 @@ body.dark-mode .icon-btn:hover {
     margin-top: 12px;
     background: white;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     width: 220px;
     display: none;
@@ -303,32 +307,33 @@ body.dark-mode .dropdown-menu a.active {
 /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
 .main-content {
     display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 32px;
-    padding: 32px;
-    min-height: auto;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    padding: 0;
+    flex: 1;
     align-items: stretch;
 }
 
 /* Левая колонка — профиль */
 .profile-card {
     background-color: #ffffff;
-    border-radius: 24px;
+    border-radius: 0;
     padding: 24px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border: none;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    height: fit-content;
+    min-height: 100%;
     position: relative;
 }
 
 
 body.dark-mode .profile-card {
     background-color: #0f172a;
-    border-color: #334155;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    border-right-color: #334155;
+    box-shadow: none;
 }
 
 .edit-profile-btn {
@@ -377,7 +382,7 @@ body.dark-mode .edit-profile-btn:hover {
     color: white;
     font-size: 44px;
     font-weight: 600;
-    box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+    box-shadow: none;
     border: 4px solid white;
     flex-shrink: 0;
 }
@@ -433,7 +438,7 @@ body.dark-mode .username {
     font-weight: 600;
     font-size: 15px;
     padding: 6px 24px;
-    border-radius: 40px;
+    border-radius: 6px;
     border-left: 4px solid #f97316;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
@@ -453,7 +458,7 @@ body.dark-mode .badge {
     gap: 8px;
     background-color: #f1f5f9;
     padding: 10px;
-    border-radius: 60px;
+    border-radius: 8px;
     text-decoration: none;
     color: #1e293b;
     font-weight: 500;
@@ -492,7 +497,7 @@ body.dark-mode .github-link i {
     color: #0b2b5c;
     font-weight: 600;
     padding: 12px;
-    border-radius: 60px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -574,31 +579,39 @@ body.dark-mode .edu-highlight-small {
 .activity-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: stretch; /* Это делает колонки одинаковыми по высоте */
+    gap: 0;
+    align-items: stretch;
     height: 100%;
+    min-height: 100%;
 }
 
 .left-col {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    
+    gap: 0;
+    border-right: 1px solid #e2e8f0;
+    min-height: 100%;
+}
+
+body.dark-mode .left-col {
+    border-right-color: #334155;
 }
 
 .right-col {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 0;
     height: 100%;
+    min-height: 100%;
 }
 
 /* Научная деятельность */
 .science-card {
     background-color: #ffffff;
-    border-radius: 24px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: none;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -607,17 +620,17 @@ body.dark-mode .edu-highlight-small {
 
 body.dark-mode .science-card {
     background-color: #0f172a;
-    border-color: #334155;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    border-bottom-color: #334155;
+    box-shadow: none;
 }
 
 /* Карточки специализаций и курсов */
 .skill-card {
     background-color: #ffffff;
-    border-radius: 24px;
+    border-radius: 0;
     padding: 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border: none;
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -670,8 +683,7 @@ body.dark-mode .science-card {
 
 body.dark-mode .skill-card {
     background-color: #0f172a;
-    border-color: #334155;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: none;
 }
 
 .tall-card {
@@ -720,7 +732,7 @@ body.dark-mode .card-title {
     gap: 6px;
     cursor: pointer;
     padding: 6px 14px;
-    border-radius: 30px;
+    border-radius: 6px;
     transition: all 0.2s;
     box-shadow: 0 2px 6px rgba(30, 79, 138, 0.1);
     letter-spacing: 0.3px;
@@ -833,7 +845,7 @@ body.dark-mode .pub-meta {
 .tag {
     background-color: #f1f5f9;
     padding: 5px 14px;
-    border-radius: 30px;
+    border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
     color: #1e293b;
@@ -878,7 +890,7 @@ body.dark-mode .tag:hover {
     gap: 6px;
     cursor: pointer;
     padding: 6px 14px;
-    border-radius: 30px;
+    border-radius: 6px;
     transition: all 0.2s;
     box-shadow: 0 2px 6px rgba(30, 79, 138, 0.1);
     letter-spacing: 0.3px;
@@ -959,7 +971,7 @@ body.dark-mode .footer {
 .modal-window {
     background: white;
     padding: 30px;
-    border-radius: 24px;
+    border-radius: 10px;
     width: 400px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
@@ -1015,7 +1027,7 @@ body.dark-mode .input-group input {
     background: #2563eb;
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
     margin-top: 10px;
@@ -1299,15 +1311,146 @@ body.dark-mode .course-stack-tag {
 /* ===== МЕДИА-ЗАПРОСЫ (АДАПТИВНОСТЬ) ===== */
 
 /* Большие десктопы */
-@media (min-width: 1400px) {
-    .portfolio-container {
-        max-width: 1400px;
+
+/* ===== ФУТЕР ===== */
+/* Футер */
+.site-footer {
+    background-color: #f8fafc;
+    color: #475569;
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    font-size: 13px;
+    line-height: 1.7;
+    border-top: 1px solid #e2e8f0;
+    margin-top: auto;
+}
+
+body.dark-mode .site-footer {
+    background-color: #0f172a;
+    color: #94a3b8;
+    border-top-color: #1e293b;
+}
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.footer-col-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0b2b5c;
+    margin-bottom: 8px;
+}
+
+body.dark-mode .footer-col-title {
+    color: #e2e8f0;
+}
+
+.footer-copyright {
+    color: #64748b;
+    font-size: 12px;
+}
+
+body.dark-mode .footer-copyright {
+    color: #94a3b8;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+body.dark-mode .footer-contact-item {
+    color: #94a3b8;
+}
+
+.footer-contact-item i {
+    color: #94a3b8;
+    font-size: 11px;
+    width: 14px;
+    flex-shrink: 0;
+}
+
+body.dark-mode .footer-contact-item i {
+    color: #64748b;
+}
+
+.footer-social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+body.dark-mode .footer-social-link {
+    color: #cbd5e1;
+}
+
+.footer-social-link:hover {
+    color: #0b2b5c;
+}
+
+body.dark-mode .footer-social-link:hover {
+    color: #ffffff;
+}
+
+.footer-social-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.footer-social-icon.vk {
+    background-color: #0077ff;
+    color: white;
+}
+
+.footer-social-icon.max {
+    background-color: #00b4d8;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .site-footer {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px 16px;
     }
-    
+}
+
+@media (max-width: 480px) {
+    .site-footer {
+        padding: 16px;
+    }
+}
+
+@media (min-width: 1400px) {
     .main-content {
         grid-template-columns: 380px 1fr;
-        gap: 36px;
-        padding: 36px;
+        gap: 0;
+        padding: 0;
     }
 }
 
@@ -1315,8 +1458,8 @@ body.dark-mode .course-stack-tag {
 @media (min-width: 1281px) and (max-width: 1399px) {
     .main-content {
         grid-template-columns: 360px 1fr;
-        gap: 32px;
-        padding: 32px;
+        gap: 0;
+        padding: 0;
     }
 }
 
@@ -1324,8 +1467,8 @@ body.dark-mode .course-stack-tag {
 @media (min-width: 971px) and (max-width: 1280px) {
     .main-content {
         grid-template-columns: 320px 1fr;
-        gap: 24px;
-        padding: 28px;
+        gap: 0;
+        padding: 0;
     }
     
     .profile-card {
@@ -1366,8 +1509,8 @@ body.dark-mode .course-stack-tag {
 @media (min-width: 771px) and (max-width: 970px) {
     .main-content {
         grid-template-columns: 360px 1fr;
-        gap: 16px;
-        padding: 16px;
+        gap: 0;
+        padding: 0;
     }
     
     .profile-card {
@@ -1437,7 +1580,7 @@ body.dark-mode .course-stack-tag {
     
     .activity-section {
         grid-template-columns: 1fr; /* Включаем 1 колонку */
-        gap: 14px;
+        gap: 0;
         height: auto;   
     }
     
@@ -2159,14 +2302,10 @@ body.dark-mode .course-stack-tag {
 
 /* Для очень широких экранов */
 @media (min-width: 1800px) {
-    .portfolio-container {
-        max-width: 1600px;
-    }
-    
     .main-content {
         grid-template-columns: 400px 1fr;
-        gap: 40px;
-        padding: 40px;
+        gap: 0;
+        padding: 0;
     }
     
     .profile-card {
