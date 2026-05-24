@@ -79,6 +79,9 @@ body.dark-mode .tabs-container {
   border-radius: 40px;
   transition: all 0.2s ease;
   white-space: nowrap;
+  /* РАВНОМЕРНОЕ РАСТЯГИВАНИЕ */
+  flex: 1;
+  text-align: center;
 }
 body.dark-mode .tab-btn-achievement {
   color: #94a3b8;
