@@ -33,10 +33,11 @@
             
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Поиск">
-                    <button onclick="alert('In progress')" class="filter-btn">
+                    <input type="text" id="globalStudentSearchInput" placeholder="Поиск студента...">
+                    <button type="button" class="filter-btn" id="globalFilterBtn">
                         <i class="fas fa-sliders-h"></i> Фильтры
                     </button>
+                    <div class="global-student-results" id="globalStudentResults" hidden></div>
                 </div>
                 
                 <div class="control-buttons">
@@ -154,6 +155,7 @@
         window.PORTFOLIO_API_BASE = "https://90.156.210.4/api/v1";
     </script>
     <script src="js/auth.js"></script>
+    <script src="js/global-search.js"></script>
     <script src="js/script.js"></script>
     
 </body>

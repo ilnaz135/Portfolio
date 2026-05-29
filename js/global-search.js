@@ -1,120 +1,436 @@
-// Global search component for index.html and achievementsindex.html
-(function() {
-    // Mock data for search (should be fetched from API in production)
-    const SEARCH_STUDENTS = [
-        { name: "Иванов Иван Иванович", group: "РИ-210001", course: "3 курс", direction: "09.03.01 Информатика и ВТ" },
-        { name: "Петров Петр Петрович", group: "РИ-210002", course: "3 курс", direction: "09.03.02 Информационные системы" },
-        { name: "Сидорова Анна Сергеевна", group: "РИ-220001", course: "2 курс", direction: "09.03.04 Программная инженерия" },
-        { name: "Кузнецов Дмитрий Александрович", group: "РИ-220002", course: "2 курс", direction: "10.03.01 Информационная безопасность" },
-        { name: "Смирнова Елена Владимировна", group: "РИ-210001", course: "3 курс", direction: "09.03.01 Информатика и ВТ" },
-        { name: "Васильев Алексей Дмитриевич", group: "РИ-210002", course: "3 курс", direction: "09.03.02 Информационные системы" },
-        { name: "Михайлова Ольга Игоревна", group: "РИ-220001", course: "2 курс", direction: "09.03.04 Программная инженерия" },
-        { name: "Новиков Павел Андреевич", group: "РИ-220002", course: "2 курс", direction: "10.03.01 Информационная безопасность" }
-    ];
+(function () {
+  const searchInput = document.getElementById("globalStudentSearchInput");
+  if (!searchInput) return;
 
-    let searchModal = null;
-    let searchInput = null;
-    let filterCourse = null;
-    let filterDirection = null;
+  const ROLES = [
+    "Frontend-разработчик", "Backend-разработчик", "Fullstack-разработчик",
+    "Data Scientist", "DevOps-инженер", "UI/UX дизайнер", "Мобильный разработчик",
+    "ML-инженер", "Аналитик данных", "Системный администратор", "В поиске себя",
+    "Исследователь ИИ", "Кибербезопасность",
+  ];
+  const DIRECTIONS = [
+    "09.03.01 Информатика и ВТ", "09.03.02 Информационные системы",
+    "09.03.04 Программная инженерия", "10.03.01 ИБ", "11.03.02 Инфокоммуникации",
+  ];
+  const GROUPS = ["РИ-210001", "РИ-210002", "РИ-220001", "РИ-220002", "РИ-230001", "РИ-230002", "РИ-240001"];
+  const MALE = {
+    first: ["Алексей", "Дмитрий", "Сергей", "Иван", "Павел", "Артём", "Никита", "Андрей", "Михаил", "Кирилл", "Александр", "Владимир", "Евгений", "Максим", "Роман"],
+    last: ["Иванов", "Петров", "Соколов", "Попов", "Морозов", "Волков", "Федоров", "Михайлов", "Новиков", "Смирнов", "Козлов", "Лебедев", "Зайцев", "Павлов", "Семёнов"],
+    pat: ["Александрович", "Сергеевич", "Дмитриевич", "Петрович", "Олегович", "Андреевич", "Иванович", "Владимирович", "Михайлович", "Николаевич"],
+  };
+  const FEMALE = {
+    first: ["Мария", "Анна", "Елена", "Ольга", "Наталья", "Юлия", "Ксения", "Екатерина", "Дарья", "Анастасия", "Вероника", "Виктория", "Алина", "Полина", "Татьяна"],
+    last: ["Иванова", "Петрова", "Соколова", "Попова", "Морозова", "Волкова", "Федорова", "Михайлова", "Новикова", "Смирнова", "Козлова", "Лебедева", "Зайцева", "Павлова", "Семёнова"],
+    pat: ["Александровна", "Сергеевна", "Дмитриевна", "Петровна", "Олеговна", "Андреевна", "Ивановна", "Владимировна", "Михайловна", "Николаевна"],
+  };
 
-    function createModal() {
-        const modal = document.createElement('div');
-        modal.id = 'globalSearchModal';
-        modal.style.cssText = `
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            display: none; align-items: center; justify-content: center;
-            z-index: 10000;
-        `;
-        modal.innerHTML = `
-            <div style="background: white; border-radius: 24px; width: 90%; max-width: 600px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column;">
-                <div style="padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin:0;">Поиск студентов</h3>
-                    <button id="closeSearchModal" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
-                </div>
-                <div style="padding: 20px;">
-                    <input type="text" id="searchStudentInput" placeholder="Введите имя или фамилию..." style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 12px;">
-                    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-                        <select id="searchFilterCourse" style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
-                            <option value="">Все курсы</option>
-                            <option>1 курс</option><option>2 курс</option><option>3 курс</option><option>4 курс</option>
-                        </select>
-                        <select id="searchFilterDirection" style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
-                            <option value="">Все направления</option>
-                            <option>09.03.01 Информатика и ВТ</option>
-                            <option>09.03.02 Информационные системы</option>
-                            <option>09.03.04 Программная инженерия</option>
-                            <option>10.03.01 Информационная безопасность</option>
-                        </select>
-                    </div>
-                    <div id="searchResults" style="max-height: 400px; overflow-y: auto;"></div>
-                </div>
+  function rng(seed, max) {
+    const x = Math.sin(seed + 1) * 10000;
+    return Math.floor((x - Math.floor(x)) * max);
+  }
+
+  function generateStudents(count) {
+    return Array.from({ length: count }, (_, i) => {
+      const isFemale = rng(i * 31, 2) === 0;
+      const gender = isFemale ? FEMALE : MALE;
+      const first = gender.first[rng(i * 7, gender.first.length)];
+      const last = gender.last[rng(i * 13, gender.last.length)];
+      const pat = gender.pat[rng(i * 17, gender.pat.length)];
+      const score = 20 + rng(i * 3, 81);
+      return {
+        id: i + 1,
+        first_name: first,
+        last_name: last,
+        patronymic: pat,
+        role: ROLES[rng(i * 9, ROLES.length)],
+        academic_direction: DIRECTIONS[rng(i * 19, DIRECTIONS.length)],
+        class_: `${rng(i * 23, 4) + 1} курс`,
+        group: GROUPS[rng(i * 29, GROUPS.length)],
+        avg_score: score,
+      };
+    });
+  }
+
+  const ALL_STUDENTS = generateStudents(187);
+  const studentsPagePath = document.body.dataset.studentsPage || "studentsindex.html";
+
+  let scoreMin = 0;
+  let scoreMax = 100;
+  let scoreFilterMin = 0;
+  let scoreFilterMax = 100;
+  let resultsDismissed = false;
+
+  function escapeHtml(v) {
+    return String(v ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function fullName(s) {
+    return `${s.last_name} ${s.first_name} ${s.patronymic}`;
+  }
+
+  function injectFiltersSection() {
+    const header = document.querySelector(".header");
+    if (!header || document.getElementById("globalFiltersSection")) return;
+
+    const section = document.createElement("div");
+    section.className = "filters-section";
+    section.id = "globalFiltersSection";
+    section.innerHTML = `
+      <div class="filters-grid">
+        <div class="filter-select-wrapper">
+          <select class="filter-select" id="globalFilterCourse">
+            <option value="">Курс</option>
+            <option value="1">1 курс</option>
+            <option value="2">2 курс</option>
+            <option value="3">3 курс</option>
+            <option value="4">4 курс</option>
+          </select>
+        </div>
+        <div class="filter-select-wrapper">
+          <select class="filter-select" id="globalFilterDirection">
+            <option value="">Направление подготовки</option>
+            <option>09.03.01 Информатика и ВТ</option>
+            <option>09.03.02 Информационные системы</option>
+            <option>09.03.04 Программная инженерия</option>
+            <option>10.03.01 Информационная безопасность</option>
+            <option>11.03.02 Инфокоммуникационные технологии</option>
+          </select>
+        </div>
+        <div class="filter-select-wrapper">
+          <select class="filter-select" id="globalFilterProfile">
+            <option value="">Профиль подготовки</option>
+            <option>Разработка ПО</option>
+            <option>Веб-технологии</option>
+            <option>Системное администрирование</option>
+            <option>Искусственный интеллект</option>
+          </select>
+        </div>
+        <div class="filter-select-wrapper">
+          <select class="filter-select" id="globalFilterRole">
+            <option value="">Личное направление</option>
+            ${ROLES.map((r) => `<option>${r}</option>`).join("")}
+          </select>
+        </div>
+        <div class="filter-select-wrapper">
+          <select class="filter-select" id="globalFilterGroup">
+            <option value="">Группа</option>
+            ${GROUPS.map((g) => `<option>${g}</option>`).join("")}
+          </select>
+        </div>
+        <div class="filter-score-wrapper" id="globalFilterScoreWrapper">
+          <button type="button" class="filter-score-btn" id="globalFilterScoreBtn">
+            <span id="globalScoreLabel">Ср. балл</span>
+            <span class="score-arrow"></span>
+          </button>
+          <div class="score-popup" id="globalScorePopup">
+            <div class="score-popup-title">Средний балл</div>
+            <div class="score-inputs">
+              <div class="score-input-group">
+                <span class="score-input-label">От</span>
+                <input type="number" class="score-input" id="globalScoreMinInput" min="0" max="100" value="0">
+              </div>
+              <span class="score-dash">—</span>
+              <div class="score-input-group">
+                <span class="score-input-label">До</span>
+                <input type="number" class="score-input" id="globalScoreMaxInput" min="0" max="100" value="100">
+              </div>
             </div>
-        `;
-        document.body.appendChild(modal);
-        return modal;
-    }
-
-    function renderResults(results) {
-        const container = document.getElementById('searchResults');
-        if (!container) return;
-        if (results.length === 0) {
-            container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b;">Ничего не найдено</div>';
-            return;
-        }
-        container.innerHTML = results.map(s => `
-            <div style="padding: 12px; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;" onclick="window.location.href='studentsindex.html'">
-                <div style="font-weight: 600;">${s.name}</div>
-                <div style="font-size: 13px; color: #64748b; margin-top: 4px;">${s.group} • ${s.course} • ${s.direction}</div>
+            <div class="range-wrapper" id="globalRangeWrapper">
+              <div class="range-track-bg"></div>
+              <div class="range-track-fill" id="globalRangeFill"></div>
+              <div class="range-thumb" id="globalThumbMin"></div>
+              <div class="range-thumb" id="globalThumbMax"></div>
             </div>
-        `).join('');
+            <div class="range-tick-labels">
+              <span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span>
+            </div>
+            <button type="button" class="score-apply-btn" id="globalScoreApplyBtn">
+              <i class="fas fa-check"></i> Применить
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="filters-actions">
+        <button type="button" class="filters-apply-btn" id="globalFiltersApplyBtn">
+          <i class="fas fa-check"></i> Применить фильтры
+        </button>
+        <button type="button" class="filters-reset-btn" id="globalFiltersResetBtn">
+          <i class="fas fa-times"></i> Сбросить фильтры
+        </button>
+      </div>
+    `;
+    header.insertAdjacentElement("afterend", section);
+  }
+
+  function getFilteredStudents() {
+    const search = searchInput.value.toLowerCase();
+    const direction = document.getElementById("globalFilterDirection")?.value || "";
+    const course = document.getElementById("globalFilterCourse")?.value || "";
+    const profile = document.getElementById("globalFilterProfile")?.value || "";
+    const role = document.getElementById("globalFilterRole")?.value || "";
+    const group = document.getElementById("globalFilterGroup")?.value || "";
+
+    return ALL_STUDENTS.filter((s) => {
+      const fullname = fullName(s).toLowerCase();
+      const matchSearch = !search || fullname.includes(search);
+      const matchDirection = !direction || s.academic_direction === direction;
+      const matchCourse = !course || s.class_ === `${course} курс`;
+      const matchProfile = !profile || true;
+      const matchRole = !role || s.role === role;
+      const matchGroup = !group || s.group === group;
+      const matchScore = s.avg_score >= scoreFilterMin && s.avg_score <= scoreFilterMax;
+      return matchSearch && matchDirection && matchCourse && matchProfile && matchRole && matchGroup && matchScore;
+    });
+  }
+
+  function hideResultsDropdown() {
+    const container = document.getElementById("globalStudentResults");
+    if (!container) return;
+    resultsDismissed = true;
+    container.hidden = true;
+  }
+
+  function hasSearchCriteria() {
+    const query = searchInput.value.trim();
+    return (
+      Boolean(query) ||
+      scoreFilterMin > 0 ||
+      scoreFilterMax < 100 ||
+      document.getElementById("globalFilterDirection")?.value ||
+      document.getElementById("globalFilterCourse")?.value ||
+      document.getElementById("globalFilterProfile")?.value ||
+      document.getElementById("globalFilterRole")?.value ||
+      document.getElementById("globalFilterGroup")?.value
+    );
+  }
+
+  function renderResults() {
+    const container = document.getElementById("globalStudentResults");
+    if (!container) return;
+
+    if (resultsDismissed) {
+      container.hidden = true;
+      return;
     }
 
-    function performSearch() {
-        const query = document.getElementById('searchStudentInput')?.value.toLowerCase() || '';
-        const course = document.getElementById('searchFilterCourse')?.value || '';
-        const direction = document.getElementById('searchFilterDirection')?.value || '';
-        
-        const filtered = SEARCH_STUDENTS.filter(s => {
-            const matchesQuery = query === '' || s.name.toLowerCase().includes(query);
-            const matchesCourse = course === '' || s.course === course;
-            const matchesDirection = direction === '' || s.direction === direction;
-            return matchesQuery && matchesCourse && matchesDirection;
-        });
-        renderResults(filtered);
+    const query = searchInput.value.trim();
+    const hasActiveFilters =
+      scoreFilterMin > 0 ||
+      scoreFilterMax < 100 ||
+      document.getElementById("globalFilterDirection")?.value ||
+      document.getElementById("globalFilterCourse")?.value ||
+      document.getElementById("globalFilterProfile")?.value ||
+      document.getElementById("globalFilterRole")?.value ||
+      document.getElementById("globalFilterGroup")?.value;
+
+    if (!query && !hasActiveFilters) {
+      container.hidden = true;
+      container.innerHTML = "";
+      return;
     }
 
-    function initGlobalSearch() {
-        const searchWrapper = document.querySelector('.search-wrapper');
-        if (!searchWrapper) return;
-        
-        const existingInput = document.getElementById('globalSearchInput');
-        if (existingInput) {
-            existingInput.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (!searchModal) searchModal = createModal();
-                searchModal.style.display = 'flex';
-                document.getElementById('searchStudentInput')?.focus();
-                performSearch();
-            });
-        }
-        
-        if (searchModal) {
-            document.getElementById('closeSearchModal')?.addEventListener('click', () => {
-                searchModal.style.display = 'none';
-            });
-            searchModal.addEventListener('click', (e) => {
-                if (e.target === searchModal) searchModal.style.display = 'none';
-            });
-            document.getElementById('searchStudentInput')?.addEventListener('input', performSearch);
-            document.getElementById('searchFilterCourse')?.addEventListener('change', performSearch);
-            document.getElementById('searchFilterDirection')?.addEventListener('change', performSearch);
-        }
+    const filtered = getFilteredStudents();
+    container.hidden = false;
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="global-student-results-empty">Ничего не найдено</div>';
+      return;
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initGlobalSearch);
-    } else {
-        initGlobalSearch();
+    const maxItems = 12;
+    const items = filtered.slice(0, maxItems);
+    let html = items
+      .map(
+        (s) => `
+      <a class="global-student-result-row" href="${escapeHtml(studentsPagePath)}">
+        <span class="global-student-result-name">${escapeHtml(fullName(s))}</span>
+        <span class="global-student-result-group">${escapeHtml(s.group)}</span>
+      </a>
+    `
+      )
+      .join("");
+
+    if (filtered.length > maxItems) {
+      html += `<div class="global-student-results-more">Показано ${maxItems} из ${filtered.length}. <a href="${escapeHtml(studentsPagePath)}">Открыть полный список</a></div>`;
     }
+
+    container.innerHTML = html;
+  }
+
+  function toggleFilters() {
+    const section = document.getElementById("globalFiltersSection");
+    const btn = document.getElementById("globalFilterBtn");
+    if (!section || !btn) return;
+    const isOpen = section.classList.toggle("open");
+    btn.classList.toggle("filters-active", isOpen);
+  }
+
+  function resetFilters() {
+    ["globalFilterDirection", "globalFilterProfile", "globalFilterRole", "globalFilterGroup", "globalFilterCourse"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    searchInput.value = "";
+    resultsDismissed = false;
+    scoreMin = 0;
+    scoreMax = 100;
+    scoreFilterMin = 0;
+    scoreFilterMax = 100;
+    const label = document.getElementById("globalScoreLabel");
+    if (label) label.textContent = "Ср. балл";
+    updateRangeUI();
+    renderResults();
+  }
+
+  function applyFilters() {
+    const section = document.getElementById("globalFiltersSection");
+    const btn = document.getElementById("globalFilterBtn");
+    if (section) section.classList.remove("open");
+    if (btn) btn.classList.remove("filters-active");
+    resultsDismissed = false;
+    renderResults();
+  }
+
+  function pctOf(val) {
+    return val / 100;
+  }
+
+  function updateRangeUI() {
+    const wrapper = document.getElementById("globalRangeWrapper");
+    const fill = document.getElementById("globalRangeFill");
+    const tMin = document.getElementById("globalThumbMin");
+    const tMax = document.getElementById("globalThumbMax");
+    if (!wrapper || !fill || !tMin || !tMax) return;
+
+    const w = wrapper.offsetWidth;
+    tMin.style.left = pctOf(scoreMin) * w + "px";
+    tMax.style.left = pctOf(scoreMax) * w + "px";
+    fill.style.left = pctOf(scoreMin) * 100 + "%";
+    fill.style.width = (pctOf(scoreMax) - pctOf(scoreMin)) * 100 + "%";
+
+    const minInput = document.getElementById("globalScoreMinInput");
+    const maxInput = document.getElementById("globalScoreMaxInput");
+    if (minInput) minInput.value = scoreMin;
+    if (maxInput) maxInput.value = scoreMax;
+  }
+
+  function toggleScorePopup(event) {
+    event.stopPropagation();
+    const popup = document.getElementById("globalScorePopup");
+    const btn = document.getElementById("globalFilterScoreBtn");
+    if (!popup || !btn) return;
+    const open = popup.classList.toggle("visible");
+    btn.classList.toggle("open", open);
+    if (open) setTimeout(updateRangeUI, 10);
+  }
+
+  function applyScoreFilter() {
+    scoreFilterMin = scoreMin;
+    scoreFilterMax = scoreMax;
+    const label = document.getElementById("globalScoreLabel");
+    if (label) {
+      label.textContent = scoreMin > 0 || scoreMax < 100 ? `Ср. балл: ${scoreMin}–${scoreMax}` : "Ср. балл";
+    }
+    document.getElementById("globalScorePopup")?.classList.remove("visible");
+    document.getElementById("globalFilterScoreBtn")?.classList.remove("open");
+    applyFilters();
+  }
+
+  function makeDraggable(thumbId, isMin) {
+    const thumb = document.getElementById(thumbId);
+    if (!thumb) return;
+
+    const onMove = (clientX) => {
+      const wrapper = document.getElementById("globalRangeWrapper");
+      if (!wrapper) return;
+      const rect = wrapper.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      const val = Math.round(pct * 100);
+      if (isMin) scoreMin = Math.min(val, scoreMax - 1);
+      else scoreMax = Math.max(val, scoreMin + 1);
+      updateRangeUI();
+    };
+
+    thumb.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      const move = (ev) => onMove(ev.clientX);
+      const up = () => {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", up);
+      };
+      document.addEventListener("mousemove", move);
+      document.addEventListener("mouseup", up);
+    });
+  }
+
+  function initScoreControls() {
+    makeDraggable("globalThumbMin", true);
+    makeDraggable("globalThumbMax", false);
+
+    document.getElementById("globalScoreMinInput")?.addEventListener("input", function () {
+      scoreMin = Math.max(0, Math.min(parseInt(this.value, 10) || 0, scoreMax - 1));
+      updateRangeUI();
+    });
+    document.getElementById("globalScoreMaxInput")?.addEventListener("input", function () {
+      scoreMax = Math.min(100, Math.max(parseInt(this.value, 10) || 0, scoreMin + 1));
+      updateRangeUI();
+    });
+
+    document.getElementById("globalFilterScoreBtn")?.addEventListener("click", toggleScorePopup);
+    document.getElementById("globalScoreApplyBtn")?.addEventListener("click", applyScoreFilter);
+
+    document.addEventListener("click", (e) => {
+      const wrapper = document.getElementById("globalFilterScoreWrapper");
+      if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById("globalScorePopup")?.classList.remove("visible");
+        document.getElementById("globalFilterScoreBtn")?.classList.remove("open");
+      }
+    });
+  }
+
+  function setupResultsDismiss() {
+    const searchWrapper = searchInput.closest(".search-wrapper");
+    const filtersSection = () => document.getElementById("globalFiltersSection");
+
+    searchInput.addEventListener("focus", () => {
+      if (!hasSearchCriteria()) return;
+      resultsDismissed = false;
+      renderResults();
+    });
+
+    searchInput.addEventListener("input", () => {
+      resultsDismissed = false;
+      renderResults();
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (searchWrapper?.contains(target)) return;
+      if (filtersSection()?.contains(target)) return;
+      if (!hasSearchCriteria()) return;
+      hideResultsDropdown();
+    });
+  }
+
+  function init() {
+    injectFiltersSection();
+
+    const filterBtn = document.getElementById("globalFilterBtn");
+    filterBtn?.addEventListener("click", toggleFilters);
+    document.getElementById("globalFiltersApplyBtn")?.addEventListener("click", applyFilters);
+    document.getElementById("globalFiltersResetBtn")?.addEventListener("click", resetFilters);
+
+    setupResultsDismiss();
+    initScoreControls();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();

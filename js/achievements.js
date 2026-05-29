@@ -1,8 +1,6 @@
 // ======================== ОСНОВНОЙ КОД ========================
 
 const tabButtons = document.querySelectorAll(".tab-btn-achievement");
-const searchInput = document.getElementById("searchInput");
-const filterButton = document.querySelector(".filter-btn");
 const logoutButton = document.getElementById("logoutBtn");
 const settingsWrapper = document.getElementById("settingsMenuWrapper");
 const mainMenuBtn = document.querySelector(".main_menu")
@@ -341,46 +339,6 @@ function renderAllAchievements() {
   });
 }
 
-// ======================== ПОИСК ========================
-
-function applySearchFilter() {
-  const query = searchInput?.value.trim().toLowerCase() || "";
-  const activeTabId = getActiveTabId();
-  
-  if (activeTabId === "all") {
-    const sections = document.querySelectorAll(".all-section");
-    sections.forEach(section => {
-      const table = section.querySelector(".achievements-table");
-      if (!table) return;
-      
-      const rows = table.querySelectorAll("tbody tr");
-      let hasVisible = false;
-      
-      rows.forEach(row => {
-        if (row.classList.contains("empty-row")) return;
-        const matches = query === "" || row.innerText.toLowerCase().includes(query);
-        row.style.display = matches ? "" : "none";
-        if (matches) hasVisible = true;
-      });
-      
-      section.style.display = hasVisible ? "" : "none";
-    });
-  } else {
-    const activeContent = contentsMap[activeTabId];
-    if (!activeContent) return;
-    
-    const table = activeContent.querySelector(".achievements-table");
-    if (!table) return;
-    
-    const rows = table.querySelectorAll("tbody tr");
-    rows.forEach(row => {
-      if (row.classList.contains("empty-row") || row.classList.contains("loading-row")) return;
-      const matches = query === "" || row.innerText.toLowerCase().includes(query);
-      row.style.display = matches ? "" : "none";
-    });
-  }
-}
-
 // ======================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ========================
 
 function getActiveTabId() {
@@ -400,9 +358,6 @@ function switchTab(tabId) {
   tabButtons.forEach(button => {
     button.classList.toggle("active", button.getAttribute("data-tab") === tabId);
   });
-  
-  // Если данные уже загружены, просто применяем поиск
-  applySearchFilter();
 }
 
 function setupTabs() {
@@ -414,12 +369,6 @@ function setupTabs() {
       }
     });
   });
-}
-
-function setupSearch() {
-  if (searchInput) {
-    searchInput.addEventListener("input", applySearchFilter);
-  }
 }
 
 // ======================== ЭКСПОРТ В PDF ========================
@@ -506,15 +455,7 @@ function setupLogout() {
   if (logoutButton) {
     logoutButton.addEventListener("click", async (event) => {
       event.preventDefault();
-      await window.AuthClient.logout({ redirectTo: "../loginindex.html" });
-    });
-  }
-}
-
-function setupFiltersButton() {
-  if (filterButton) {
-    filterButton.addEventListener("click", () => {
-      alert("Расширенная фильтрация будет доступна в ближайшее время.");
+      await window.AuthClient.logout({ redirectTo: "loginindex.html" });
     });
   }
 }
@@ -524,7 +465,7 @@ function setupFiltersButton() {
 async function initAchievementsPage() {
   try {
     const currentUser = await window.AuthClient.requireAuth({
-      loginPath: "../loginindex.html",
+      loginPath: "loginindex.html",
     });
     currentUserId = currentUser.id;
     
@@ -540,9 +481,7 @@ async function initAchievementsPage() {
   if (scienceMenuBtn) scienceMenuBtn.classList.add('active');
 
   setupTabs();
-  setupSearch();
   setupLogout();
-  setupFiltersButton();
   setupSettingsMenu();
   setupExportButtons();
   

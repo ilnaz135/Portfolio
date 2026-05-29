@@ -77,8 +77,8 @@
             min-width: 280px;
         }
         body.dark-mode .search-wrapper { background-color: #0f172a; border-color: #475569; }
-        .search-wrapper i { color: #64748b; font-size: 16px; }
-        body.dark-mode .search-wrapper i { color: #94a3b8; }
+        .search-wrapper > .fa-search { color: #64748b; font-size: 16px; }
+        body.dark-mode .search-wrapper > .fa-search { color: #94a3b8; }
         .search-wrapper input {
             border: none; background: transparent;
             padding: 8px; flex: 1; font-size: 15px; outline: none;
@@ -169,10 +169,20 @@
             border-color: transparent;
             box-shadow: 0 2px 8px rgba(59,130,246,0.35);
         }
+        .filter-btn.filters-active i {
+            color: #ffffff;
+        }
         body.dark-mode .filter-btn.filters-active {
             background: #3b82f6;
             color: white;
             border-color: transparent;
+            box-shadow: none;
+        }
+        body.dark-mode .filter-btn.filters-active i {
+            color: #ffffff;
+        }
+        body.dark-mode .filter-btn.filters-active:hover {
+            background: #2563eb;
         }
 
         .filters-grid {
@@ -477,6 +487,7 @@
             background: #3b82f6;
             color: white;
             border-color: transparent;
+            box-shadow: none;
         }
 
         .pagination-controls {
@@ -520,6 +531,7 @@
             background: #3b82f6;
             color: white;
             border-color: transparent;
+            box-shadow: none;
         }
         .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
@@ -665,13 +677,13 @@
 
         /* Apply filters button */
         .filters-apply-btn {
-            padding: 9px 20px; background: #60a5fa;
+            padding: 9px 20px; background: #3b82f6;
             border: none; border-radius: 8px;
             font-size: 13px; font-family: 'Inter', sans-serif;
             color: white; cursor: pointer; font-weight: 600;
             transition: all 0.2s; display: flex; align-items: center; gap: 7px;
         }
-        .filters-apply-btn:hover { background: #3b82f6; }
+        .filters-apply-btn:hover { background: #2563eb; }
 
     </style>
 </head>
@@ -875,6 +887,22 @@
 </div>
 
 <script>
+window.PORTFOLIO_API_BASE = "https://90.156.210.4/api/v1";
+</script>
+<script src="js/auth.js"></script>
+<script>
+(async function () {
+try {
+    await window.AuthClient.requireAuth({ loginPath: "loginindex.html" });
+} catch (error) {
+    return;
+}
+
+document.getElementById("logoutBtn")?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    await window.AuthClient.logout({ redirectTo: "loginindex.html" });
+});
+
 // ===== MOCK DATA =====
 const AVATARS_GRADIENTS = [
     ['#1e3a8a','#2563eb'],['#7c3aed','#a855f7'],['#065f46','#10b981'],
@@ -1093,7 +1121,7 @@ function applyFilters() {
 
     filtered = ALL_STUDENTS.filter(s => {
         const fullname = `${s.last_name} ${s.first_name} ${s.patronymic}`.toLowerCase();
-        const matchSearch    = !search    || fullname.includes(search) || s.role.toLowerCase().includes(search);
+        const matchSearch    = !search    || fullname.includes(search);
         const matchDirection = !direction || s.academic_direction === direction;
         const matchCourse    = !course    || s.class_ === `${course} курс`;
         const matchProfile   = !profile   || true; // профиль пока не в данных
@@ -1225,6 +1253,17 @@ function setPageSize(size) {
 // ===== INIT =====
 document.getElementById('countDisplay').textContent = filtered.length;
 renderPage();
+
+Object.assign(window, {
+    toggleFilters,
+    toggleScorePopup,
+    applyScoreFilter,
+    applyFilters,
+    resetFilters,
+    setPageSize,
+    goPage,
+});
+})();
 </script>
 </body>
 </html>

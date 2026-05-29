@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../styles/global.css">
-    <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="../styles/achievements.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/achievements.css">
     <link rel="icon" href="/favicon-irit2.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -33,10 +33,11 @@
             </div>
             <div class="search-wrapper">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Поиск">
-                <button class="filter-btn">
+                <input type="text" id="globalStudentSearchInput" placeholder="Поиск студента...">
+                <button type="button" class="filter-btn" id="globalFilterBtn">
                     <i class="fas fa-sliders-h"></i> Фильтры
                 </button>
+                <div class="global-student-results" id="globalStudentResults" hidden></div>
             </div>
             <div class="control-buttons">
                 <div class="icon-btn" id="themeToggle"><i class="fas fa-moon"></i></div>
@@ -259,12 +260,13 @@
         </footer>
     </div>
 
-    <script src="../js/theme.js"></script>
+    <script src="js/theme.js"></script>
     <script>
         window.PORTFOLIO_API_BASE = "https://90.156.210.4/api/v1";
     </script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/achievements.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/global-search.js"></script>
+    <script src="js/achievements.js"></script>
     
 </body>
 </html> 
