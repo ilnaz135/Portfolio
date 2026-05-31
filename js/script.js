@@ -2,10 +2,14 @@ const mainContent = document.querySelector(".main-content");
 const scienceCard = document.querySelector(".publications-list");
 const specializationsCard = document.querySelector(".left-col .tags-cloud");
 const coursesCard = document.querySelector(".right-col .tags-cloud");
+const coursesAddBtn = document.getElementById("coursesAddBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const settingsWrapper = document.getElementById("settingsMenuWrapper");
 const settingsDropdown = document.getElementById("settingsDropdown");
-const moreAchievementButton = document.querySelector('.more-button')
+const moreAchievementButton = document.querySelector(".more-button");
+
+let coursesViewMode = "list";
+let cachedUser = null;
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -104,8 +108,8 @@ function renderScientificAchievements(user) {
     const year = String(achievement.date || "").slice(0, 4);
     if (index <= 1) {
       scienceCard.insertAdjacentHTML(
-      "beforeend",
-      `
+        "beforeend",
+        `
         <div class="publication-item">
           <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
           <div class="pub-content">
@@ -117,7 +121,7 @@ function renderScientificAchievements(user) {
           </div>
         </div>
       `
-    );
+      );
     }
   });
 }
@@ -135,11 +139,112 @@ function renderSpecializations(user) {
   }
 
   specializationsCard.classList.remove("centred-text");
+  const renderTag = window.StackIcons?.renderStackTag || ((name) => `<span class="tag">${escapeHtml(name)}</span>`);
+
   user.stacks.forEach((item) => {
     specializationsCard.insertAdjacentHTML(
       "beforeend",
-      `<a href="#"><span class="tag">${escapeHtml(item.stack)}</span></a>`
+      `<a href="#">${renderTag(item.stack)}</a>`
     );
+  });
+}
+
+function updateCoursesAddButton() {
+  if (!coursesAddBtn) {
+    return;
+  }
+
+  if (coursesViewMode === "add") {
+    coursesAddBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Назад';
+  } else {
+    coursesAddBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Добавить';
+  }
+}
+
+function renderCourseAddForm() {
+  if (!coursesCard) {
+    return;
+  }
+
+  coursesCard.classList.remove("centred-text");
+  coursesCard.classList.add("course-form-mode");
+  coursesCard.innerHTML = `
+    <form class="course-add-form" id="courseAddForm">
+      <h3>Добавление курса</h3>
+      <div class="input-group">
+        <label for="courseNameInput">Название курса</label>
+        <input type="text" id="courseNameInput" placeholder="Например: Базы данных" required>
+      </div>
+      <div class="input-group">
+        <label for="courseUrlInput">Ссылка на курс</label>
+        <input type="url" id="courseUrlInput" placeholder="https://..." required>
+      </div>
+      <p class="course-add-error" id="courseAddError" hidden></p>
+      <div class="course-add-footer">
+        <button type="button" id="courseResetBtn">Сбросить</button>
+        <button type="submit" class="save-course-btn" id="courseSaveBtn">Сохранить</button>
+      </div>
+    </form>
+  `;
+
+  const form = document.getElementById("courseAddForm");
+  const resetBtn = document.getElementById("courseResetBtn");
+  const errorEl = document.getElementById("courseAddError");
+
+  resetBtn?.addEventListener("click", () => {
+    document.getElementById("courseNameInput").value = "";
+    document.getElementById("courseUrlInput").value = "";
+    if (errorEl) {
+      errorEl.hidden = true;
+      errorEl.textContent = "";
+    }
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const name = document.getElementById("courseNameInput")?.value.trim();
+    const url = document.getElementById("courseUrlInput")?.value.trim();
+    const saveBtn = document.getElementById("courseSaveBtn");
+
+    if (!name || !url) {
+      if (errorEl) {
+        errorEl.textContent = "Заполните название и ссылку на курс.";
+        errorEl.hidden = false;
+      }
+      return;
+    }
+
+    if (!cachedUser?.id) {
+      return;
+    }
+
+    saveBtn.disabled = true;
+    if (errorEl) {
+      errorEl.hidden = true;
+    }
+
+    try {
+      await window.AuthClient.fetchJsonWithAuth(`/users/${cachedUser.id}/courses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name_course: name,
+          url_course: url,
+        }),
+      });
+
+      cachedUser = await window.AuthClient.fetchCurrentUser();
+      coursesViewMode = "list";
+      updateCoursesAddButton();
+      renderCourses(cachedUser);
+    } catch (error) {
+      if (errorEl) {
+        errorEl.textContent = error.message || "Не удалось сохранить курс.";
+        errorEl.hidden = false;
+      }
+    } finally {
+      saveBtn.disabled = false;
+    }
   });
 }
 
@@ -148,6 +253,12 @@ function renderCourses(user) {
     return;
   }
 
+  if (coursesViewMode === "add") {
+    renderCourseAddForm();
+    return;
+  }
+
+  coursesCard.classList.remove("course-form-mode");
   coursesCard.innerHTML = "";
   if (!user.courses?.length) {
     coursesCard.classList.add("centred-text");
@@ -162,7 +273,7 @@ function renderCourses(user) {
     coursesCard.insertAdjacentHTML(
       "beforeend",
       `
-        <a href="${escapeHtml(course.url_course || "#")}" class="course-progress-item">
+        <a href="${escapeHtml(course.url_course || "#")}" class="course-progress-item" target="_blank" rel="noopener">
           <div class="course-progress-header">
             <span class="course-progress-name"><i class="fas fa-database"></i> ${escapeHtml(course.name_course)}</span>
             <div class="verified-tooltip">
@@ -179,6 +290,27 @@ function renderCourses(user) {
         </a>
       `
     );
+  });
+}
+
+function setupCoursesToggle() {
+  if (!coursesAddBtn) {
+    return;
+  }
+
+  coursesAddBtn.addEventListener("click", () => {
+    if (coursesViewMode === "add") {
+      coursesViewMode = "list";
+      updateCoursesAddButton();
+      if (cachedUser) {
+        renderCourses(cachedUser);
+      }
+      return;
+    }
+
+    coursesViewMode = "add";
+    updateCoursesAddButton();
+    renderCourseAddForm();
   });
 }
 
@@ -233,20 +365,23 @@ function setupEditModal() {
   });
 }
 
-moreAchievementButton.addEventListener("click", (event) => {
-    window.location.href = 'achievementsindex.html'
-});
+if (moreAchievementButton) {
+  moreAchievementButton.addEventListener("click", () => {
+    window.location.href = "achievementsindex.html";
+  });
+}
 
 async function initProfilePage() {
   setupLogout();
   setupSettingsMenu();
+  setupCoursesToggle();
 
   try {
-    const user = await window.AuthClient.requireAuth({ loginPath: "loginindex.html" });
-    renderProfileCard(user);
-    renderScientificAchievements(user);
-    renderSpecializations(user);
-    renderCourses(user);
+    cachedUser = await window.AuthClient.requireAuth({ loginPath: "loginindex.html" });
+    renderProfileCard(cachedUser);
+    renderScientificAchievements(cachedUser);
+    renderSpecializations(cachedUser);
+    renderCourses(cachedUser);
     setupEditModal();
   } catch (error) {
     console.error("Profile page initialization failed:", error);
