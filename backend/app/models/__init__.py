@@ -38,6 +38,13 @@ class UserModel(Base):
     cloude_storage: Mapped[str | None] = mapped_column(String(255), nullable=True)
     academic_direction: Mapped[str] = mapped_column(String(150), nullable=False)
     class_: Mapped[str] = mapped_column("class", String(50), nullable=False)
+    group: Mapped[str] = mapped_column(
+        "Group",
+        String(50),
+        nullable=False,
+        default="unknown",
+        server_default="unknown",
+    )
     avg_score: Mapped[float] = mapped_column(Float, nullable=False)
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)

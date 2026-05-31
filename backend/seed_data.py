@@ -206,6 +206,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/ivanpetrov",
                     "academic_direction": "Информатика и вычислительная техника",
                     "class_": "1 курс",
+                    "group": "RI-101",
                     "avg_score": 85.5,
                 },
                 {
@@ -219,6 +220,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/mariaivanova",
                     "academic_direction": "Программная инженерия",
                     "class_": "2 курс",
+                    "group": "RI-201",
                     "avg_score": 92.3,
                 },
                 {
@@ -232,6 +234,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/alexeysmirnov",
                     "academic_direction": "Компьютерные науки",
                     "class_": "3 курс",
+                    "group": "RI-301",
                     "avg_score": 88.7,
                 },
                 {
@@ -245,6 +248,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/elenakuznetsova",
                     "academic_direction": "Информационные системы",
                     "class_": "4 курс",
+                    "group": "RI-401",
                     "avg_score": 95.1,
                 },
                 {
@@ -258,6 +262,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/dmitryvolkov",
                     "academic_direction": "Искусственный интеллект",
                     "class_": "1 курс",
+                    "group": "RI-102",
                     "avg_score": 87.4,
                 },
                 {
@@ -271,6 +276,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/annasokolova",
                     "academic_direction": "Веб-разработка",
                     "class_": "2 курс",
+                    "group": "RI-202",
                     "avg_score": 91.8,
                 },
                 {
@@ -284,6 +290,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/sergeymorozov",
                     "academic_direction": "Облачные технологии",
                     "class_": "3 курс",
+                    "group": "RI-302",
                     "avg_score": 89.2,
                 },
                 {
@@ -297,6 +304,7 @@ async def seed_database() -> None:
                     "cloude_storage": "https://github.com/olganovikova",
                     "academic_direction": "Бэкенд-разработка",
                     "class_": "4 курс",
+                    "group": "RI-402",
                     "avg_score": 93.6,
                 },
             ]

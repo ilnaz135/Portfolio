@@ -38,6 +38,13 @@ PROFILE_GENERATION_CLASSES = [
     "4 курс",
 ]
 
+PROFILE_GENERATION_GROUPS = {
+    "1 курс": ["RI-101", "RI-102"],
+    "2 курс": ["RI-201", "RI-202"],
+    "3 курс": ["RI-301", "RI-302"],
+    "4 курс": ["RI-401", "RI-402"],
+}
+
 USER_RELATION_LOADS = (
     selectinload(UserModel.directions),
     selectinload(UserModel.courses),
@@ -82,6 +89,7 @@ class UserService:
                 cloude_storage=user_data.cloude_storage,
                 academic_direction=user_data.academic_direction,
                 class_=user_data.class_,
+                group=user_data.group.strip() or "unknown",
                 avg_score=user_data.avg_score,
             )
 
@@ -148,6 +156,9 @@ class UserService:
                 user.password_hash = hash_password(password)
                 user.password = "__legacy_hidden__"
 
+            if "group" in update_data and update_data["group"] is not None:
+                update_data["group"] = update_data["group"].strip() or "unknown"
+
             for field, value in update_data.items():
                 if value is not None:
                     setattr(user, field, value)
@@ -201,6 +212,7 @@ class UserService:
 
         academic_direction, generated_focus = random.choice(PROFILE_GENERATION_VARIANTS)
         generated_class = random.choice(PROFILE_GENERATION_CLASSES)
+        generated_group = random.choice(PROFILE_GENERATION_GROUPS[generated_class])
         generated_avg_score = round(random.uniform(70.0, 100.0), 1)
 
         return user_data.model_copy(
@@ -208,6 +220,7 @@ class UserService:
                 "academic_direction": academic_direction,
                 "user_directions": generated_focus,
                 "class_": generated_class,
+                "group": generated_group,
                 "avg_score": generated_avg_score,
             }
         )
@@ -218,6 +231,7 @@ class UserService:
             user_data.academic_direction.strip() == ""
             and (user_data.user_directions or "").strip() == ""
             and user_data.class_.strip() == ""
+            and user_data.group.strip() == ""
             and user_data.avg_score == 0.0
         )
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class ORMModel(BaseModel):
@@ -155,10 +155,15 @@ class UserCreateSchema(BaseModel):
     last_name: str = Field(..., min_length=1, max_length=100)
     patronymic: str | None = Field(None, max_length=100)
     cloude_storage: str | None = Field(None, max_length=255)
-    academic_direction: str = Field(..., max_length=150)
-    user_directions: str | None = Field(None, max_length=500)
-    class_: str = Field(..., alias="class", max_length=50)
-    avg_score: float = Field(..., ge=0, le=100)
+    academic_direction: str = Field("", max_length=150)
+    user_directions: str | None = Field("", max_length=500)
+    class_: str = Field("", alias="class", max_length=50)
+    group: str = Field(
+        "",
+        validation_alias=AliasChoices("group", "Group"),
+        max_length=50,
+    )
+    avg_score: float = Field(0.0, ge=0, le=100)
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -173,6 +178,11 @@ class UserUpdateSchema(BaseModel):
     academic_direction: str | None = Field(None, max_length=150)
     user_directions: str | None = Field(None, max_length=500)
     class_: str | None = Field(None, alias="class", max_length=50)
+    group: str | None = Field(
+        None,
+        validation_alias=AliasChoices("group", "Group"),
+        max_length=50,
+    )
     avg_score: float | None = Field(None, ge=0, le=100)
 
     model_config = ConfigDict(populate_by_name=True)
@@ -197,6 +207,7 @@ class UserSchema(UserAchievementCollectionsSchema):
     cloude_storage: str | None
     academic_direction: str
     class_: str = Field(alias="class_")
+    group: str
     avg_score: float
     role: str
     is_active: bool

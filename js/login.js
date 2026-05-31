@@ -438,6 +438,7 @@ async function handleRegister() {
         academic_direction: "",
         user_directions: "",
         class: "",
+        group: "",
         avg_score: 0,
         remember_me: false,
       }),

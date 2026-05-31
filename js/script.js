@@ -63,6 +63,7 @@ function renderProfileCard(user) {
   const cloudUrl = user.cloude_storage || "#";
   const roleLabel = user.user_directions || "В поиске себя";
   const initials = `${user.first_name?.[0] || ""}${user.last_name?.[0] || ""}`;
+  const groupLabel = user.group || user.Group || "Не указано";
 
   const profileHtml = `
     <div class="profile-card">
@@ -80,6 +81,7 @@ function renderProfileCard(user) {
       <div class="education-compact">
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-university"></i></span><span class="edu-label-small">Направление:</span><span class="edu-value-small">${escapeHtml(user.academic_direction)}</span></div>
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span><span class="edu-label-small">Курс:</span><span class="edu-value-small">${escapeHtml(user.class_)}</span></div>
+        <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-users"></i></span><span class="edu-label-small">Группа:</span><span class="edu-value-small">${escapeHtml(groupLabel)}</span></div>
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-star"></i></span><span class="edu-label-small">Ср. балл:</span><span class="edu-value-small"><span class="edu-highlight-small">${escapeHtml(user.avg_score)}</span>/100</span></div>
       </div>
     </div>

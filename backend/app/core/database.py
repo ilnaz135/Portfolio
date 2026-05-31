@@ -48,6 +48,7 @@ async def ensure_database_schema(db_engine: AsyncEngine | None = None) -> None:
     async with target_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await ensure_users_email_schema(conn)
+        await ensure_users_group_schema(conn)
         await ensure_users_auth_schema(conn)
 
 
@@ -86,6 +87,46 @@ async def ensure_users_email_schema(conn: AsyncConnection) -> None:
         await conn.execute(
             text("CREATE UNIQUE INDEX ix_users_email_unique ON users (email)")
         )
+
+
+async def ensure_users_group_schema(conn: AsyncConnection) -> None:
+    columns_result = await conn.exec_driver_sql("PRAGMA table_info(users)")
+    columns = {row[1].lower() for row in columns_result.fetchall()}
+    group_column_exists = "group" in columns
+
+    if not group_column_exists:
+        await conn.execute(
+            text(
+                'ALTER TABLE users ADD COLUMN "Group" '
+                "VARCHAR(50) NOT NULL DEFAULT 'unknown'"
+            )
+        )
+
+    backfill_filter = '"Group" IS NULL OR TRIM("Group") = \'\''
+    if not group_column_exists:
+        backfill_filter = f"{backfill_filter} OR \"Group\" = 'unknown'"
+
+    await conn.execute(
+        text(
+            f"""
+            UPDATE users
+            SET "Group" = CASE TRIM(COALESCE("class", ''))
+                WHEN :first_course THEN 'RI-101'
+                WHEN :second_course THEN 'RI-201'
+                WHEN :third_course THEN 'RI-301'
+                WHEN :fourth_course THEN 'RI-401'
+                ELSE 'unknown'
+            END
+            WHERE {backfill_filter}
+            """
+        ),
+        {
+            "first_course": "1 \u043a\u0443\u0440\u0441",
+            "second_course": "2 \u043a\u0443\u0440\u0441",
+            "third_course": "3 \u043a\u0443\u0440\u0441",
+            "fourth_course": "4 \u043a\u0443\u0440\u0441",
+        },
+    )
 
 
 async def ensure_users_auth_schema(conn: AsyncConnection) -> None:
