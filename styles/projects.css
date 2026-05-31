@@ -1317,6 +1317,7 @@ body.dark-mode .projects-list-toolbar {
 .projects-panel:has(.projects-filters-section.open) .projects-list-toolbar {
   border-bottom-color: transparent;
 }
+
 body.dark-mode .projects-panel:has(.projects-filters-section.open) .projects-list-toolbar {
   border-bottom-color: transparent;
 }
