@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../styles/global.css">
-    <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="../styles/achievements.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/achievements.css">
     <link rel="icon" href="/favicon-irit2.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -33,10 +33,11 @@
             </div>
             <div class="search-wrapper">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Поиск">
-                <button class="filter-btn">
+                <input type="text" id="globalStudentSearchInput" placeholder="Поиск студента...">
+                <button type="button" class="filter-btn" id="globalFilterBtn">
                     <i class="fas fa-sliders-h"></i> Фильтры
                 </button>
+                <div class="global-student-results" id="globalStudentResults" hidden></div>
             </div>
             <div class="control-buttons">
                 <div class="icon-btn" id="themeToggle"><i class="fas fa-moon"></i></div>
@@ -49,10 +50,10 @@
                 <div class="burger-menu">
                     <div class="icon-btn"><i class="fas fa-bars"></i></div>
                     <div class="dropdown-menu">
-                        <a href="index.html" class="main_menu active">Главное меню</a>
-                        <a href="achievementsindex.html" class="science-achievements">Научное достижения</a>
-                        <a href="#" onclick="alert('In progress')">Список студентов</a>
-                        <a href="#" onclick="alert('In progress')">Проекты</a>
+                        <a href="index.html" class="main_menu">Главное меню</a>
+                        <a href="achievementsindex.html" class="science-achievements active">Научные достижения</a>
+                        <a href="studentsindex.html">Список студентов</a>
+                        <a href="projectsindex.html">Проекты</a>
                     </div>
                 </div>
             </div>
@@ -60,7 +61,10 @@
 
         <div class="main-content">
             <div class="achievements-header">
-                <h1><i class="fas fa-trophy" style="color: #f97316; margin-right: 10px;"></i>Научные достижения</h1>
+                <h1 id="achievementsTitle"><i class="fas fa-trophy" style="color: #f97316; margin-right: 10px;"></i>Научные достижения</h1>
+                <a href="index.html" class="achievements-back-btn" id="achievementsBackBtn" hidden>
+                    <i class="fas fa-arrow-left"></i> Назад
+                </a>
             </div>
 
             <div class="tabs-container">
@@ -232,13 +236,40 @@
                 <div id="all-achievements-container"></div>
             </div>
         </div>
+
+        <footer class="site-footer">
+            <div class="footer-col">
+                <span class="footer-copyright">© ФГАОУ ВО «УрФУ имени первого<br>Президента России Б.Н. Ельцина»</span>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col-title">Институт радиоэлектроники и информационных технологий — РТФ</div>
+                <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i> Россия, г. Екатеринбург, ул. Мира 32</div>
+                <div class="footer-contact-item"><i class="fas fa-phone"></i> Дирекция: +7 (343) 375-97-00</div>
+                <div class="footer-contact-item"><i class="fas fa-envelope"></i> E-mail: rtf@urfu.ru</div>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col-title">Мы в социальных сетях:</div>
+                <div class="footer-social-links">
+                    <a href="https://vk.com/urfu" class="footer-social-link" target="_blank">
+                        <span class="footer-social-icon vk"><i class="fab fa-vk"></i></span>
+                        ВКонтакте
+                    </a>
+                    <a href="#" class="footer-social-link">
+                        <span class="footer-social-icon max"><i class="fas fa-comment-dots"></i></span>
+                        Telegram
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <script src="../js/theme.js"></script>
+    <script src="js/theme.js"></script>
     <script>
         window.PORTFOLIO_API_BASE = "https://90.156.210.4/api/v1";
     </script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/achievements.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/global-search.js"></script>
+    <script src="js/achievements.js"></script>
+    
 </body>
-</html>
+</html> 

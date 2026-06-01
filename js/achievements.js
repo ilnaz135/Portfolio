@@ -1,12 +1,13 @@
 // ======================== ОСНОВНОЙ КОД ========================
 
 const tabButtons = document.querySelectorAll(".tab-btn-achievement");
-const searchInput = document.getElementById("searchInput");
-const filterButton = document.querySelector(".filter-btn");
 const logoutButton = document.getElementById("logoutBtn");
 const settingsWrapper = document.getElementById("settingsMenuWrapper");
 const mainMenuBtn = document.querySelector(".main_menu")
 const scienceMenuBtn = document.querySelector(".science-achievements")
+const achievementsTitle = document.getElementById("achievementsTitle");
+const achievementsBackBtn = document.getElementById("achievementsBackBtn");
+const PROFILE_PREVIEW_STORAGE_KEY = "portfolioProfilePreview";
 
 const contentsMap = {
   publications: document.getElementById("publications-content"),
@@ -42,6 +43,8 @@ let achievementsData = {
 };
 
 let currentUserId = null;
+let viewedUser = null;
+let viewingForeignProfile = false;
 let isLoading = false;
 let dataLoaded = false;
 
@@ -55,6 +58,108 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function getRequestedProfileId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("profileUserId") || params.get("user_id") || "";
+}
+
+function sameProfileId(a, b) {
+  return String(a ?? "") === String(b ?? "");
+}
+
+function normalizeProfileUser(user, fallbackId = "") {
+  return {
+    id: user?.id ?? fallbackId,
+    username: user?.username || (fallbackId ? `student_${fallbackId}` : "student"),
+    first_name: user?.first_name || user?.firstName || "",
+    last_name: user?.last_name || user?.lastName || "",
+    patronymic: user?.patronymic || "",
+    scientific_achievements: Array.isArray(user?.scientific_achievements) ? user.scientific_achievements : [],
+  };
+}
+
+function readStoredProfilePreview(requestedId) {
+  try {
+    const raw = sessionStorage.getItem(PROFILE_PREVIEW_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const profile = JSON.parse(raw);
+    if (requestedId && !sameProfileId(profile.id, requestedId)) {
+      return null;
+    }
+
+    return normalizeProfileUser(profile, requestedId);
+  } catch (error) {
+    console.warn("Failed to read profile preview:", error);
+    return null;
+  }
+}
+
+function profileUrl(userId = currentUserId) {
+  return userId ? `index.html?profileUserId=${encodeURIComponent(userId)}` : "index.html";
+}
+
+function achievementsUrl(userId = currentUserId) {
+  return userId ? `achievementsindex.html?profileUserId=${encodeURIComponent(userId)}` : "achievementsindex.html";
+}
+
+function emptyAchievementsData() {
+  return {
+    publications: [],
+    events: [],
+    grants: [],
+    intellectual_properties: [],
+    innovations: [],
+    scholarships: [],
+    internships: [],
+    scientific_achievements: [],
+  };
+}
+
+function achievementsDataFromProfilePreview(profile) {
+  const previewItems = Array.isArray(profile?.scientific_achievements) ? profile.scientific_achievements : [];
+  const publications = previewItems.map((item) => ({
+    placement_date: item.placement_date || item.date || "",
+    title: item.title || item.name || "Без названия",
+    publication_type: item.publication_type || item.type || "Научное достижение",
+    indexation_date: item.indexation_date || "",
+    status: item.status || "Не указан",
+    points: item.points ?? 0,
+  }));
+
+  return {
+    ...emptyAchievementsData(),
+    publications,
+    scientific_achievements: previewItems,
+  };
+}
+
+function applyProfileUi() {
+  if (viewingForeignProfile && viewedUser?.username && achievementsTitle) {
+    achievementsTitle.innerHTML = `<i class="fas fa-trophy" style="color: #f97316; margin-right: 10px;"></i>Научные достижения у ${escapeHtml(viewedUser.username)}`;
+    document.title = `Научные достижения у ${viewedUser.username} | Цифровое портфолио УрФУ`;
+  }
+
+  if (achievementsBackBtn) {
+    if (viewingForeignProfile) {
+      achievementsBackBtn.hidden = false;
+      achievementsBackBtn.href = profileUrl();
+    } else {
+      achievementsBackBtn.hidden = true;
+    }
+  }
+
+  if (mainMenuBtn && viewingForeignProfile) {
+    mainMenuBtn.href = profileUrl();
+  }
+
+  if (scienceMenuBtn && viewingForeignProfile) {
+    scienceMenuBtn.href = achievementsUrl();
+  }
 }
 
 function formatDate(value) {
@@ -203,6 +308,12 @@ async function fetchAllAchievements() {
     
   } catch (error) {
     console.error("Failed to fetch achievements:", error);
+    if (viewingForeignProfile) {
+      achievementsData = achievementsDataFromProfilePreview(viewedUser);
+      dataLoaded = true;
+      renderAllTables();
+      return;
+    }
     showErrorInAllTables();
   } finally {
     isLoading = false;
@@ -341,46 +452,6 @@ function renderAllAchievements() {
   });
 }
 
-// ======================== ПОИСК ========================
-
-function applySearchFilter() {
-  const query = searchInput?.value.trim().toLowerCase() || "";
-  const activeTabId = getActiveTabId();
-  
-  if (activeTabId === "all") {
-    const sections = document.querySelectorAll(".all-section");
-    sections.forEach(section => {
-      const table = section.querySelector(".achievements-table");
-      if (!table) return;
-      
-      const rows = table.querySelectorAll("tbody tr");
-      let hasVisible = false;
-      
-      rows.forEach(row => {
-        if (row.classList.contains("empty-row")) return;
-        const matches = query === "" || row.innerText.toLowerCase().includes(query);
-        row.style.display = matches ? "" : "none";
-        if (matches) hasVisible = true;
-      });
-      
-      section.style.display = hasVisible ? "" : "none";
-    });
-  } else {
-    const activeContent = contentsMap[activeTabId];
-    if (!activeContent) return;
-    
-    const table = activeContent.querySelector(".achievements-table");
-    if (!table) return;
-    
-    const rows = table.querySelectorAll("tbody tr");
-    rows.forEach(row => {
-      if (row.classList.contains("empty-row") || row.classList.contains("loading-row")) return;
-      const matches = query === "" || row.innerText.toLowerCase().includes(query);
-      row.style.display = matches ? "" : "none";
-    });
-  }
-}
-
 // ======================== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ========================
 
 function getActiveTabId() {
@@ -400,9 +471,6 @@ function switchTab(tabId) {
   tabButtons.forEach(button => {
     button.classList.toggle("active", button.getAttribute("data-tab") === tabId);
   });
-  
-  // Если данные уже загружены, просто применяем поиск
-  applySearchFilter();
 }
 
 function setupTabs() {
@@ -414,12 +482,6 @@ function setupTabs() {
       }
     });
   });
-}
-
-function setupSearch() {
-  if (searchInput) {
-    searchInput.addEventListener("input", applySearchFilter);
-  }
 }
 
 // ======================== ЭКСПОРТ В PDF ========================
@@ -506,15 +568,7 @@ function setupLogout() {
   if (logoutButton) {
     logoutButton.addEventListener("click", async (event) => {
       event.preventDefault();
-      await window.AuthClient.logout({ redirectTo: "../loginindex.html" });
-    });
-  }
-}
-
-function setupFiltersButton() {
-  if (filterButton) {
-    filterButton.addEventListener("click", () => {
-      alert("Расширенная фильтрация будет доступна в ближайшее время.");
+      await window.AuthClient.logout({ redirectTo: "loginindex.html" });
     });
   }
 }
@@ -524,9 +578,15 @@ function setupFiltersButton() {
 async function initAchievementsPage() {
   try {
     const currentUser = await window.AuthClient.requireAuth({
-      loginPath: "../loginindex.html",
+      loginPath: "loginindex.html",
     });
-    currentUserId = currentUser.id;
+    const requestedProfileId = getRequestedProfileId();
+    viewingForeignProfile = Boolean(requestedProfileId) && !sameProfileId(requestedProfileId, currentUser.id);
+    viewedUser = viewingForeignProfile
+      ? readStoredProfilePreview(requestedProfileId) || normalizeProfileUser({ id: requestedProfileId }, requestedProfileId)
+      : normalizeProfileUser(currentUser, currentUser.id);
+    currentUserId = viewedUser.id;
+    applyProfileUi();
     
     // Загружаем данные
     await fetchAllAchievements();
@@ -540,9 +600,7 @@ async function initAchievementsPage() {
   if (scienceMenuBtn) scienceMenuBtn.classList.add('active');
 
   setupTabs();
-  setupSearch();
   setupLogout();
-  setupFiltersButton();
   setupSettingsMenu();
   setupExportButtons();
   

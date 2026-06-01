@@ -9,11 +9,8 @@ body {
     background-color: #eef2f6;
     color: #1e293b;
     line-height: 1.5;
-    padding: 24px;
+    padding: 0;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: background-color 0.3s, color 0.3s;
 }
 

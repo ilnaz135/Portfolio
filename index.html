@@ -11,6 +11,7 @@
     <link rel="icon" href="/favicon-irit2.ico">
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/projects.css">
 </head>
 <body>
     <div class="portfolio-container">
@@ -33,10 +34,11 @@
             
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Поиск">
-                    <button onclick="alert('In progress')" class="filter-btn">
+                    <input type="text" id="globalStudentSearchInput" placeholder="Поиск студента...">
+                    <button type="button" class="filter-btn" id="globalFilterBtn">
                         <i class="fas fa-sliders-h"></i> Фильтры
                     </button>
+                    <div class="global-student-results" id="globalStudentResults" hidden></div>
                 </div>
                 
                 <div class="control-buttons">
@@ -51,55 +53,16 @@
                         <div class="icon-btn"><i class="fas fa-bars"></i></div>
                         <div class="dropdown-menu">
                             <a href="#" class="active">Главное меню</a>
-                            <a href="achievementsindex.html">Научное достижения</a>
-                            <a href="#" onclick="alert('In progress')">Список студентов</a>
-                            <a href="#" onclick="alert('In progress')">Проекты</a>
+                            <a href="achievementsindex.html">Научные достижения</a>
+                            <a href="studentsindex.html">Список студентов</a>
+                            <a href="projectsindex.html">Проекты</a>
                         </div>
                     </div>
                 </div>
         </header>
 
         <div class="main-content">
-            <!-- <div class="profile-card">
-                <button class="edit-profile-btn" id="openModal">
-                    <i class="fas fa-pencil-alt"></i>
-                </button>
-
-                <div class="avatar" id="profileAvatar">ИИ</div>
-                <div class="full-name">Иванов Иван</div>
-                <div class="username"><i class="fas fa-at"></i> vanok_dev</div>
-                
-                <div class="role-badge">
-                    <span class="badge" id="displayRole"><i class="fas fa-code"></i> Frontend / UX-разработчик</span>
-                </div>
-
-                <a href="#" class="github-link" id="displayCloud">
-                    <i class="fab fa-github"></i> github.com/vanok_dev
-                </a>
-
-                <button class="download-resume">
-                    <i class="fas fa-file-pdf"></i> Создать резюме
-                </button>
-
-                <div class="education-compact">
-                    <div class="edu-row">
-                        <span class="edu-icon-small"><i class="fas fa-university"></i></span>
-                        <span class="edu-label-small">Направление:</span>
-                        <span class="edu-value-small">Программная инженерия</span>
-                    </div>
-                    <div class="edu-row">
-                        <span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span>
-                        <span class="edu-label-small">Курс:</span>
-                        <span class="edu-value-small">4 курс</span>
-                    </div>
-                    <div class="edu-row">
-                        <span class="edu-icon-small"><i class="fas fa-star"></i></span>
-                        <span class="edu-label-small">Ср. балл:</span>
-                        <span class="edu-value-small"><span class="edu-highlight-small">87</span>/100</span>
-                    </div>
-                </div>
-            </div> -->
-
+            <!-- Профиль будет динамически вставлен через JS -->
             <div class="activity-section">
                 <div class="left-col">
                     <div class="science-card">
@@ -108,26 +71,7 @@
                             <button class="add-button"><i class="fas fa-plus-circle" onclick="alert('In progress')"></i> Добавить</button>
                         </div>
                         <div class="publications-list">
-                            <!-- <div class="publication-item">
-                                <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
-                                <div class="pub-content">
-                                    <div class="pub-title"><a href="#">Оптимизация алгоритмов поиска</a></div>
-                                    <div class="pub-meta">
-                                        <span><i class="far fa-calendar-alt"></i> 2024</span>
-                                        <span><i class="fas fa-tag"></i> Тезисы доклада</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="publication-item">
-                                <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
-                                <div class="pub-content">
-                                    <div class="pub-title"><a href="#">Организация учебной деятельности</a></div>
-                                    <div class="pub-meta">
-                                        <span><i class="far fa-calendar-alt"></i> 2024</span>
-                                        <span><i class="fas fa-tag"></i> Тезисы доклада</span>
-                                    </div>
-                                </div>
-                            </div> -->
+                            <!-- Публикации будут динамически вставлены через JS -->
                         </div>
                         <button class="more-button"><i class="fas fa-eye"></i>Посмотреть ещё</button>
                     </div>
@@ -137,8 +81,7 @@
                             <div class="title-left"><i class="fas fa-graduation-cap"></i><a href="#">Специализации</a></div>
                         </div>
                         <div class="tags-cloud">
-                            <!-- <a href="#"><span class="tag">Фронтенд разработчик</span></a>
-                            <a href="#"><span class="tag">Бекенд разработчик</span></a> -->
+                            <!-- Специализации будут динамически вставлены через JS -->
                         </div>
                     </div>
                 </div>
@@ -147,17 +90,41 @@
                     <div class="skill-card tall-card">
                         <div class="card-title">
                             <div class="title-left"><i class="fas fa-book"></i><a href="#">Курсы / дисциплины</a></div>
-                            <button onclick="alert('In progress')" class="add-button"><i class="fas fa-plus-circle"></i> Добавить</button>
+                            <button type="button" id="coursesAddBtn" class="add-button"><i class="fas fa-plus-circle"></i> Добавить</button>
                         </div>
                         <div class="tags-cloud">
-                            <!-- <a href="#"><span class="tag stack-tag"><i class="fas fa-database"></i>Базы данных</span></a>
-                            <a href="#"><span class="tag stack-tag"><i class="fas fa-square-root-alt"></i>Математика</span></a>
-                            <a href="#"><span class="tag stack-tag"><i class="fas fa-laptop-code"></i>Прикладная информатика</span></a> -->
+                            <!-- Курсы будут динамически вставлены через JS -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+    <footer class="site-footer">
+        <div class="footer-col">
+            <span class="footer-copyright">© ФГАОУ ВО «УрФУ имени первого<br>Президента России Б.Н. Ельцина»</span>
+        </div>
+        <div class="footer-col">
+            <div class="footer-col-title">Институт радиоэлектроники и информационных технологий — РТФ</div>
+            <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i> Россия, г. Екатеринбург, ул. Мира 32</div>
+            <div class="footer-contact-item"><i class="fas fa-phone"></i> Дирекция: +7 (343) 375-97-00</div>
+            <div class="footer-contact-item"><i class="fas fa-envelope"></i> E-mail: rtf@urfu.ru</div>
+        </div>
+        <div class="footer-col">
+            <div class="footer-col-title">Мы в социальных сетях:</div>
+            <div class="footer-social-links">
+                <a href="https://vk.com/urfu" class="footer-social-link" target="_blank">
+                    <span class="footer-social-icon vk"><i class="fab fa-vk"></i></span>
+                    ВКонтакте
+                </a>
+                <a href="#" class="footer-social-link">
+                    <span class="footer-social-icon max"><i class="fas fa-comment-dots"></i></span>
+                    Telegram
+                </a>
+            </div>
+        </div>
+    </footer>
+
     </div>
 
     <div class="modal-overlay" id="modalOverlay">
@@ -189,6 +156,9 @@
         window.PORTFOLIO_API_BASE = "https://90.156.210.4/api/v1";
     </script>
     <script src="js/auth.js"></script>
+    <script src="js/global-search.js"></script>
+    <script src="js/stack-icons.js"></script>
     <script src="js/script.js"></script>
+    
 </body>
 </html>
