@@ -10,6 +10,8 @@ const moreAchievementButton = document.querySelector(".more-button");
 
 let coursesViewMode = "list";
 let cachedUser = null;
+let profileReadOnly = false;
+const PROFILE_PREVIEW_STORAGE_KEY = "portfolioProfilePreview";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -63,14 +65,130 @@ function setupSettingsMenu() {
   });
 }
 
-function renderProfileCard(user) {
+function getRequestedProfileId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("profileUserId") || params.get("user_id") || "";
+}
+
+function sameProfileId(a, b) {
+  return String(a ?? "") === String(b ?? "");
+}
+
+function normalizeProfileUser(user, fallbackId = "") {
+  const normalizedStacks = Array.isArray(user?.stacks)
+    ? user.stacks.map((item) => (typeof item === "string" ? { stack: item } : item))
+    : [];
+
+  return {
+    id: user?.id ?? fallbackId,
+    username: user?.username || (fallbackId ? `student_${fallbackId}` : "student"),
+    first_name: user?.first_name || user?.firstName || "Студент",
+    last_name: user?.last_name || user?.lastName || "",
+    patronymic: user?.patronymic || "",
+    user_directions: user?.user_directions || user?.role || "В поиске себя",
+    academic_direction: user?.academic_direction || "09.03.04 Программная инженерия",
+    class_: user?.class_ || "3 курс",
+    avg_score: user?.avg_score ?? "—",
+    cloude_storage: user?.cloude_storage || user?.cloudUrl || "",
+    scientific_achievements: Array.isArray(user?.scientific_achievements) ? user.scientific_achievements : [],
+    stacks: normalizedStacks,
+    courses: Array.isArray(user?.courses) ? user.courses : [],
+  };
+}
+
+function readStoredProfilePreview(requestedId) {
+  try {
+    const raw = sessionStorage.getItem(PROFILE_PREVIEW_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const profile = JSON.parse(raw);
+    if (requestedId && !sameProfileId(profile.id, requestedId)) {
+      return null;
+    }
+
+    return normalizeProfileUser(profile, requestedId);
+  } catch (error) {
+    console.warn("Failed to read profile preview:", error);
+    return null;
+  }
+}
+
+function profileScopedUrl(page, userId = cachedUser?.id) {
+  if (!profileReadOnly || !userId) {
+    return page;
+  }
+
+  return `${page}?profileUserId=${encodeURIComponent(userId)}`;
+}
+
+function getAchievementsUrl() {
+  return profileScopedUrl("achievementsindex.html");
+}
+
+function setupProfileScopedLinks() {
+  document.querySelectorAll('a[href="achievementsindex.html"]').forEach((link) => {
+    link.setAttribute("href", getAchievementsUrl());
+  });
+}
+
+async function resolveProfileContext() {
+  const currentUser = await window.AuthClient.requireAuth({ loginPath: "loginindex.html" });
+  const requestedId = getRequestedProfileId();
+
+  if (!requestedId || sameProfileId(requestedId, currentUser.id)) {
+    return {
+      user: normalizeProfileUser(currentUser, currentUser.id),
+      readOnly: false,
+    };
+  }
+
+  const storedPreview = readStoredProfilePreview(requestedId);
+  if (storedPreview) {
+    return {
+      user: storedPreview,
+      readOnly: true,
+    };
+  }
+
+  try {
+    const fetchedUser = await window.AuthClient.fetchJsonWithAuth(`/users/${encodeURIComponent(requestedId)}`);
+    return {
+      user: normalizeProfileUser(fetchedUser, requestedId),
+      readOnly: true,
+    };
+  } catch (error) {
+    console.warn("Using fallback profile preview:", error);
+    return {
+      user: normalizeProfileUser({ id: requestedId, username: `student_${requestedId}` }, requestedId),
+      readOnly: true,
+    };
+  }
+}
+
+function setProfileReadOnlyUi(readOnly) {
+  document.body.classList.toggle("profile-readonly-mode", readOnly);
+  if (!readOnly) {
+    return;
+  }
+
+  document.querySelectorAll(".science-card .add-button, #coursesAddBtn").forEach((button) => {
+    button.remove();
+  });
+}
+
+function renderProfileCard(user, { editable = true } = {}) {
   const cloudUrl = user.cloude_storage || "#";
   const roleLabel = user.user_directions || "В поиске себя";
   const initials = `${user.first_name?.[0] || ""}${user.last_name?.[0] || ""}`;
+  const editButtonHtml = editable
+    ? '<button class="edit-profile-btn" id="openModal"><i class="fas fa-pencil-alt"></i></button>'
+    : "";
 
   const profileHtml = `
-    <div class="profile-card">
-      <button class="edit-profile-btn" id="openModal"><i class="fas fa-pencil-alt"></i></button>
+    <div class="profile-card${editable ? "" : " profile-card--readonly"}">
+      ${editButtonHtml}
       <div class="avatar" id="profileAvatar">${escapeHtml(initials)}</div>
       <div class="full-name">${escapeHtml(user.first_name)} ${escapeHtml(user.last_name)}</div>
       <div class="username"><i class="fas fa-at"></i>${escapeHtml(user.username)}</div>
@@ -113,7 +231,7 @@ function renderScientificAchievements(user) {
         <div class="publication-item">
           <div class="pub-icon"><i class="fas fa-file-alt"></i></div>
           <div class="pub-content">
-            <div class="pub-title"><a href="ux-ui/achievementsindex.html">${escapeHtml(achievement.name)}</a></div>
+            <div class="pub-title"><a href="${escapeHtml(getAchievementsUrl())}">${escapeHtml(achievement.name)}</a></div>
             <div class="pub-meta">
               <span><i class="far fa-calendar-alt"></i> ${escapeHtml(year)}</span>
               <span><i class="fas fa-tag"></i> ${escapeHtml(achievement.type)}</span>
@@ -367,22 +485,33 @@ function setupEditModal() {
 
 if (moreAchievementButton) {
   moreAchievementButton.addEventListener("click", () => {
-    window.location.href = "achievementsindex.html";
+    window.location.href = getAchievementsUrl();
   });
 }
 
 async function initProfilePage() {
   setupLogout();
   setupSettingsMenu();
-  setupCoursesToggle();
 
   try {
-    cachedUser = await window.AuthClient.requireAuth({ loginPath: "loginindex.html" });
-    renderProfileCard(cachedUser);
+    const profileContext = await resolveProfileContext();
+    cachedUser = profileContext.user;
+    profileReadOnly = profileContext.readOnly;
+    setProfileReadOnlyUi(profileReadOnly);
+
+    if (!profileReadOnly) {
+      setupCoursesToggle();
+    }
+
+    renderProfileCard(cachedUser, { editable: !profileReadOnly });
+    setupProfileScopedLinks();
     renderScientificAchievements(cachedUser);
     renderSpecializations(cachedUser);
     renderCourses(cachedUser);
-    setupEditModal();
+
+    if (!profileReadOnly) {
+      setupEditModal();
+    }
   } catch (error) {
     console.error("Profile page initialization failed:", error);
   }

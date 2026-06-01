@@ -294,7 +294,7 @@
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 20px;
-            padding: 24px 20px 20px;
+            padding: 24px 20px 34px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -304,6 +304,8 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            color: inherit;
+            text-decoration: none;
         }
         body.dark-mode .student-card {
             background: #0f172a;
@@ -426,6 +428,24 @@
         /* 80–100 — зелёный */
         .student-score.green { background: #dcfce7; color: #166534; }
         body.dark-mode .student-score.green { background: #14532d; color: #86efac; }
+
+        .student-username-corner {
+            position: absolute;
+            right: 14px;
+            bottom: 10px;
+            max-width: calc(100% - 28px);
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        body.dark-mode .student-username-corner {
+            color: #64748b;
+        }
 
         /* ===== EMPTY STATE ===== */
         .empty-state {
@@ -1444,6 +1464,42 @@ function escapeHtml(v) {
     return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+const PROFILE_PREVIEW_STORAGE_KEY = 'portfolioProfilePreview';
+
+function studentProfileUrl(s) {
+    return `index.html?profileUserId=${encodeURIComponent(s.id)}`;
+}
+
+function buildStudentProfilePreview(s) {
+    return {
+        id: s.id,
+        username: s.username || `student_${s.id}`,
+        first_name: s.first_name,
+        last_name: s.last_name,
+        patronymic: s.patronymic,
+        user_directions: s.role || 'В поиске себя',
+        academic_direction: s.academic_direction,
+        class_: s.class_,
+        avg_score: s.avg_score,
+        group: s.group || '',
+        cloude_storage: '',
+        scientific_achievements: [],
+        stacks: [],
+        courses: [],
+    };
+}
+
+function saveStudentProfilePreview(studentId) {
+    const student = ALL_STUDENTS.find(s => Number(s.id) === Number(studentId));
+    if (!student) return;
+
+    try {
+        sessionStorage.setItem(PROFILE_PREVIEW_STORAGE_KEY, JSON.stringify(buildStudentProfilePreview(student)));
+    } catch (error) {
+        console.warn('Failed to save student profile preview:', error);
+    }
+}
+
 // Функция определения класса цвета на основе среднего балла
 // 40-59 -> teal, 60-79 -> yellow
 function scoreClass(s) {
@@ -1458,7 +1514,7 @@ function renderCard(s) {
     const [c1,c2] = s.gradient;
     const sc = scoreClass(s.avg_score);
     return `
-    <div class="student-card" onclick="window.location.href='index.html'">
+    <a class="student-card" href="${escapeHtml(studentProfileUrl(s))}" onclick="saveStudentProfilePreview(${Number(s.id)})">
         <div class="student-avatar" style="background:linear-gradient(135deg,${c1},${c2})">${escapeHtml(initials)}</div>
         <div class="student-name">${escapeHtml(s.last_name)} ${escapeHtml(s.first_name)}<br><span class="patronymic">${escapeHtml(s.patronymic)}</span></div>
         <div class="student-role"><i class="fas fa-code"></i>${escapeHtml(s.role)}</div>
@@ -1480,7 +1536,8 @@ function renderCard(s) {
                 Ср. балл: <span class="student-score ${sc}">${escapeHtml(s.avg_score)}/100</span>
             </div>
         </div>
-    </div>`;
+        <div class="student-username-corner">@${escapeHtml(s.username)}</div>
+    </a>`;
 }
 
 function renderPage() {
@@ -1557,6 +1614,7 @@ Object.assign(window, {
     resetFilters,
     setPageSize,
     goPage,
+    saveStudentProfilePreview,
 });
 })();
 </script>
