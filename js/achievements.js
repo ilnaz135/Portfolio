@@ -42,6 +42,32 @@ let achievementsData = {
   scientific_achievements: []
 };
 
+const ACHIEVEMENT_TYPE_LABELS = {
+  innovation: "Инновационная деятельность",
+  scholarship: "Стипендия",
+  internship: "Стажировка",
+};
+
+const ACHIEVEMENT_CATEGORY_LABELS = {
+  publications: "Публикации",
+  events: "Мероприятия",
+  grants: "Гранты",
+  intellectual_properties: "Интеллектуальная собственность",
+  innovations: "Инновационная деятельность",
+  scholarships: "Стипендии",
+  internships: "Стажировки",
+};
+
+function achievementTypeLabel(type) {
+  const normalized = String(type || "").trim();
+  return ACHIEVEMENT_TYPE_LABELS[normalized.toLowerCase()] || normalized;
+}
+
+function achievementCategoryLabel(category) {
+  const normalized = String(category || "").trim();
+  return ACHIEVEMENT_CATEGORY_LABELS[normalized] || normalized || "-";
+}
+
 let currentUserId = null;
 let viewedUser = null;
 let viewingForeignProfile = false;
@@ -107,6 +133,48 @@ function achievementsUrl(userId = currentUserId) {
   return userId ? `achievementsindex.html?profileUserId=${encodeURIComponent(userId)}` : "achievementsindex.html";
 }
 
+function setupForeignProfileDropdown(user) {
+  if (!viewingForeignProfile || !user?.id) {
+    return;
+  }
+
+  const menu = document.querySelector(".burger-menu > .dropdown-menu");
+  if (!menu || menu.querySelector("[data-foreign-profile-controls]")) {
+    return;
+  }
+
+  const personalLinks = document.createElement("div");
+  personalLinks.className = "burger-menu-personal-links";
+  Array.from(menu.querySelectorAll(":scope > a")).forEach((link) => {
+    link.classList.remove("active");
+    link.removeAttribute("aria-current");
+    if (link.textContent.trim() === "Главное меню") {
+      link.href = "index.html";
+    }
+    if (link.textContent.trim() === "Научные достижения") {
+      link.href = "achievementsindex.html";
+    }
+    personalLinks.appendChild(link);
+  });
+
+  const controls = document.createElement("div");
+  controls.className = "foreign-profile-controls";
+  controls.dataset.foreignProfileControls = "true";
+  controls.innerHTML = `
+    <div class="foreign-profile-username">${escapeHtml(user.username)}</div>
+    <a class="foreign-profile-action" href="${profileUrl(user.id)}">
+      <i class="fas fa-user"></i> Главное меню
+    </a>
+    <a class="foreign-profile-action active" href="${achievementsUrl(user.id)}" aria-current="page">
+      <i class="fas fa-trophy"></i> Научные достижения
+    </a>
+  `;
+
+  menu.classList.add("has-foreign-profile-controls");
+  menu.appendChild(controls);
+  menu.appendChild(personalLinks);
+}
+
 function emptyAchievementsData() {
   return {
     publications: [],
@@ -125,7 +193,7 @@ function achievementsDataFromProfilePreview(profile) {
   const publications = previewItems.map((item) => ({
     placement_date: item.placement_date || item.date || "",
     title: item.title || item.name || "Без названия",
-    publication_type: item.publication_type || item.type || "Научное достижение",
+    publication_type: achievementTypeLabel(item.publication_type || item.type || "Научное достижение"),
     indexation_date: item.indexation_date || "",
     status: item.status || "Не указан",
     points: item.points ?? 0,
@@ -153,13 +221,7 @@ function applyProfileUi() {
     }
   }
 
-  if (mainMenuBtn && viewingForeignProfile) {
-    mainMenuBtn.href = profileUrl();
-  }
-
-  if (scienceMenuBtn && viewingForeignProfile) {
-    scienceMenuBtn.href = achievementsUrl();
-  }
+  setupForeignProfileDropdown(viewedUser);
 }
 
 function formatDate(value) {
@@ -272,6 +334,85 @@ const internshipColumns = [
   (row) => formatDate(row.end_date),
   (row) => ({ badge: row.status || "Не указан" }),
   (row) => row.points ?? 0,
+];
+
+const publicationExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Название", value: (row) => row.title, width: 42 },
+  { header: "Тип публикации", value: (row) => row.publication_type || "-", width: 26 },
+  { header: "Дата индексации", value: (row) => formatDate(row.indexation_date), width: 18 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const eventExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Название", value: (row) => row.title, width: 42 },
+  { header: "Тип мероприятия", value: (row) => row.event_type || "-", width: 24 },
+  { header: "Дата проведения", value: (row) => row.event_date || "-", width: 18 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const grantExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Название", value: (row) => row.title, width: 42 },
+  { header: "Тип работы", value: (row) => row.work_type || "-", width: 24 },
+  { header: "Год", value: (row) => row.grant_year || "-", width: 12 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const intellectualExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Название", value: (row) => row.title, width: 42 },
+  { header: "Тип ИС", value: (row) => row.intellectual_type || "-", width: 24 },
+  { header: "Дата выдачи", value: (row) => formatDate(row.issue_date), width: 18 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const innovationExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Название", value: (row) => row.title, width: 42 },
+  { header: "Год внедрения", value: (row) => row.implementation_year || "-", width: 16 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const scholarshipExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Тип стипендии", value: (row) => row.scholarship_type || "-", width: 28 },
+  { header: "Учебный год", value: (row) => row.academic_year || "-", width: 16 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const internshipExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата размещения", value: (row) => formatDate(row.placement_date), width: 18 },
+  { header: "Организация", value: (row) => row.organization || "-", width: 32 },
+  { header: "Город", value: (row) => row.city || "-", width: 18 },
+  { header: "Дата начала", value: (row) => formatDate(row.start_date), width: 18 },
+  { header: "Дата окончания", value: (row) => formatDate(row.end_date), width: 18 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
+];
+
+const summaryExportColumns = [
+  { header: "№", value: (row, idx) => idx + 1, width: 6 },
+  { header: "Дата", value: (row) => formatDate(row.date), width: 18 },
+  { header: "Название", value: (row) => row.name || row.title || "-", width: 42 },
+  { header: "Тип", value: (row) => achievementTypeLabel(row.type), width: 24 },
+  { header: "Раздел", value: (row) => achievementCategoryLabel(row.category), width: 26 },
+  { header: "Состояние", value: (row) => row.status || "Не указан", width: 18 },
+  { header: "Балл", value: (row) => row.points ?? 0, width: 10 },
 ];
 
 // ======================== ЗАГРУЗКА ДАННЫХ ИЗ API ========================
@@ -425,14 +566,16 @@ function renderAllAchievements() {
     <div class="all-section" data-section="${section.id}">
       <div class="section-header">
         <h3><i class="fas ${section.icon}"></i> ${section.title}</h3>
-        ${index == 0? `<div class="export-buttons">
-              <button class="export-btn" id="exportPortfolioBtn">
-                  <i class="fas fa-file-pdf"></i> <span class="btn-text">Публикации в PDF</span>
-              </button>
-              <button class="export-btn" id="exportAchievementsBtn">
-                <i class="fas fa-trophy"></i> <span class="btn-text">Научное портфолио в PDF</span>
-                </button>
-          </div>` : ''}
+        ${index === 0 ? `
+          <div class="export-buttons" aria-label="Экспорт научных достижений">
+            <button class="export-btn export-btn--xlsx" id="exportPublicationsXlsxBtn" type="button" title="Скачать публикации в XLSX">
+              <i class="fas fa-file-excel" aria-hidden="true"></i> <span class="btn-text">Публикации в xlsx</span>
+            </button>
+            <button class="export-btn export-btn--xlsx" id="exportAchievementsXlsxBtn" type="button" title="Скачать научные достижения в XLSX">
+              <i class="fas fa-file-excel" aria-hidden="true"></i> <span class="btn-text">Научные достижения в xlsx</span>
+            </button>
+          </div>
+        ` : `<span class="section-count">${Array.isArray(section.data) ? section.data.length : 0}</span>`}
       </div>
       <div class="table-card">
         <table class="achievements-table" id="${section.id}-table">
@@ -484,53 +627,162 @@ function setupTabs() {
   });
 }
 
-// ======================== ЭКСПОРТ В PDF ========================
+// ======================== ЭКСПОРТ В XLSX ========================
 
-async function exportToPDF(elementId, filename) {
-  const element = document.getElementById(elementId);
-  if (!element) return;
-  
-  const originalDisplay = element.style.display;
-  element.style.display = "block";
-  
-  const opt = {
-    margin: [10, 10, 10, 10],
-    filename: `${filename}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  
-  try {
-    await html2pdf().set(opt).from(element).save();
-  } catch (error) {
-    console.error("PDF export failed:", error);
-    alert("Ошибка при создании PDF");
-  } finally {
-    element.style.display = originalDisplay;
+function exportCellValue(value) {
+  if (value && typeof value === "object" && "badge" in value) {
+    return value.badge || "-";
   }
+  if (value === null || value === undefined || value === "") {
+    return "-";
+  }
+  return value;
+}
+
+function buildSheetData(rows, columns) {
+  const sourceRows = Array.isArray(rows) ? rows : [];
+  return [
+    columns.map((column) => column.header),
+    ...sourceRows.map((row, idx) => columns.map((column) => exportCellValue(column.value(row, idx)))),
+  ];
+}
+
+function normalizeSheetName(name, usedNames) {
+  const cleanName = String(name || "Лист")
+    .replace(/[\\/?*[\]:]/g, " ")
+    .trim()
+    .slice(0, 31) || "Лист";
+
+  let sheetName = cleanName;
+  let suffix = 2;
+
+  while (usedNames.has(sheetName)) {
+    const suffixText = ` ${suffix}`;
+    sheetName = `${cleanName.slice(0, 31 - suffixText.length)}${suffixText}`;
+    suffix += 1;
+  }
+
+  usedNames.add(sheetName);
+  return sheetName;
+}
+
+function saveWorkbook(filename, sheets) {
+  if (!window.XLSX?.utils || !window.XLSX?.writeFile) {
+    alert("Не удалось загрузить библиотеку для создания XLSX. Обновите страницу и попробуйте снова.");
+    return;
+  }
+
+  const workbook = window.XLSX.utils.book_new();
+  const usedSheetNames = new Set();
+
+  sheets.forEach((sheet) => {
+    const worksheet = window.XLSX.utils.aoa_to_sheet(buildSheetData(sheet.rows, sheet.columns));
+    worksheet["!cols"] = sheet.columns.map((column) => ({ wch: column.width || 18 }));
+    window.XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      normalizeSheetName(sheet.name, usedSheetNames)
+    );
+  });
+
+  window.XLSX.writeFile(workbook, `${filename}.xlsx`);
+}
+
+function exportDateStamp() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function exportProfileSuffix() {
+  return currentUserId ? `_user_${currentUserId}` : "";
+}
+
+function achievementExportSections() {
+  return [
+    {
+      name: "Сводка",
+      rows: achievementsData.scientific_achievements,
+      columns: summaryExportColumns,
+    },
+    {
+      name: "Публикации",
+      rows: achievementsData.publications,
+      columns: publicationExportColumns,
+    },
+    {
+      name: "Мероприятия",
+      rows: achievementsData.events,
+      columns: eventExportColumns,
+    },
+    {
+      name: "Гранты",
+      rows: achievementsData.grants,
+      columns: grantExportColumns,
+    },
+    {
+      name: "Интеллектуальная собственность",
+      rows: achievementsData.intellectual_properties,
+      columns: intellectualExportColumns,
+    },
+    {
+      name: "Инновационная деятельность",
+      rows: achievementsData.innovations,
+      columns: innovationExportColumns,
+    },
+    {
+      name: "Стипендии",
+      rows: achievementsData.scholarships,
+      columns: scholarshipExportColumns,
+    },
+    {
+      name: "Стажировки",
+      rows: achievementsData.internships,
+      columns: internshipExportColumns,
+    },
+  ];
+}
+
+async function ensureAchievementsReady() {
+  if (!dataLoaded) {
+    await fetchAllAchievements();
+  }
+  if (!dataLoaded) {
+    alert("Данные для экспорта еще не загружены. Попробуйте позже.");
+    return false;
+  }
+  return dataLoaded;
 }
 
 function setupExportButtons() {
-  const exportPortfolioBtn = document.getElementById("exportPortfolioBtn");
-  const exportAchievementsBtn = document.getElementById("exportAchievementsBtn");
+  const exportPublicationsXlsxBtn = document.getElementById("exportPublicationsXlsxBtn");
+  const exportAchievementsXlsxBtn = document.getElementById("exportAchievementsXlsxBtn");
   
-  if (exportPortfolioBtn) {
-    exportPortfolioBtn.addEventListener("click", async () => {
-      const activeTabId = getActiveTabId();
-      const activeContent = contentsMap[activeTabId];
-      if (activeContent) {
-        await exportToPDF(activeContent.id, `portfolio_${activeTabId}_${new Date().toISOString().slice(0,10)}`);
+  if (exportPublicationsXlsxBtn) {
+    exportPublicationsXlsxBtn.addEventListener("click", async () => {
+      if (!(await ensureAchievementsReady())) {
+        return;
       }
+      saveWorkbook(
+        `publications${exportProfileSuffix()}_${exportDateStamp()}`,
+        [
+          {
+            name: "Публикации",
+            rows: achievementsData.publications,
+            columns: publicationExportColumns,
+          },
+        ]
+      );
     });
   }
   
-  if (exportAchievementsBtn) {
-    exportAchievementsBtn.addEventListener("click", async () => {
-      if (!dataLoaded) {
-        await fetchAllAchievements();
+  if (exportAchievementsXlsxBtn) {
+    exportAchievementsXlsxBtn.addEventListener("click", async () => {
+      if (!(await ensureAchievementsReady())) {
+        return;
       }
-      await exportToPDF("all-content", `scientific_portfolio_${new Date().toISOString().slice(0,10)}`);
+      saveWorkbook(
+        `scientific_achievements${exportProfileSuffix()}_${exportDateStamp()}`,
+        achievementExportSections()
+      );
     });
   }
 }
@@ -597,7 +849,12 @@ async function initAchievementsPage() {
   }
 
   if (mainMenuBtn) mainMenuBtn.classList.remove('active');
-  if (scienceMenuBtn) scienceMenuBtn.classList.add('active');
+  if (scienceMenuBtn) {
+    scienceMenuBtn.classList.toggle('active', !viewingForeignProfile);
+    if (viewingForeignProfile) {
+      scienceMenuBtn.removeAttribute("aria-current");
+    }
+  }
 
   setupTabs();
   setupLogout();

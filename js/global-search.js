@@ -51,14 +51,17 @@
     });
   }
 
-  const ALL_STUDENTS = generateStudents(187);
+  let ALL_STUDENTS = [];
+  let studentsLoadPromise = null;
   const studentsPagePath = document.body.dataset.studentsPage || "studentsindex.html";
+  const PROFILE_PREVIEW_STORAGE_KEY = "portfolioProfilePreview";
 
   let scoreMin = 0;
   let scoreMax = 100;
   let scoreFilterMin = 0;
   let scoreFilterMax = 100;
-  let resultsDismissed = false;
+  let resultsDismissed = true;
+  let resultsOverFilterWindows = false;
 
   function escapeHtml(v) {
     return String(v ?? "")
@@ -69,7 +72,167 @@
   }
 
   function fullName(s) {
-    return `${s.last_name} ${s.first_name} ${s.patronymic}`;
+    return `${s.last_name || ""} ${s.first_name || ""} ${s.patronymic || ""}`.trim();
+  }
+
+  function searchableStudentText(s) {
+    return [
+      s.last_name,
+      s.first_name,
+      s.patronymic,
+      s.username,
+      s.group,
+      s.role,
+      s.user_directions,
+      s.profile,
+      s.academic_direction,
+    ].filter(Boolean).join(" ").toLowerCase();
+  }
+
+  function compareStudentsAlphabetically(a, b) {
+    return fullName(a).localeCompare(fullName(b), "ru", { numeric: true, sensitivity: "base" }) ||
+      String(a.username || "").localeCompare(String(b.username || ""), "ru", { numeric: true, sensitivity: "base" }) ||
+      Number(a.id || 0) - Number(b.id || 0);
+  }
+
+  function normalizeStudentFromApi(user, index = 0) {
+    const id = Number(user.id ?? index + 1);
+    const role = String(user.user_directions || user.role || "").trim() || "В поиске себя";
+    const score = Number(user.avg_score ?? 0);
+
+    return {
+      id,
+      first_name: user.first_name || "",
+      last_name: user.last_name || "",
+      patronymic: user.patronymic || "",
+      username: user.username || `student_${id}`,
+      role,
+      user_directions: role,
+      profile: String(user.profile || user.training_profile || "").trim(),
+      academic_direction: user.academic_direction || "",
+      class_: user.class_ || user.class || "",
+      group: user.group || "",
+      avg_score: Number.isFinite(score) ? Math.round(score * 10) / 10 : 0,
+      cloude_storage: user.cloude_storage || "",
+      avatar_data_url: user.avatar_data_url || "",
+      scientific_achievements: Array.isArray(user.scientific_achievements) ? user.scientific_achievements : [],
+      stacks: Array.isArray(user.stacks) ? user.stacks : [],
+      courses: Array.isArray(user.courses) ? user.courses : [],
+    };
+  }
+
+  function uniqueValues(values) {
+    return [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b, "ru", { numeric: true, sensitivity: "base" }));
+  }
+
+  function getCourseFilterValue(className) {
+    const match = String(className || "").trim().match(/^(\d+)/);
+    return match ? match[1] : String(className || "").trim();
+  }
+
+  function setSelectOptions(selectId, values, { valueMapper = (value) => value, labelMapper = (value) => value } = {}) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const currentValue = select.value;
+    const firstOption = select.options[0]?.cloneNode(true);
+    select.innerHTML = "";
+    if (firstOption) select.appendChild(firstOption);
+
+    values.forEach((value) => {
+      const option = document.createElement("option");
+      option.value = valueMapper(value);
+      option.textContent = labelMapper(value);
+      select.appendChild(option);
+    });
+
+    if ([...select.options].some((option) => option.value === currentValue)) {
+      select.value = currentValue;
+    }
+  }
+
+  function updateFilterOptions() {
+    setSelectOptions("globalFilterDirection", uniqueValues(ALL_STUDENTS.map((student) => student.academic_direction)));
+    setSelectOptions("globalFilterProfile", uniqueValues(ALL_STUDENTS.map((student) => student.profile || student.user_directions || student.role)));
+    setSelectOptions("globalFilterRole", uniqueValues(ALL_STUDENTS.map((student) => student.role)));
+    setSelectOptions("globalFilterGroup", uniqueValues(ALL_STUDENTS.map((student) => student.group)));
+    setSelectOptions("globalFilterCourse", uniqueValues(ALL_STUDENTS.map((student) => student.class_)), {
+      valueMapper: getCourseFilterValue,
+    });
+  }
+
+  async function loadStudents() {
+    if (studentsLoadPromise) {
+      return studentsLoadPromise;
+    }
+
+    studentsLoadPromise = (async () => {
+      try {
+        if (!window.AuthClient?.fetchJsonWithAuth) {
+          throw new Error("AuthClient is not ready");
+        }
+
+        const data = await window.AuthClient.fetchJsonWithAuth("/users/students?limit=-1");
+        ALL_STUDENTS = Array.isArray(data)
+          ? data.map(normalizeStudentFromApi).sort(compareStudentsAlphabetically)
+          : [];
+      } catch (error) {
+        console.error("Failed to load students for global search:", error);
+        ALL_STUDENTS = generateStudents(187)
+          .map((student) => ({
+            ...student,
+            username: `student_${student.id}`,
+            user_directions: student.role,
+            profile: student.role,
+          }))
+          .sort(compareStudentsAlphabetically);
+      }
+
+      updateFilterOptions();
+      if (!resultsDismissed && (!isAnyFilterWindowOpen() || resultsOverFilterWindows)) {
+        renderResults();
+      }
+
+      return ALL_STUDENTS;
+    })();
+
+    return studentsLoadPromise;
+  }
+
+  function studentProfileUrl(s) {
+    return `index.html?profileUserId=${encodeURIComponent(s.id)}`;
+  }
+
+  function buildStudentProfilePreview(s) {
+    return {
+      id: s.id,
+      username: s.username || `student_${s.id}`,
+      first_name: s.first_name,
+      last_name: s.last_name,
+      patronymic: s.patronymic,
+      user_directions: s.user_directions || s.role || "В поиске себя",
+      academic_direction: s.academic_direction,
+      class_: s.class_,
+      avg_score: s.avg_score,
+      group: s.group || "",
+      cloude_storage: s.cloude_storage || "",
+      avatar_data_url: s.avatar_data_url || "",
+      scientific_achievements: s.scientific_achievements || [],
+      stacks: s.stacks || [],
+      courses: s.courses || [],
+    };
+  }
+
+  function saveStudentProfilePreview(studentId) {
+    const student = ALL_STUDENTS.find((s) => Number(s.id) === Number(studentId));
+    if (!student) return;
+
+    try {
+      sessionStorage.setItem(PROFILE_PREVIEW_STORAGE_KEY, JSON.stringify(buildStudentProfilePreview(student)));
+    } catch (error) {
+      console.warn("Failed to save student profile preview:", error);
+    }
   }
 
   function injectFiltersSection() {
@@ -131,12 +294,32 @@
             <div class="score-inputs">
               <div class="score-input-group">
                 <span class="score-input-label">От</span>
-                <input type="number" class="score-input" id="globalScoreMinInput" min="0" max="100" value="0">
+                <div class="score-number-control">
+                  <input type="number" class="score-input" id="globalScoreMinInput" min="0" max="100" value="0">
+                  <div class="score-stepper" aria-hidden="true">
+                    <button type="button" class="score-step-btn" data-global-score-target="min" data-global-score-step="1" tabindex="-1">
+                      <i class="fas fa-chevron-up"></i>
+                    </button>
+                    <button type="button" class="score-step-btn" data-global-score-target="min" data-global-score-step="-1" tabindex="-1">
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
               <span class="score-dash">—</span>
               <div class="score-input-group">
                 <span class="score-input-label">До</span>
-                <input type="number" class="score-input" id="globalScoreMaxInput" min="0" max="100" value="100">
+                <div class="score-number-control">
+                  <input type="number" class="score-input" id="globalScoreMaxInput" min="0" max="100" value="100">
+                  <div class="score-stepper" aria-hidden="true">
+                    <button type="button" class="score-step-btn" data-global-score-target="max" data-global-score-step="1" tabindex="-1">
+                      <i class="fas fa-chevron-up"></i>
+                    </button>
+                    <button type="button" class="score-step-btn" data-global-score-target="max" data-global-score-step="-1" tabindex="-1">
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="range-wrapper" id="globalRangeWrapper">
@@ -148,9 +331,14 @@
             <div class="range-tick-labels">
               <span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span>
             </div>
-            <button type="button" class="score-apply-btn" id="globalScoreApplyBtn">
-              <i class="fas fa-check"></i> Применить
-            </button>
+            <div class="score-actions">
+              <button type="button" class="score-reset-btn" id="globalScoreResetBtn">
+                <i class="fas fa-rotate-left"></i> Сбросить
+              </button>
+              <button type="button" class="score-apply-btn" id="globalScoreApplyBtn">
+                <i class="fas fa-check"></i> Применить
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -166,8 +354,31 @@
     header.insertAdjacentElement("afterend", section);
   }
 
+  function isAnyFilterWindowOpen() {
+    return Boolean(
+      document.getElementById("globalFiltersSection")?.classList.contains("open") ||
+      document.getElementById("globalScorePopup")?.classList.contains("visible")
+    );
+  }
+
+  function isFiltersSectionOpen() {
+    return document.getElementById("globalFiltersSection")?.classList.contains("open") || false;
+  }
+
+  function showResultsDropdown({ allowFilterWindows = false } = {}) {
+    resultsOverFilterWindows = allowFilterWindows;
+    if (isAnyFilterWindowOpen() && !allowFilterWindows) {
+      hideResultsDropdown({ dismiss: false });
+      return;
+    }
+
+    resultsDismissed = false;
+    loadStudents();
+    renderResults();
+  }
+
   function getFilteredStudents() {
-    const search = searchInput.value.toLowerCase();
+    const search = searchInput.value.trim().toLowerCase();
     const direction = document.getElementById("globalFilterDirection")?.value || "";
     const course = document.getElementById("globalFilterCourse")?.value || "";
     const profile = document.getElementById("globalFilterProfile")?.value || "";
@@ -175,61 +386,39 @@
     const group = document.getElementById("globalFilterGroup")?.value || "";
 
     return ALL_STUDENTS.filter((s) => {
-      const fullname = fullName(s).toLowerCase();
-      const matchSearch = !search || fullname.includes(search);
+      const profileValues = [s.profile, s.user_directions, s.role, s.academic_direction]
+        .map((value) => String(value || "").toLowerCase());
+      const matchSearch = !search || searchableStudentText(s).includes(search);
       const matchDirection = !direction || s.academic_direction === direction;
-      const matchCourse = !course || s.class_ === `${course} курс`;
-      const matchProfile = !profile || true;
+      const matchCourse = !course || getCourseFilterValue(s.class_) === course;
+      const matchProfile = !profile || profileValues.some((value) => value.includes(profile.toLowerCase()));
       const matchRole = !role || s.role === role;
       const matchGroup = !group || s.group === group;
       const matchScore = s.avg_score >= scoreFilterMin && s.avg_score <= scoreFilterMax;
       return matchSearch && matchDirection && matchCourse && matchProfile && matchRole && matchGroup && matchScore;
-    });
+    }).sort(compareStudentsAlphabetically);
   }
 
-  function hideResultsDropdown() {
+  function hideResultsDropdown({ dismiss = true } = {}) {
     const container = document.getElementById("globalStudentResults");
     if (!container) return;
-    resultsDismissed = true;
+    if (dismiss) resultsDismissed = true;
+    resultsOverFilterWindows = false;
     container.hidden = true;
-  }
-
-  function hasSearchCriteria() {
-    const query = searchInput.value.trim();
-    return (
-      Boolean(query) ||
-      scoreFilterMin > 0 ||
-      scoreFilterMax < 100 ||
-      document.getElementById("globalFilterDirection")?.value ||
-      document.getElementById("globalFilterCourse")?.value ||
-      document.getElementById("globalFilterProfile")?.value ||
-      document.getElementById("globalFilterRole")?.value ||
-      document.getElementById("globalFilterGroup")?.value
-    );
   }
 
   function renderResults() {
     const container = document.getElementById("globalStudentResults");
     if (!container) return;
 
-    if (resultsDismissed) {
+    if (resultsDismissed || (isAnyFilterWindowOpen() && !resultsOverFilterWindows)) {
       container.hidden = true;
       return;
     }
 
-    const query = searchInput.value.trim();
-    const hasActiveFilters =
-      scoreFilterMin > 0 ||
-      scoreFilterMax < 100 ||
-      document.getElementById("globalFilterDirection")?.value ||
-      document.getElementById("globalFilterCourse")?.value ||
-      document.getElementById("globalFilterProfile")?.value ||
-      document.getElementById("globalFilterRole")?.value ||
-      document.getElementById("globalFilterGroup")?.value;
-
-    if (!query && !hasActiveFilters) {
-      container.hidden = true;
-      container.innerHTML = "";
+    if (!ALL_STUDENTS.length && studentsLoadPromise) {
+      container.hidden = false;
+      container.innerHTML = '<div class="global-student-results-empty">Загрузка студентов...</div>';
       return;
     }
 
@@ -246,7 +435,7 @@
     let html = items
       .map(
         (s) => `
-      <a class="global-student-result-row" href="${escapeHtml(studentsPagePath)}">
+      <a class="global-student-result-row" href="${escapeHtml(studentProfileUrl(s))}" data-global-profile-id="${escapeHtml(s.id)}">
         <span class="global-student-result-name">${escapeHtml(fullName(s))}</span>
         <span class="global-student-result-group">${escapeHtml(s.group)}</span>
       </a>
@@ -267,6 +456,13 @@
     if (!section || !btn) return;
     const isOpen = section.classList.toggle("open");
     btn.classList.toggle("filters-active", isOpen);
+    if (isOpen) {
+      document.getElementById("globalScorePopup")?.classList.remove("visible");
+      document.getElementById("globalFilterScoreBtn")?.classList.remove("open");
+      hideResultsDropdown({ dismiss: false });
+    } else if (!resultsDismissed) {
+      showResultsDropdown();
+    }
   }
 
   function resetFilters() {
@@ -283,16 +479,24 @@
     const label = document.getElementById("globalScoreLabel");
     if (label) label.textContent = "Ср. балл";
     updateRangeUI();
-    renderResults();
+    if (isAnyFilterWindowOpen()) {
+      hideResultsDropdown({ dismiss: false });
+    } else {
+      showResultsDropdown();
+    }
   }
 
   function applyFilters() {
     const section = document.getElementById("globalFiltersSection");
     const btn = document.getElementById("globalFilterBtn");
-    if (section) section.classList.remove("open");
-    if (btn) btn.classList.remove("filters-active");
+    const filtersOpen = section?.classList.contains("open") || false;
+    if (btn) btn.classList.toggle("filters-active", filtersOpen);
     resultsDismissed = false;
-    renderResults();
+    if (filtersOpen) {
+      hideResultsDropdown({ dismiss: false });
+    } else {
+      showResultsDropdown();
+    }
   }
 
   function pctOf(val) {
@@ -325,7 +529,10 @@
     if (!popup || !btn) return;
     const open = popup.classList.toggle("visible");
     btn.classList.toggle("open", open);
-    if (open) setTimeout(updateRangeUI, 10);
+    if (open) {
+      hideResultsDropdown({ dismiss: false });
+      setTimeout(updateRangeUI, 10);
+    }
   }
 
   function applyScoreFilter() {
@@ -338,6 +545,33 @@
     document.getElementById("globalScorePopup")?.classList.remove("visible");
     document.getElementById("globalFilterScoreBtn")?.classList.remove("open");
     applyFilters();
+  }
+
+  function resetScoreFilter(event) {
+    event?.stopPropagation();
+    scoreMin = 0;
+    scoreMax = 100;
+    scoreFilterMin = 0;
+    scoreFilterMax = 100;
+    const label = document.getElementById("globalScoreLabel");
+    if (label) label.textContent = "Ср. балл";
+    updateRangeUI();
+    resultsDismissed = false;
+    if (isAnyFilterWindowOpen()) {
+      hideResultsDropdown({ dismiss: false });
+    } else {
+      showResultsDropdown();
+    }
+  }
+
+  function stepScoreInput(target, step) {
+    const delta = Number(step) || 0;
+    if (target === "min") {
+      scoreMin = Math.max(0, Math.min(scoreMin + delta, scoreMax - 1));
+    } else if (target === "max") {
+      scoreMax = Math.min(100, Math.max(scoreMax + delta, scoreMin + 1));
+    }
+    updateRangeUI();
   }
 
   function makeDraggable(thumbId, isMin) {
@@ -382,6 +616,14 @@
 
     document.getElementById("globalFilterScoreBtn")?.addEventListener("click", toggleScorePopup);
     document.getElementById("globalScoreApplyBtn")?.addEventListener("click", applyScoreFilter);
+    document.getElementById("globalScoreResetBtn")?.addEventListener("click", resetScoreFilter);
+    document.querySelectorAll("[data-global-score-target]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        stepScoreInput(button.dataset.globalScoreTarget, button.dataset.globalScoreStep);
+      });
+    });
 
     document.addEventListener("click", (e) => {
       const wrapper = document.getElementById("globalFilterScoreWrapper");
@@ -395,24 +637,106 @@
   function setupResultsDismiss() {
     const searchWrapper = searchInput.closest(".search-wrapper");
     const filtersSection = () => document.getElementById("globalFiltersSection");
+    const openResultsFromSearch = () => {
+      showResultsDropdown({ allowFilterWindows: true });
+    };
+
+    document.addEventListener("pointerdown", (event) => {
+      const section = filtersSection();
+      const results = document.getElementById("globalStudentResults");
+      if (!section?.classList.contains("open") || !results || results.hidden) return;
+
+      const trigger = document.elementsFromPoint(event.clientX, event.clientY).find((element) => {
+        if (!(element instanceof Element) || !section.contains(element)) return false;
+        return element.matches(".filter-select, #globalFilterScoreBtn") ||
+          Boolean(element.closest(".filter-select-wrapper, #globalFilterScoreWrapper"));
+      });
+      if (!trigger) return;
+
+      const interactive = trigger.matches(".filter-select, #globalFilterScoreBtn")
+        ? trigger
+        : trigger.querySelector(".filter-select, #globalFilterScoreBtn");
+      hideResultsDropdown({ dismiss: false });
+
+      if (!section.contains(event.target)) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (interactive instanceof HTMLSelectElement) {
+          interactive.focus();
+          try {
+            interactive.showPicker?.();
+          } catch (error) {
+            // Some browsers only allow native select pickers from direct clicks.
+          }
+        } else if (interactive instanceof HTMLElement) {
+          interactive.click();
+        }
+      }
+    }, true);
 
     searchInput.addEventListener("focus", () => {
-      if (!hasSearchCriteria()) return;
-      resultsDismissed = false;
-      renderResults();
+      openResultsFromSearch();
+    });
+
+    searchInput.addEventListener("click", () => {
+      openResultsFromSearch();
     });
 
     searchInput.addEventListener("input", () => {
-      resultsDismissed = false;
-      renderResults();
+      openResultsFromSearch();
+    });
+
+    searchWrapper?.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || target === searchInput) return;
+      if (target.closest("#globalFilterBtn") || target.closest("#globalStudentResults")) return;
+      searchInput.focus();
+      openResultsFromSearch();
     });
 
     document.addEventListener("click", (event) => {
       const target = event.target;
       if (searchWrapper?.contains(target)) return;
       if (filtersSection()?.contains(target)) return;
-      if (!hasSearchCriteria()) return;
       hideResultsDropdown();
+    });
+  }
+
+  function setupFilterValueListeners() {
+    ["globalFilterDirection", "globalFilterProfile", "globalFilterRole", "globalFilterGroup", "globalFilterCourse"].forEach((id) => {
+      const select = document.getElementById(id);
+      if (!select) return;
+
+      const hideSearchForFilterDropdown = () => {
+        if (isFiltersSectionOpen()) {
+          hideResultsDropdown({ dismiss: false });
+        }
+      };
+
+      select.addEventListener("pointerdown", hideSearchForFilterDropdown);
+      select.addEventListener("keydown", (event) => {
+        if (["Enter", " ", "ArrowDown", "ArrowUp"].includes(event.key)) {
+          hideSearchForFilterDropdown();
+        }
+      });
+
+      select.addEventListener("change", () => {
+        resultsDismissed = false;
+        if (isAnyFilterWindowOpen()) {
+          hideResultsDropdown({ dismiss: false });
+        } else {
+          showResultsDropdown();
+        }
+      });
+    });
+  }
+
+  function setupResultClicks() {
+    document.getElementById("globalStudentResults")?.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+      const link = target?.closest("[data-global-profile-id]");
+      if (!link) return;
+      saveStudentProfilePreview(link.dataset.globalProfileId);
     });
   }
 
@@ -425,7 +749,10 @@
     document.getElementById("globalFiltersResetBtn")?.addEventListener("click", resetFilters);
 
     setupResultsDismiss();
+    setupFilterValueListeners();
+    setupResultClicks();
     initScoreControls();
+    loadStudents();
   }
 
   if (document.readyState === "loading") {

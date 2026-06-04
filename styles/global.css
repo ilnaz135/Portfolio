@@ -22,3 +22,45 @@ a {
 a:hover {
     color: -webkit-link;
 }
+
+html {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+img,
+svg,
+canvas,
+video {
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    max-width: 100%;
+    font-family: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+span,
+a,
+button {
+    overflow-wrap: anywhere;
+}
+
+* {
+    min-width: 0;
+}

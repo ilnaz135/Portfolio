@@ -5,7 +5,14 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import List
 
-from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator, model_validator
+
+
+USERNAME_PATTERN = r"^[A-Za-z0-9_]+$"
+
+
+def trim_text(value: str | None) -> str | None:
+    return value.strip() if isinstance(value, str) else value
 
 
 class ORMModel(BaseModel):
@@ -23,12 +30,66 @@ class UserDirectionSchema(ORMModel, UserDirectionCreateSchema):
 
 
 class UserCourseCreateSchema(BaseModel):
-    name_course: str = Field(..., min_length=1, max_length=200)
-    url_course: str = Field(..., min_length=1, max_length=500)
+    catalog_id: int | None = Field(
+        default=None,
+        validation_alias=AliasChoices("catalog_id", "catalogId"),
+    )
+    degree: str | None = Field(default=None, max_length=80)
+    program: str | None = Field(default=None, max_length=180)
+    course: str | None = Field(default=None, max_length=300)
+    name_course: str | None = Field(default=None, max_length=300)
+    url_course: str | None = Field(default="", max_length=500)
+    specializations: List[str] = Field(default_factory=list)
+    difficulty: float = Field(default=0.0, ge=0)
+
+    @model_validator(mode="after")
+    def normalize_course_names(self) -> "UserCourseCreateSchema":
+        course = trim_text(self.course)
+        name_course = trim_text(self.name_course)
+        if not course:
+            course = name_course
+        if not name_course:
+            name_course = course
+        if not course or not name_course:
+            raise ValueError("Course name is required")
+
+        self.course = course
+        self.name_course = name_course
+        self.degree = trim_text(self.degree)
+        self.program = trim_text(self.program)
+        self.url_course = trim_text(self.url_course) or ""
+        self.specializations = [
+            item for item in (trim_text(str(value)) for value in self.specializations) if item
+        ]
+        return self
 
 
 class UserCourseSchema(ORMModel, UserCourseCreateSchema):
     id: int
+    created_at: datetime
+
+
+class UserCourseUpdateSchema(BaseModel):
+    catalog_id: int | None = Field(
+        default=None,
+        validation_alias=AliasChoices("catalog_id", "catalogId"),
+    )
+    degree: str | None = Field(default=None, max_length=80)
+    program: str | None = Field(default=None, max_length=180)
+    course: str | None = Field(default=None, max_length=300)
+    name_course: str | None = Field(default=None, max_length=300)
+    url_course: str | None = Field(default=None, max_length=500)
+    specializations: List[str] | None = None
+    difficulty: float | None = Field(default=None, ge=0)
+
+
+class CourseCatalogItemSchema(BaseModel):
+    id: int
+    degree: str | None = ""
+    program: str | None = ""
+    course: str
+    specializations: List[str] = Field(default_factory=list)
+    difficulty: float
 
 
 class AchievementSummarySchema(ORMModel):
@@ -48,6 +109,8 @@ class UserPublicationCreateSchema(BaseModel):
     status: str = Field(..., min_length=1, max_length=120)
     points: int = Field(..., ge=0, le=1000)
 
+    _trim_strings = field_validator("title", "publication_type", "status")(trim_text)
+
 
 class UserPublicationSchema(ORMModel, UserPublicationCreateSchema):
     id: int
@@ -60,6 +123,8 @@ class UserEventCreateSchema(BaseModel):
     event_date: str = Field(..., min_length=1, max_length=120)
     status: str = Field(..., min_length=1, max_length=120)
     points: int = Field(..., ge=0, le=1000)
+
+    _trim_strings = field_validator("title", "event_type", "event_date", "status")(trim_text)
 
 
 class UserEventSchema(ORMModel, UserEventCreateSchema):
@@ -74,6 +139,8 @@ class UserGrantCreateSchema(BaseModel):
     status: str = Field(..., min_length=1, max_length=120)
     points: int = Field(..., ge=0, le=1000)
 
+    _trim_strings = field_validator("title", "work_type", "status")(trim_text)
+
 
 class UserGrantSchema(ORMModel, UserGrantCreateSchema):
     id: int
@@ -87,6 +154,8 @@ class UserIntellectualPropertyCreateSchema(BaseModel):
     status: str = Field(..., min_length=1, max_length=120)
     points: int = Field(..., ge=0, le=1000)
 
+    _trim_strings = field_validator("title", "intellectual_type", "status")(trim_text)
+
 
 class UserIntellectualPropertySchema(ORMModel, UserIntellectualPropertyCreateSchema):
     id: int
@@ -99,6 +168,8 @@ class UserInnovationCreateSchema(BaseModel):
     status: str = Field(..., min_length=1, max_length=150)
     points: int = Field(..., ge=0, le=1000)
 
+    _trim_strings = field_validator("title", "status")(trim_text)
+
 
 class UserInnovationSchema(ORMModel, UserInnovationCreateSchema):
     id: int
@@ -110,6 +181,8 @@ class UserScholarshipCreateSchema(BaseModel):
     academic_year: str = Field(..., min_length=1, max_length=50)
     status: str = Field(..., min_length=1, max_length=120)
     points: int = Field(..., ge=0, le=1000)
+
+    _trim_strings = field_validator("scholarship_type", "academic_year", "status")(trim_text)
 
 
 class UserScholarshipSchema(ORMModel, UserScholarshipCreateSchema):
@@ -124,6 +197,8 @@ class UserInternshipCreateSchema(BaseModel):
     end_date: date
     status: str = Field(..., min_length=1, max_length=120)
     points: int = Field(..., ge=0, le=1000)
+
+    _trim_strings = field_validator("organization", "city", "status")(trim_text)
 
 
 class UserInternshipSchema(ORMModel, UserInternshipCreateSchema):
@@ -148,13 +223,14 @@ class UserAchievementsSchema(UserAchievementCollectionsSchema):
 
 
 class UserCreateSchema(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str = Field(..., min_length=3, max_length=50, pattern=USERNAME_PATTERN)
     password: str = Field(..., min_length=6, max_length=255)
     email: str = Field(..., min_length=5, max_length=255)
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
     patronymic: str | None = Field(None, max_length=100)
     cloude_storage: str | None = Field(None, max_length=255)
+    avatar_data_url: str | None = Field(None, max_length=2_000_000)
     academic_direction: str = Field("", max_length=150)
     user_directions: str | None = Field("", max_length=500)
     class_: str = Field("", alias="class", max_length=50)
@@ -169,12 +245,14 @@ class UserCreateSchema(BaseModel):
 
 
 class UserUpdateSchema(BaseModel):
+    username: str | None = Field(None, min_length=3, max_length=50, pattern=USERNAME_PATTERN)
     password: str | None = Field(None, min_length=6, max_length=255)
     email: str | None = Field(None, min_length=5, max_length=255)
     first_name: str | None = Field(None, min_length=1, max_length=100)
     last_name: str | None = Field(None, min_length=1, max_length=100)
     patronymic: str | None = Field(None, max_length=100)
     cloude_storage: str | None = Field(None, max_length=255)
+    avatar_data_url: str | None = Field(None, max_length=2_000_000)
     academic_direction: str | None = Field(None, max_length=150)
     user_directions: str | None = Field(None, max_length=500)
     class_: str | None = Field(None, alias="class", max_length=50)
@@ -205,6 +283,7 @@ class UserSchema(UserAchievementCollectionsSchema):
     last_name: str
     patronymic: str | None
     cloude_storage: str | None
+    avatar_data_url: str | None
     academic_direction: str
     class_: str = Field(alias="class_")
     group: str
@@ -245,8 +324,216 @@ class AuthSessionSchema(AuthTokenSchema):
 
 
 class UsernameCheckSchema(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str = Field(..., min_length=3, max_length=50, pattern=USERNAME_PATTERN)
 
 
 class EmailCheckSchema(BaseModel):
     email: str = Field(..., min_length=5, max_length=255)
+
+
+class ProjectPersonSchema(BaseModel):
+    id: int
+    username: str
+    firstName: str
+    lastName: str
+    patronymic: str | None = ""
+
+
+class ProjectMemberSchema(ProjectPersonSchema):
+    userId: int
+    role: str
+    roles: List[str] = Field(default_factory=list)
+
+
+class ProjectSchema(BaseModel):
+    id: int
+    slug: str
+    ownerUsername: str
+    fullName: str
+    visibility: str
+    projectType: str
+    customer: str
+    deadlineFrom: date | None
+    deadlineTo: date | None
+    status: str
+    shortDescription: str
+    detailedDescription: str
+    cloudUrl: str | None
+    teamProjectUrl: str | None
+    stacks: List[str] = Field(default_factory=list)
+    owner: ProjectPersonSchema
+    teamLead: ProjectPersonSchema | None = None
+    members: List[ProjectMemberSchema] = Field(default_factory=list)
+    memberCount: int
+    createdAt: datetime
+    updatedAt: datetime
+
+
+class ProjectCreateSchema(BaseModel):
+    slug: str = Field(..., min_length=1, max_length=120)
+    project_type: str = Field(
+        ...,
+        validation_alias=AliasChoices("projectType", "project_type"),
+        min_length=1,
+        max_length=120,
+    )
+    short_description: str = Field(
+        ...,
+        validation_alias=AliasChoices("shortDescription", "short_description"),
+        min_length=1,
+        max_length=600,
+    )
+    customer: str = Field("", max_length=150)
+    deadline_from: date | None = Field(
+        None,
+        validation_alias=AliasChoices("deadlineFrom", "deadline_from"),
+    )
+    deadline_to: date | None = Field(
+        None,
+        validation_alias=AliasChoices("deadlineTo", "deadline_to"),
+    )
+    status: str = Field("in_progress", max_length=50)
+    detailed_description: str = Field(
+        "",
+        validation_alias=AliasChoices("detailedDescription", "detailed_description"),
+        max_length=1_000_000,
+    )
+    cloud_url: str | None = Field(
+        None,
+        validation_alias=AliasChoices("cloudUrl", "cloud_url"),
+        max_length=500,
+    )
+    team_project_url: str | None = Field(
+        None,
+        validation_alias=AliasChoices("teamProjectUrl", "team_project_url"),
+        max_length=500,
+    )
+    visibility: str = Field("public", max_length=20)
+    stacks: List[str] = Field(default_factory=list, max_length=30)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    _trim_strings = field_validator(
+        "slug",
+        "project_type",
+        "short_description",
+        "customer",
+        "status",
+        "cloud_url",
+        "team_project_url",
+        "visibility",
+    )(trim_text)
+
+    @field_validator("deadline_from", "deadline_to", mode="before")
+    @classmethod
+    def empty_date_to_none(cls, value):
+        return None if value == "" else value
+
+
+class ProjectUpdateSchema(BaseModel):
+    slug: str | None = Field(None, min_length=1, max_length=120)
+    project_type: str | None = Field(
+        None,
+        validation_alias=AliasChoices("projectType", "project_type"),
+        min_length=1,
+        max_length=120,
+    )
+    short_description: str | None = Field(
+        None,
+        validation_alias=AliasChoices("shortDescription", "short_description"),
+        min_length=1,
+        max_length=600,
+    )
+    customer: str | None = Field(None, max_length=150)
+    deadline_from: date | None = Field(
+        None,
+        validation_alias=AliasChoices("deadlineFrom", "deadline_from"),
+    )
+    deadline_to: date | None = Field(
+        None,
+        validation_alias=AliasChoices("deadlineTo", "deadline_to"),
+    )
+    status: str | None = Field(None, max_length=50)
+    detailed_description: str | None = Field(
+        None,
+        validation_alias=AliasChoices("detailedDescription", "detailed_description"),
+        max_length=1_000_000,
+    )
+    cloud_url: str | None = Field(
+        None,
+        validation_alias=AliasChoices("cloudUrl", "cloud_url"),
+        max_length=500,
+    )
+    team_project_url: str | None = Field(
+        None,
+        validation_alias=AliasChoices("teamProjectUrl", "team_project_url"),
+        max_length=500,
+    )
+    visibility: str | None = Field(None, max_length=20)
+    stacks: List[str] | None = Field(None, max_length=30)
+    team_lead_id: int | None = Field(
+        None,
+        validation_alias=AliasChoices("teamLeadId", "team_lead_id"),
+    )
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    _trim_strings = field_validator(
+        "slug",
+        "project_type",
+        "short_description",
+        "customer",
+        "status",
+        "cloud_url",
+        "team_project_url",
+        "visibility",
+    )(trim_text)
+
+    @field_validator("deadline_from", "deadline_to", mode="before")
+    @classmethod
+    def empty_date_to_none(cls, value):
+        return None if value == "" else value
+
+
+class ProjectListSchema(BaseModel):
+    items: List[ProjectSchema]
+    total: int
+    limit: int
+    offset: int
+
+
+class ProjectInvitationCreateSchema(BaseModel):
+    invitee_user_id: int = Field(
+        ...,
+        validation_alias=AliasChoices("inviteeUserId", "invitee_user_id"),
+    )
+    project_ids: List[int] = Field(
+        ...,
+        validation_alias=AliasChoices("projectIds", "project_ids"),
+        min_length=1,
+        max_length=50,
+    )
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class ProjectInvitationSchema(BaseModel):
+    id: int
+    projectId: int
+    inviterId: int
+    inviteeId: int
+    status: str
+    projectLink: str
+    project: ProjectSchema | None = None
+    createdAt: datetime
+    respondedAt: datetime | None = None
+
+
+class NotificationSchema(BaseModel):
+    id: int
+    type: str
+    text: str
+    link: str
+    isRead: bool
+    createdAt: datetime
+    invitation: ProjectInvitationSchema | None = None

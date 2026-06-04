@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import date, datetime
 from typing import Any, List
 
@@ -36,6 +37,7 @@ class UserModel(Base):
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
     patronymic: Mapped[str | None] = mapped_column(String(100), nullable=True)
     cloude_storage: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    avatar_data_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     academic_direction: Mapped[str] = mapped_column(String(150), nullable=False)
     class_: Mapped[str] = mapped_column("class", String(50), nullable=False)
     group: Mapped[str] = mapped_column(
@@ -270,8 +272,14 @@ class UserCourseModel(Base):
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
-    name_course: Mapped[str] = mapped_column(String(200), nullable=False)
-    url_course: Mapped[str] = mapped_column(String(500), nullable=False)
+    catalog_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    degree: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    program: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    course: Mapped[str] = mapped_column(String(300), nullable=False, default="")
+    name_course: Mapped[str] = mapped_column(String(300), nullable=False)
+    url_course: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+    specializations_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    difficulty: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -279,6 +287,21 @@ class UserCourseModel(Base):
     )
 
     user: Mapped["UserModel"] = relationship(back_populates="courses")
+
+    @property
+    def specializations(self) -> list[str]:
+        try:
+            value = json.loads(self.specializations_json or "[]")
+        except json.JSONDecodeError:
+            return []
+        if not isinstance(value, list):
+            return []
+        return [str(item).strip() for item in value if str(item).strip()]
+
+    @specializations.setter
+    def specializations(self, value: list[str] | None) -> None:
+        cleaned = [str(item).strip() for item in (value or []) if str(item).strip()]
+        self.specializations_json = json.dumps(cleaned, ensure_ascii=False)
 
 
 class UserPublicationModel(Base):
@@ -473,3 +496,166 @@ class UserStackModel(Base):
     )
 
     user: Mapped["UserModel"] = relationship(back_populates="stacks")
+
+
+class ProjectModel(Base):
+    """Portfolio project stored in the database."""
+
+    __tablename__ = "projects"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(120), nullable=False)
+    owner_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    team_lead_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    visibility: Mapped[str] = mapped_column(String(20), nullable=False, default="public")
+    project_type: Mapped[str] = mapped_column(String(120), nullable=False)
+    customer: Mapped[str] = mapped_column(String(150), nullable=False, default="")
+    deadline_from: Mapped[date | None] = mapped_column(Date, nullable=True)
+    deadline_to: Mapped[date | None] = mapped_column(Date, nullable=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="in_progress")
+    short_description: Mapped[str] = mapped_column(String(600), nullable=False)
+    detailed_description_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    cloud_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    team_project_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    owner: Mapped["UserModel"] = relationship(foreign_keys=[owner_id])
+    team_lead: Mapped["UserModel | None"] = relationship(foreign_keys=[team_lead_id])
+    members: Mapped[List["ProjectMemberModel"]] = relationship(
+        back_populates="project",
+        cascade="all, delete-orphan",
+    )
+    stacks: Mapped[List["ProjectStackModel"]] = relationship(
+        back_populates="project",
+        cascade="all, delete-orphan",
+    )
+    invitations: Mapped[List["ProjectInvitationModel"]] = relationship(
+        back_populates="project",
+        cascade="all, delete-orphan",
+    )
+
+
+class ProjectMemberModel(Base):
+    """Project member with one or more display roles."""
+
+    __tablename__ = "project_members"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    roles_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    project: Mapped["ProjectModel"] = relationship(back_populates="members")
+    user: Mapped["UserModel"] = relationship()
+
+
+class ProjectStackModel(Base):
+    """Technology stack item for a project."""
+
+    __tablename__ = "project_stacks"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    stack: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    project: Mapped["ProjectModel"] = relationship(back_populates="stacks")
+
+
+class ProjectInvitationModel(Base):
+    """Invitation from a project owner/team lead to another user."""
+
+    __tablename__ = "project_invitations"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    inviter_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    invitee_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
+    project_link: Mapped[str] = mapped_column(String(500), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+    responded_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    project: Mapped["ProjectModel"] = relationship(back_populates="invitations")
+    inviter: Mapped["UserModel"] = relationship(foreign_keys=[inviter_id])
+    invitee: Mapped["UserModel"] = relationship(foreign_keys=[invitee_id])
+    notification: Mapped["NotificationModel | None"] = relationship(
+        back_populates="invitation",
+        cascade="all, delete-orphan",
+    )
+
+
+class NotificationModel(Base):
+    """User notification, currently used for project invitations."""
+
+    __tablename__ = "notifications"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    invitation_id: Mapped[int | None] = mapped_column(
+        ForeignKey("project_invitations.id", ondelete="CASCADE"),
+        nullable=True,
+    )
+    type: Mapped[str] = mapped_column(String(50), nullable=False)
+    text: Mapped[str] = mapped_column(String(500), nullable=False)
+    link: Mapped[str] = mapped_column(String(500), nullable=False)
+    is_read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    user: Mapped["UserModel"] = relationship()
+    invitation: Mapped["ProjectInvitationModel | None"] = relationship(
+        back_populates="notification",
+    )

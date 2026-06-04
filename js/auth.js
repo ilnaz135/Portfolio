@@ -245,6 +245,7 @@ window.AuthClient = {
   getStoredSession,
   hasSession,
   logout,
+  persistCurrentUser,
   redirectIfAuthenticated,
   refreshAccessToken,
   requireAuth,

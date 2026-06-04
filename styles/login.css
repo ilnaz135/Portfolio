@@ -775,3 +775,44 @@ body.dark-mode .theme-toggle {
     font-size: 24px;
   }
 }
+
+/* Responsive safety net for short screens and mobile devices */
+@media (max-width: 640px), (max-height: 760px) {
+  body {
+    min-height: 100svh;
+    height: auto;
+    align-items: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .auth-container {
+    max-height: none;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .auth-forms,
+  .auth-form,
+  .input-wrapper,
+  .auth-options,
+  .auth-footer {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .auth-container {
+    border-radius: 16px;
+  }
+
+  .auth-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-options label,
+  .forgot-link {
+    width: 100%;
+  }
+}

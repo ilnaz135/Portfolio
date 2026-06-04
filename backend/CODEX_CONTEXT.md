@@ -82,6 +82,12 @@ the whole project, even though it lives under `backend/`.
     `portfolioProfilePreview` object in `sessionStorage` before navigating, so
     the profile page can render mock project people even without a public users
     API.
+  - While viewing a foreign profile, the burger dropdown gets a left foreign
+    profile controls column with username, "Главное меню", and
+    "Научные достижения"; the regular dropdown links remain current-user
+    navigation without active highlighting, with "Главное меню" forced to
+    `index.html` and "Научные достижения" forced to `achievementsindex.html`.
+    The left active button follows the viewed foreign section.
   - Renders profile, first two scientific achievement summaries, stacks, and courses.
   - Adding a course calls `POST /users/{id}/courses`.
   - The profile edit modal only changes the DOM locally; it does not call
@@ -100,6 +106,10 @@ the whole project, even though it lives under `backend/`.
     title becomes `Научные достижения у {username}`, a right-side back button
     returns to `index.html?profileUserId={id}`, and `portfolioProfilePreview`
     is used as fallback if the API does not allow loading another user's data.
+    The burger dropdown remains personal navigation: "Главное меню" and
+    "Научные достижения" go to the current user's own pages. When viewing
+    foreign achievements, the dropdown also gets the same left foreign-profile
+    controls column with its achievements button active.
   - Renders tab-specific tables for publications, events, grants, intellectual
     property, innovations, scholarships, internships, plus an "all" view.
   - Uses `html2pdf.js` from CDN for PDF export.

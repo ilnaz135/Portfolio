@@ -128,12 +128,12 @@ function validateFullname(value) {
 }
 
 function validateUsername(value) {
-  const pattern = /^[a-z0-9_]+$/;
+  const pattern = /^[A-Za-z0-9_]+$/;
   if (!value) {
     return { valid: false, message: "Заполните это поле" };
   }
   if (!pattern.test(value)) {
-    return { valid: false, message: "Только строчные латинские буквы, цифры и _" };
+    return { valid: false, message: "Только английские буквы, цифры и _" };
   }
   if (value.length < 3) {
     return { valid: false, message: "Минимум 3 символа" };

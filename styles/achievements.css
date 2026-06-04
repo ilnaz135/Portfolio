@@ -104,7 +104,8 @@ body.dark-mode .achievements-back-btn:hover {
   padding: 12px 14px;
   display: flex;
   flex-wrap: wrap;
-  gap: 0px;
+  align-items: stretch;
+  gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 body.dark-mode .tabs-container {
@@ -124,8 +125,13 @@ body.dark-mode .tabs-container {
   border-radius: 40px;
   transition: all 0.2s ease;
   white-space: nowrap;
-  /* РАВНОМЕРНОЕ РАСТЯГИВАНИЕ */
-  flex: 1;
+  overflow-wrap: normal;
+  line-height: 1.2;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 0 max-content;
   text-align: center;
 }
 body.dark-mode .tab-btn-achievement {
@@ -153,6 +159,7 @@ body.dark-mode .tab-btn-achievement.active {
 /* Кнопки экспорта */
 .export-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-left: auto;
 }
@@ -185,6 +192,12 @@ body.dark-mode .export-btn:hover {
 }
 .export-btn i {
   font-size: 14px;
+}
+.export-btn--xlsx i {
+  color: #16a34a;
+}
+body.dark-mode .export-btn--xlsx i {
+  color: #4ade80;
 }
 .btn-text {
   display: inline;
@@ -306,9 +319,6 @@ body.dark-mode .badge-status.review { background: #1e3a8a; color: #93c5fd; }
 
 /* ===== АДАПТИВНОСТЬ ===== */
 @media (max-width: 1200px) {
-  .btn-text {
-    display: none;
-  }
   .export-btn {
     padding: 8px 12px;
   }
@@ -418,7 +428,65 @@ body.dark-mode .badge-status.review { background: #1e3a8a; color: #93c5fd; }
 }
 
 .empty-row td {
-  text-align: center;
-  padding: 40px !important;
-  color: #64748b;
+    text-align: center;
+    padding: 40px !important;
+    color: #64748b;
+}
+
+/* Responsive safety net for achievements */
+.achievements-header,
+.tabs-container,
+.export-buttons,
+.achievements-section,
+.achievements-table-wrapper,
+.table-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.achievements-table-wrapper,
+.table-card {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.achievements-header h1,
+.section-header h3,
+.achievements-table th,
+.achievements-table td {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .achievements-header {
+    gap: 10px;
+  }
+
+  .achievements-back-btn,
+  .export-btn {
+    justify-content: center;
+  }
+
+  .tabs-container {
+    border-radius: 12px;
+  }
+
+  .export-buttons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .export-btn {
+    flex: 1 1 130px;
+  }
+}
+
+@media (max-width: 420px) {
+  .achievements-back-btn {
+    width: 100%;
+  }
+
+  .export-btn {
+    flex-basis: 100%;
+  }
 }

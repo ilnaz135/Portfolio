@@ -11,6 +11,9 @@
     <style>
         /* ===== RESET & BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { width: 100%; overflow-x: hidden; }
+        img, svg, canvas, video { max-width: 100%; }
+        button, input, select, textarea { max-width: 100%; font-family: inherit; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -18,6 +21,7 @@
             color: #1e293b;
             line-height: 1.5;
             min-height: 100vh;
+            overflow-x: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
         body.dark-mode { background-color: #0f172a; color: #e2e8f0; }
@@ -47,7 +51,7 @@
             gap: 16px;
             position: sticky;
             top: 0;
-            z-index: 50;
+            z-index: 500;
             background: #ffffff;
             transition: background-color 0.3s, border-color 0.3s;
         }
@@ -58,6 +62,14 @@
             align-items: center;
             gap: 8px;
             flex-shrink: 0;
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .logo-area:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 4px;
+            border-radius: 8px;
         }
         .logo-svg { width: 57px; height: 57px; flex-shrink: 0; display: block; }
         .logo-text { font-weight: 700; font-size: 18px; color: #0b2b5c; }
@@ -115,7 +127,7 @@
             position: absolute; top: 100%; right: 0; margin-top: 12px;
             background: white; border: 1px solid #e2e8f0; border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 220px;
-            display: none; flex-direction: column; overflow: hidden; z-index: 100;
+            display: none; flex-direction: column; overflow: hidden; z-index: 600;
         }
         body.dark-mode .settings-menu-wrapper .dropdown-menu { background: #1e293b; border-color: #334155; }
 
@@ -131,7 +143,7 @@
             position: absolute; top: 100%; right: 0; margin-top: 12px;
             background: white; border: 1px solid #e2e8f0; border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 220px;
-            display: none; flex-direction: column; overflow: hidden; z-index: 100;
+            display: none; flex-direction: column; overflow: hidden; z-index: 600;
         }
         body.dark-mode .dropdown-menu { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .dropdown-menu a {
@@ -281,10 +293,11 @@
         /* ===== STUDENTS GRID ===== */
         .students-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
             margin-bottom: 32px;
-            max-width: 860px;
+            width: 100%;
+            max-width: 1180px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -293,12 +306,12 @@
         .student-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 24px 20px 34px;
+            border-radius: 16px;
+            padding: 18px 16px 28px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             transition: all 0.25s ease;
             cursor: pointer;
@@ -333,15 +346,15 @@
         .student-card:hover::before { opacity: 1; }
 
         .student-avatar {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: linear-gradient(135deg, #1e3a8a, #2563eb);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             border: 3px solid #ffffff;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
@@ -350,7 +363,7 @@
         body.dark-mode .student-avatar { border-color: #0f172a; }
 
         .student-name {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: #0b2b5c;
             text-align: center;
@@ -359,7 +372,7 @@
         body.dark-mode .student-name { color: #f1f5f9; }
         .student-name .patronymic {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             color: #0b2b5c;
         }
         body.dark-mode .student-name .patronymic { color: #f1f5f9; }
@@ -368,13 +381,15 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            max-width: 100%;
             background: #e9eff9;
             color: #1e3a8a;
             border-radius: 30px;
-            padding: 5px 14px;
-            font-size: 12px;
+            padding: 4px 12px;
+            font-size: 11.5px;
             font-weight: 600;
             text-align: center;
+            white-space: normal;
         }
         body.dark-mode .student-role { background: #1e293b; color: #93c5fd; }
 
@@ -382,10 +397,10 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 6px;
             margin-top: 2px;
             border-top: 1px solid #f1f5f9;
-            padding-top: 12px;
+            padding-top: 10px;
         }
         body.dark-mode .student-meta { border-top-color: #1e293b; }
 
@@ -393,7 +408,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 12.5px;
+            font-size: 12px;
             color: #475569;
         }
         body.dark-mode .student-meta-row { color: #94a3b8; }
@@ -406,6 +421,13 @@
         body.dark-mode .student-meta-row i { color: #64748b; }
         .student-meta-row span { color: #1e293b; font-weight: 500; }
         body.dark-mode .student-meta-row span { color: #e2e8f0; }
+
+        .student-name,
+        .student-role,
+        .student-meta-row span,
+        .student-username-corner {
+            overflow-wrap: anywhere;
+        }
 
         .student-score {
             display: inline-flex;
@@ -606,7 +628,6 @@
         @media (max-width: 1024px) {
             .filters-grid { grid-template-columns: repeat(2, 1fr); }
             .students-grid {
-                grid-template-columns: repeat(2, 1fr);
                 max-width: 100%;
             }
             .main-content { padding: 24px 24px 36px; }
@@ -686,7 +707,7 @@
             }
 
             .student-card {
-                padding: 18px 14px 16px;
+                padding: 16px 14px 26px;
             }
 
             .student-avatar {
@@ -741,7 +762,7 @@
             .filters-grid { grid-template-columns: 1fr; }
 
             .students-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
                 gap: 12px;
             }
 
@@ -799,7 +820,7 @@
 
             .student-card {
                 border-radius: 16px;
-                padding: 16px 14px 14px;
+                padding: 15px 14px 26px;
             }
 
             .student-avatar {
@@ -922,7 +943,18 @@
             transition: all 0.2s; outline: none;
         }
         body.dark-mode .filter-score-btn { background: #1e293b; border-color: #334155; color: #e2e8f0; }
-        .filter-score-btn:focus, .filter-score-btn.open { border-color: #60a5fa; box-shadow: 0 0 0 3px rgba(96,165,250,0.15); }
+        .filter-score-btn:hover,
+        .filter-score-btn:focus,
+        .filter-score-btn.open {
+            border-color: #60a5fa; background: #f8fbff;
+            box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+        }
+        body.dark-mode .filter-score-btn:hover,
+        body.dark-mode .filter-score-btn:focus,
+        body.dark-mode .filter-score-btn.open {
+            background: #172033; border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96,165,250,0.18);
+        }
         .score-arrow {
             width: 0; height: 0;
             border-left: 5px solid transparent; border-right: 5px solid transparent;
@@ -944,14 +976,33 @@
         .score-inputs { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 20px; }
         .score-input-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         .score-input-label { font-size: 11px; font-weight: 600; color: #94a3b8; }
+        .score-number-control { position: relative; display: flex; align-items: stretch; }
         .score-input {
-            width: 100%; padding: 10px; border: 1.5px solid #e2e8f0;
+            width: 100%; padding: 10px 40px 10px 10px; border: 1.5px solid #e2e8f0;
             border-radius: 8px; font-size: 18px; font-weight: 800;
             font-family: 'Inter', sans-serif; color: #ef4444; background: #f8fafc;
             text-align: center; outline: none; transition: border-color 0.2s;
         }
+        .score-input::-webkit-outer-spin-button,
+        .score-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .score-input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
         body.dark-mode .score-input { background: #0f172a; border-color: #334155; color: #f87171; }
         .score-input:focus { border-color: #60a5fa; }
+        .score-stepper {
+            position: absolute; top: 5px; right: 5px; bottom: 5px; width: 28px;
+            display: grid; grid-template-rows: 1fr 1fr; gap: 3px;
+        }
+        .score-step-btn {
+            border: 1px solid #d8e3f2; border-radius: 5px; background: #eef4ff;
+            color: #64748b; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; padding: 0;
+            transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+        }
+        .score-step-btn i { font-size: 8px; line-height: 1; }
+        .score-step-btn:hover { background: #dbeafe; border-color: #93b4e8; color: #2563eb; }
+        .score-step-btn:active { transform: translateY(1px); }
+        body.dark-mode .score-step-btn { background: #1e293b; border-color: #334155; color: #94a3b8; }
+        body.dark-mode .score-step-btn:hover { background: #263449; border-color: #60a5fa; color: #bfdbfe; }
         .score-dash { font-size: 20px; font-weight: 700; color: #94a3b8; padding-bottom: 10px; }
 
         /* Dual range */
@@ -981,14 +1032,48 @@
             display: flex; justify-content: space-between;
             font-size: 11px; color: #94a3b8; margin-bottom: 16px;
         }
-        .score-apply-btn {
-            width: 100%; padding: 10px; background: #60a5fa;
-            color: white; border: none; border-radius: 8px;
-            font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
-            cursor: pointer; transition: background 0.2s; display: flex;
-            align-items: center; justify-content: center; gap: 6px;
+        .score-actions {
+            display: flex; align-items: center; gap: 8px;
         }
-        .score-apply-btn:hover { background: #3b82f6; }
+        .score-apply-btn,
+        .score-reset-btn {
+            min-height: 40px; padding: 10px 14px; border-radius: 8px;
+            font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+            cursor: pointer; display: inline-flex; align-items: center;
+            justify-content: center; gap: 7px; outline: none;
+            transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+        }
+        .score-apply-btn {
+            flex: 1.15; background: #2563eb; color: #ffffff;
+            border: 1.5px solid #2563eb; box-shadow: 0 8px 18px rgba(37,99,235,0.22);
+        }
+        .score-reset-btn {
+            flex: 0.85; background: #f8fafc; color: #475569;
+            border: 1.5px solid #c8d5e8;
+        }
+        .score-apply-btn:hover {
+            background: #1d4ed8; border-color: #1d4ed8;
+            box-shadow: 0 10px 22px rgba(37,99,235,0.28);
+        }
+        .score-reset-btn:hover {
+            background: #eef4ff; border-color: #93b4e8; color: #1d4ed8;
+        }
+        .score-apply-btn:focus-visible,
+        .score-reset-btn:focus-visible { box-shadow: 0 0 0 3px rgba(96,165,250,0.22); }
+        .score-apply-btn:active,
+        .score-reset-btn:active { transform: translateY(1px); }
+        body.dark-mode .score-apply-btn {
+            background: #3b82f6; border-color: #3b82f6; box-shadow: none;
+        }
+        body.dark-mode .score-apply-btn:hover {
+            background: #60a5fa; border-color: #60a5fa; color: #0f172a;
+        }
+        body.dark-mode .score-reset-btn {
+            background: #0f172a; border-color: #334155; color: #cbd5e1;
+        }
+        body.dark-mode .score-reset-btn:hover {
+            background: #172033; border-color: #475569; color: #f8fafc;
+        }
 
         /* Apply filters button */
         .filters-apply-btn {
@@ -1007,7 +1092,7 @@
 
     <!-- HEADER -->
     <header class="header">
-        <div class="logo-area">
+        <a class="logo-area" href="index.html" aria-label="Перейти к моему профилю">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="57" height="57" class="logo-svg">
                 <path d="M0 0 C8.25 0 16.5 0 25 0 C25 0.99 25 1.98 25 3 C24.01 3.33 23.02 3.66 22 4 C23.6487245 8.56501675 25.96251997 12.62219563 28.375 16.8125 C29.54564923 18.85138074 30.70942659 20.89179359 31.84545898 22.95019531 C32.62357541 24.33168517 33.44230661 25.69097401 34.29711914 27.02636719 C37.18930318 31.87199747 37.18930318 31.87199747 36.67480469 34.93774414 C35.83675564 36.97289485 34.84968668 38.75638139 33.6875 40.625 C33.1140686 41.60448608 33.1140686 41.60448608 32.52905273 42.60375977 C26.94710789 51.79666623 26.94710789 51.79666623 22 54 C18.81179266 54.71572002 16.17179578 54.82503358 13 54 C10.375 51.75 10.375 51.75 9 49 C9.4140625 46.828125 9.4140625 46.828125 10 45 C10.67546875 45.02320313 11.3509375 45.04640625 12.046875 45.0703125 C13.38492187 45.09738281 13.38492187 45.09738281 14.75 45.125 C16.07257812 45.15980469 16.07257812 45.15980469 17.421875 45.1953125 C20.1135858 44.99139502 21.69904974 44.36551721 24 43 C23.50523213 37.85932958 22.39260017 34.29253798 19.796875 29.83984375 C19.14589844 28.71642578 18.49492187 27.59300781 17.82421875 26.43554688 C17.48310059 25.86054443 17.14198242 25.28554199 16.79052734 24.69311523 C15.75466255 22.94536683 14.73745378 21.18778153 13.72265625 19.42773438 C8.5678847 9.40680314 8.5678847 9.40680314 0 3 C0 2.01 0 1.02 0 0 Z " fill="#E41353" transform="translate(0,2)"/>
                 <path d="M0 0 C2.64 0 5.28 0 8 0 C5.13108564 5.8266889 2.67277329 10.61815438 -3 14 C-6.1560181 14.66529301 -8.85550119 14.75039176 -12 14 C-14.625 11.75 -14.625 11.75 -16 9 C-15.5859375 6.828125 -15.5859375 6.828125 -15 5 C-13.98679687 5.03480469 -13.98679687 5.03480469 -12.953125 5.0703125 C-12.06109375 5.08835937 -11.1690625 5.10640625 -10.25 5.125 C-9.36828125 5.14820313 -8.4865625 5.17140625 -7.578125 5.1953125 C-4.83110453 4.98720489 -3.27112497 4.54477419 -1 3 C-0.67 2.01 -0.34 1.02 0 0 Z " fill="#F8BC08" transform="translate(25,42)"/>
@@ -1020,7 +1105,7 @@
                 <path d="M0 0 C2.64 0 5.28 0 8 0 C7.34 1.32 6.68 2.64 6 4 C3.69 4 1.38 4 -1 4 C-0.67 2.68 -0.34 1.36 0 0 Z " fill="#F18A11" transform="translate(25,42)"/>
             </svg>
             <div class="logo-text">Цифровое портфолио <span>УрФУ</span></div>
-        </div>
+        </a>
 
         <div class="search-wrapper">
             <i class="fas fa-search"></i>
@@ -1122,12 +1207,32 @@
                     <div class="score-inputs">
                         <div class="score-input-group">
                             <span class="score-input-label">От</span>
-                            <input type="number" class="score-input" id="scoreMinInput" min="0" max="100" value="0">
+                            <div class="score-number-control">
+                                <input type="number" class="score-input" id="scoreMinInput" min="0" max="100" value="0">
+                                <div class="score-stepper" aria-hidden="true">
+                                    <button type="button" class="score-step-btn" data-score-target="min" data-score-step="1" tabindex="-1">
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <button type="button" class="score-step-btn" data-score-target="min" data-score-step="-1" tabindex="-1">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <span class="score-dash">—</span>
                         <div class="score-input-group">
                             <span class="score-input-label">До</span>
-                            <input type="number" class="score-input" id="scoreMaxInput" min="0" max="100" value="100">
+                            <div class="score-number-control">
+                                <input type="number" class="score-input" id="scoreMaxInput" min="0" max="100" value="100">
+                                <div class="score-stepper" aria-hidden="true">
+                                    <button type="button" class="score-step-btn" data-score-target="max" data-score-step="1" tabindex="-1">
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <button type="button" class="score-step-btn" data-score-target="max" data-score-step="-1" tabindex="-1">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="range-wrapper" id="rangeWrapper">
@@ -1139,9 +1244,14 @@
                     <div class="range-tick-labels">
                         <span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span>
                     </div>
-                    <button class="score-apply-btn" onclick="applyScoreFilter()">
-                        <i class="fas fa-check"></i> Применить
-                    </button>
+                    <div class="score-actions">
+                        <button class="score-reset-btn" onclick="resetScoreFilter(event)">
+                            <i class="fas fa-rotate-left"></i> Сбросить
+                        </button>
+                        <button class="score-apply-btn" onclick="applyScoreFilter()">
+                            <i class="fas fa-check"></i> Применить
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1202,9 +1312,10 @@
 </div>
 
 <script>
-window.PORTFOLIO_API_BASE = "https://90.156.210.4/api/v1";
+window.PORTFOLIO_API_BASE = "http://127.0.0.1:8001/api/v1";
 </script>
 <script src="js/auth.js"></script>
+<script src="js/notifications.js"></script>
 <script>
 (async function () {
 try {
@@ -1280,12 +1391,13 @@ function generateStudents(count) {
     });
 }
 
-const ALL_STUDENTS = generateStudents(187);
+let ALL_STUDENTS = [];
 
 // ===== STATE =====
 let pageSize    = 10;
 let currentPage = 1;
-let filtered    = [...ALL_STUDENTS];
+let filtered    = [];
+let studentsLoadError = '';
 
 // ===== THEME =====
 const themeToggle = document.getElementById('themeToggle');
@@ -1357,6 +1469,35 @@ function applyScoreFilter() {
     document.getElementById('filterScoreBtn').classList.remove('open');
     applyFilters();
 }
+
+function resetScoreFilter(event) {
+    event?.stopPropagation();
+    scoreMin = 0;
+    scoreMax = 100;
+    scoreFilterMin = 0;
+    scoreFilterMax = 100;
+    document.getElementById('scoreLabel').textContent = 'Ср. балл';
+    updateRangeUI();
+    applyFilters();
+}
+
+function stepScoreInput(target, step) {
+    const delta = Number(step) || 0;
+    if (target === 'min') {
+        scoreMin = Math.max(0, Math.min(scoreMin + delta, scoreMax - 1));
+    } else if (target === 'max') {
+        scoreMax = Math.min(100, Math.max(scoreMax + delta, scoreMin + 1));
+    }
+    updateRangeUI();
+}
+
+document.querySelectorAll('[data-score-target]').forEach((button) => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        stepScoreInput(button.dataset.scoreTarget, button.dataset.scoreStep);
+    });
+});
 
 // Draggable thumbs
 function makeDraggable(thumbId, isMin) {
@@ -1435,15 +1576,17 @@ function applyFilters() {
     const group     = document.getElementById('filterGroup') ? document.getElementById('filterGroup').value : '';
 
     filtered = ALL_STUDENTS.filter(s => {
-        const fullname = `${s.last_name} ${s.first_name} ${s.patronymic}`.toLowerCase();
+        const fullname = `${s.last_name} ${s.first_name} ${s.patronymic || ''} ${s.username || ''}`.toLowerCase();
         const matchSearch    = !search    || fullname.includes(search);
         const matchDirection = !direction || s.academic_direction === direction;
         const matchCourse    = !course    || s.class_ === `${course} курс`;
         const matchProfile   = !profile   || true; // профиль пока не в данных
+        const courseMatches  = !course    || getCourseFilterValue(s.class_) === course;
+        const profileMatches = !profile   || [s.academic_direction, s.role].some(value => String(value || '').includes(profile));
         const matchRole      = !role      || s.role === role;
         const matchGroup     = !group     || (s.group && s.group === group);
         const matchScore     = s.avg_score >= scoreFilterMin && s.avg_score <= scoreFilterMax;
-        return matchSearch && matchDirection && matchCourse && matchProfile && matchRole && matchGroup && matchScore;
+        return matchSearch && matchDirection && courseMatches && profileMatches && matchRole && matchGroup && matchScore;
     });
 
     currentPage = 1;
@@ -1464,6 +1607,90 @@ function escapeHtml(v) {
     return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function uniqueValues(values) {
+    return [...new Set(values.map(value => String(value || '').trim()).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'ru', { numeric: true, sensitivity: 'base' }));
+}
+
+function getCourseFilterValue(className) {
+    const match = String(className || '').trim().match(/^(\d+)/);
+    return match ? match[1] : String(className || '').trim();
+}
+
+function setSelectOptions(selectId, values, { valueMapper = value => value, labelMapper = value => value } = {}) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    const firstOption = select.options[0]?.cloneNode(true);
+    select.innerHTML = '';
+    if (firstOption) select.appendChild(firstOption);
+
+    values.forEach(value => {
+        const option = document.createElement('option');
+        option.value = valueMapper(value);
+        option.textContent = labelMapper(value);
+        select.appendChild(option);
+    });
+}
+
+function updateStudentFilterOptions() {
+    setSelectOptions('filterDirection', uniqueValues(ALL_STUDENTS.map(student => student.academic_direction)));
+    setSelectOptions('filterProfile', uniqueValues(ALL_STUDENTS.map(student => student.role)));
+    setSelectOptions('filterRole', uniqueValues(ALL_STUDENTS.map(student => student.role)));
+    setSelectOptions('filterGroup', uniqueValues(ALL_STUDENTS.map(student => student.group)));
+    setSelectOptions('filterCourse', uniqueValues(ALL_STUDENTS.map(student => student.class_)), {
+        valueMapper: getCourseFilterValue,
+    });
+}
+
+function normalizeStudentFromApi(user, index = 0) {
+    const id = Number(user.id ?? index + 1);
+    const role = String(user.user_directions || '').trim() || 'В поиске себя';
+    const score = Number(user.avg_score ?? 0);
+    return {
+        id,
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        patronymic: user.patronymic || '',
+        username: user.username || `student_${id}`,
+        role,
+        user_directions: role,
+        academic_direction: user.academic_direction || '',
+        class_: user.class_ || user.class || '',
+        group: user.group || '',
+        avg_score: Number.isFinite(score) ? Math.round(score * 10) / 10 : 0,
+        cloude_storage: user.cloude_storage || '',
+        avatar_data_url: user.avatar_data_url || '',
+        scientific_achievements: Array.isArray(user.scientific_achievements) ? user.scientific_achievements : [],
+        stacks: Array.isArray(user.stacks) ? user.stacks : [],
+        courses: Array.isArray(user.courses) ? user.courses : [],
+        gradient: AVATARS_GRADIENTS[id % AVATARS_GRADIENTS.length],
+    };
+}
+
+async function loadStudentsFromBackend() {
+    const grid = document.getElementById('studentsGrid');
+    studentsLoadError = '';
+    if (grid) {
+        grid.innerHTML = `<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Загрузка студентов...</p></div>`;
+    }
+
+    try {
+        const data = await window.AuthClient.fetchJsonWithAuth('/users/students?limit=-1');
+        ALL_STUDENTS = Array.isArray(data) ? data.map(normalizeStudentFromApi) : [];
+        filtered = [...ALL_STUDENTS];
+        updateStudentFilterOptions();
+    } catch (error) {
+        console.error('Failed to load students:', error);
+        ALL_STUDENTS = [];
+        filtered = [];
+        studentsLoadError = 'Не удалось загрузить студентов из БД';
+    }
+
+    currentPage = 1;
+    document.getElementById('countDisplay').textContent = filtered.length;
+    renderPage();
+}
+
 const PROFILE_PREVIEW_STORAGE_KEY = 'portfolioProfilePreview';
 
 function studentProfileUrl(s) {
@@ -1482,10 +1709,11 @@ function buildStudentProfilePreview(s) {
         class_: s.class_,
         avg_score: s.avg_score,
         group: s.group || '',
-        cloude_storage: '',
-        scientific_achievements: [],
-        stacks: [],
-        courses: [],
+        cloude_storage: s.cloude_storage || '',
+        avatar_data_url: s.avatar_data_url || '',
+        scientific_achievements: s.scientific_achievements || [],
+        stacks: s.stacks || [],
+        courses: s.courses || [],
     };
 }
 
@@ -1510,12 +1738,16 @@ function scoreClass(s) {
 }
 
 function renderCard(s) {
-    const initials = `${s.first_name[0]}${s.last_name[0]}`;
-    const [c1,c2] = s.gradient;
+    const initials = `${s.first_name?.[0] || ''}${s.last_name?.[0] || ''}`;
+    const [c1,c2] = s.gradient || AVATARS_GRADIENTS[0];
     const sc = scoreClass(s.avg_score);
+    const avatarStyle = s.avatar_data_url
+        ? `background-image:url('${escapeHtml(s.avatar_data_url)}');background-size:cover;background-position:center;`
+        : `background:linear-gradient(135deg,${c1},${c2})`;
+    const avatarContent = s.avatar_data_url ? '' : escapeHtml(initials);
     return `
     <a class="student-card" href="${escapeHtml(studentProfileUrl(s))}" onclick="saveStudentProfilePreview(${Number(s.id)})">
-        <div class="student-avatar" style="background:linear-gradient(135deg,${c1},${c2})">${escapeHtml(initials)}</div>
+        <div class="student-avatar" style="${avatarStyle}">${avatarContent}</div>
         <div class="student-name">${escapeHtml(s.last_name)} ${escapeHtml(s.first_name)}<br><span class="patronymic">${escapeHtml(s.patronymic)}</span></div>
         <div class="student-role"><i class="fas fa-code"></i>${escapeHtml(s.role)}</div>
         <div class="student-meta">
@@ -1545,7 +1777,9 @@ function renderPage() {
     const start = (currentPage - 1) * pageSize;
     const slice = filtered.slice(start, start + pageSize);
 
-    if (!slice.length) {
+    if (studentsLoadError) {
+        grid.innerHTML = `<div class="empty-state"><i class="fas fa-database"></i><p>${escapeHtml(studentsLoadError)}</p></div>`;
+    } else if (!slice.length) {
         grid.innerHTML = `<div class="empty-state"><i class="fas fa-users-slash"></i><p>Студенты не найдены</p></div>`;
     } else {
         grid.innerHTML = slice.map(renderCard).join('');
@@ -1603,8 +1837,7 @@ function setPageSize(size) {
 }
 
 // ===== INIT =====
-document.getElementById('countDisplay').textContent = filtered.length;
-renderPage();
+await loadStudentsFromBackend();
 
 Object.assign(window, {
     toggleFilters,
@@ -1615,6 +1848,7 @@ Object.assign(window, {
     setPageSize,
     goPage,
     saveStudentProfilePreview,
+    loadStudentsFromBackend,
 });
 })();
 </script>

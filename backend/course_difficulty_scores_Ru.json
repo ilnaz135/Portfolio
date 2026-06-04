@@ -1,0 +1,4710 @@
+[
+  {
+    "id": 1,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Учебная практика, ознакомительная",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 2,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Технологии современных ИТ-решений",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 3,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Системная аналитика",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 4,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Разработка серверных приложений",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Java Backend"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 5,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Виртуализация и облачные технологии",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 6,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Академическое письмо",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 7,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Информационные технологии и сервисы",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 8,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Базы данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 9,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Основы проектной деятельности",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 10,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Эконометрика (РТФ) (Козлова М.А.)",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 11,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Алгебра, геометрия и теория дифференциальных уравнений",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 12,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Компьютерное зрение",
+    "specializations": [
+      "Computer Vision Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 13,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Дискретная математика и математическая логика",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 14,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Алгоритмы и анализ сложности",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 15,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Разработка безопасного программного обеспечения",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 16,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Технологии искусственного интеллекта",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.0
+  },
+  {
+    "id": 17,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Алгоритмы и структуры данных",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 18,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Профессиональное мастерство преподавателя университета: современные подходы и практики (Модуль 3) - Белоусова В.И., Поторочина К.С.",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 19,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Французский язык (Трофимова Н.Ю.)",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 20,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Технологии программирования на Python (2 курс, ИРИТ-РТФ)",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 21,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Математическая статистика 2025-2026 (Белоусова Вероника Игоревна)",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 22,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Разработка игровых сервисов",
+    "specializations": [
+      "Game Development",
+      "C# Backend"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 23,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Web-разработка на Python Django",
+    "specializations": [
+      "Python Backend",
+      "Fullstack Web Development",
+      "Data Analyst",
+      "ML Engineer",
+      "Frontend"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 24,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Программирование на Java (2 курс, ИРИТ-РТФ)",
+    "specializations": [
+      "Java Backend"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 25,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Векторный анализ_2025 (Белоусова М.М.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 26,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Введение в инженерную деятельность. Трек 4.",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 27,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Web-технологии",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 28,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Основы программирования промышленных роботов",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 29,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Виртуальная и дополненная реальность",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 30,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Машинное обучение и анализ данных",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Data Analyst",
+      "Data Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 31,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Операционные системы (практикум)",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 32,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Элементы теории игр",
+    "specializations": [
+      "Game Development",
+      "C# Backend"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 33,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Математический анализ 2025-26 (Белоусова Вероника Игоревна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 34,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Дополнительные главы математики (Шестакова И.А. 09 направление)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 35,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Статистика (РТФ) (Козлова М.А.)",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 36,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Построение масштабируемых корпоративных сетей",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 37,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Информационные технологии и сервисы. Мастерская \"Электронный документооборот проектной деятельности\"",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer",
+      "Project Manager",
+      "Product Manager",
+      "Team Lead",
+      "Business / Legal / Documentation"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 38,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Доп. главы математики (Выходец Е.В.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 39,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Векторный анализ",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 40,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Основы программирования на примере C#, 1 часть (ИРИТ-РТФ, 1 курс)",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 1.7
+  },
+  {
+    "id": 41,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Основы программирования на примере C#, 2 часть (ИРИТ-РТФ, 1 курс)",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 1.4
+  },
+  {
+    "id": 42,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Численные методы",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 43,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Администрирование Astra Linux",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 44,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Математика 2021-2022 Белоусова В.И.",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 45,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Дополнительные главы математики 2022 (Белоусова Вероника Игоревна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 46,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Компьютерные сети",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 47,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Математика (Шестакова Ирина Александровна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 48,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Введение в инженерную деятельность",
+    "specializations": [
+      "Software Engineering"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 49,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Математика 1 семестр (Белоусова В.И.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 50,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Дифференциальные уравнения и ЧМ (ИРИТ-РТФ)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 51,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Теория вероятностей для школьников (Казарин В.И.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 52,
+    "degree": "Бакалавриат",
+    "program": "Программная инженерия",
+    "course": "Проектирование пользовательских интерфейсов информационных систем",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 53,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Веб-технологии и верстка (SkillBox)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design",
+      "Python Backend"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 54,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Основы фронтенд-разработки (часть 2)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 55,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Web-технологии",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 56,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Разработка веб-приложений (фреймворки)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 57,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Базы данных (Кох Е.В) 1 курс",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 58,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Анализ данных и искусственный интеллект",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Data Analyst",
+      "Data Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 59,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Информационные технологии и сервисы 2025",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 60,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Учебная практика, проектно-технологическая",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 61,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Разработка на бизнес ориентированных языках",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 62,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Разработка мобильных приложений",
+    "specializations": [
+      "Mobile Development"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 63,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Фреймворки и технологии клиент-серверной разработки",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Java Backend"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 64,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Языки серверной разработки",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Java Backend"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 65,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Векторный Анализ 2026",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 5.0
+  },
+  {
+    "id": 66,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Информационные технологии и сервисы.",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 67,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Математика",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 68,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Математический анализ",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 69,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Алгебра, геометрия и теория дифференциальных уравнений",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 70,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Информационная безопасность",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 71,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Разработка веб-приложений",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 72,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Программирование на C#",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 73,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Основы фронтенд-разработки (часть 1) (Яндекс)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 74,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Алгебра, геометрия и теория дифференциальных уравнений (АГиТДУ)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 75,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Мультипарадигменное программирование",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 76,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Математические методы для разработчиков 2 для очно-заочной формы обучения",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 77,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Экономические и гуманитарные аспекты информационных технологий 3 для очно-заочной формы",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 78,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Алгоритмы и структуры данных",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 79,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Операционные системы",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 80,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Язык делового общения",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 81,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Финансы и кредит",
+    "specializations": [
+      "Business / Legal / Documentation"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 82,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Векторный анализ (с AI-ассистентом)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 83,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Дополнительные главы математики (ИРИТ-РТФ)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 84,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Теория вероятностей -- 2025",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 85,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Дискретная математика и математическая логика -- 2026",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 86,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Компьютерные сети",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 87,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Алгебра и геометрия",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 88,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Дискретная математика",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 89,
+    "degree": "Бакалавриат",
+    "program": "Прикладная информатика",
+    "course": "Математика ИТС",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 90,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Аппаратные средства вычислительной техники",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 91,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Математический анализ",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 92,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Информационная безопасность",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 93,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Введение в специальность",
+    "specializations": [
+      "Cybersecurity Specialist"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 94,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Теория вероятностей и математическая статистика",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 95,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Математика и ММИБ. 1 курс 2020-21 уч.год",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 96,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Схемотехника",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 97,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Математика (мат. анализ) 2025-26",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 98,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Документоведение. Документационное обеспечение управления",
+    "specializations": [
+      "Business / Legal / Documentation"
+    ],
+    "difficulty": 1.8
+  },
+  {
+    "id": 99,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Организационно-правовые основы информационной безопасности",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer",
+      "Business / Legal / Documentation"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 100,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Аппаратные средства вычислительной техники",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 101,
+    "degree": "Бакалавриат",
+    "program": "Безопасность компьютерных систем",
+    "course": "Теория вероятностей и математическая статистика",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 102,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Специальные главы математики",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 103,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Практики для направления 11.03.01 «Радиотехника»",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 104,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Цифровые двойники",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 105,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Электроника",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 106,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Аппаратные интерфейсы электронных средств",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 107,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Электропреобразовательные устройства радиоэлектронных средств",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 108,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Схемотехника аналоговых устройств",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 109,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Философия как ресурс развития науки",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 110,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Основы дистанционного зондирования Земли",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 111,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Автоматизированное проектирование СВЧ-устройств и антенн",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 112,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Проектный практикум (Чечеткин В.А.)",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 113,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Выпускная квалификационная работа бакалавра (по направлению 11.03.01 Радиотехника)",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Research / Academic Track"
+    ],
+    "difficulty": 5.6
+  },
+  {
+    "id": 114,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Устройства СВЧ и антенны",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 115,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Мультисервисные телекоммуникационные сети и системы",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 4.9
+  },
+  {
+    "id": 116,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Алгоритмизация и программирование (препод. Саблина Н.Г.)",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 117,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Основы формирования и обработки сигналов",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 118,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Автоматизированное проектирование высокочастотных устройств",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 4.5
+  },
+  {
+    "id": 119,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Введение в специальность (Радиотехника)",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 1.8
+  },
+  {
+    "id": 120,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Проектирование высокочастотных устройств и антенных систем",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 121,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Оформление научных работ",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 1.5
+  },
+  {
+    "id": 122,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Электродинамика и распространение радиоволн",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 123,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Радиоматериалы и радиокомпоненты",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 124,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Дискретная математика и математическая логика",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 125,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "Специальные главы математики ИРИТ-РТФ 25-26",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 4.5
+  },
+  {
+    "id": 126,
+    "degree": "Бакалавриат",
+    "program": "Радиотехника",
+    "course": "ТВиМС",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 127,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Архитектура и анализ сложных систем в IT-сфере",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 128,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Гейм-дизайн и основы разработки на движке Unity",
+    "specializations": [
+      "Game Development",
+      "C# Backend"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 129,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Машинное обучение - от основ к практике",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 130,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Инжиниринг и экономика проектов в области ИТ",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 131,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Системная аналитика и проектирование информационных систем",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 132,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Анализ данных в образовательной сфере",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 133,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Основы Программирования",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 134,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Архитектура ЭВМ",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 135,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Системная аналитика (Альфа-банк, 2025)",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 136,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Технологии программирования",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 137,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Алгоритмы и методы машинного обучения",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 138,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Приложения машинного обучения",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 4.8
+  },
+  {
+    "id": 139,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Естественнонаучное мировоззрение",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 140,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Операционные системы",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 141,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Разработка игр: с нуля до публикации",
+    "specializations": [
+      "Game Development",
+      "C# Backend"
+    ],
+    "difficulty": 3.8
+  },
+  {
+    "id": 142,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Бизнес-аналитика (2025)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 143,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Бизнес-аналитика (2024)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 144,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Системная аналитика (Альфа-банк, 2024)",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 145,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Технологии распределенного реестра",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.0
+  },
+  {
+    "id": 146,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Анализ данных и искусственный интеллект",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Data Analyst",
+      "Data Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 147,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Проектный практикум",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 148,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Теория вероятностей и математическая статистика 2024 (Муравьев)",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 149,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Основы информационной безопасности",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 150,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Системная аналитика (2023)",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 151,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Бизнес-аналитика (2023)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 152,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Виртуализация и управление инфраструктурой",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 153,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Базы данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 154,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Компьютерное зрение",
+    "specializations": [
+      "Computer Vision Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 155,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Аналитика данных и методы искусственного интеллекта (Ростелеком)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Data Analyst",
+      "Data Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 156,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Создание мобильных приложений Qt Quick",
+    "specializations": [
+      "Mobile Development"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 157,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Социология в условиях цифровизации",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 158,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Алгоритмы и структуры данных",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 159,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Проектный практикум 4 курс Осень 2023",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 3.8
+  },
+  {
+    "id": 160,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Информационные системы и технологии",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 161,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Компьютерные сети (Традиционный курс)",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 162,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Интернет Вещей:Аналитика Больших Данных",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 163,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Проектный практикум",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 164,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "JavaScript. Разработка веб-интерфейсов",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design",
+      "Python Backend"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 165,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "React. Разработка сложных клиентских приложений",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 166,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Базы данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 167,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Информационные технологии и сервисы",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 168,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Прикладное программирование на языке Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 169,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Элементарные основы математики (Белоусова Вероника Игоревна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 170,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Теория вероятностей и математическая статистика (Поторочина КС, ИРИТ-РТФ)",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 4.7
+  },
+  {
+    "id": 171,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Математика (ИРИТ- РТФ)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 172,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Виртуализация и облачные вычисления для бизнеса (Devops)",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 173,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Базовая архитектура программного обеспечения",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 174,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Базы данных (Кох Е.В.)",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 175,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Математика и ДГМ (Чуксина Наталия Владимировна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 176,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Системное программное обеспечение (РИ-370002, РИ-370003, РИ-370004, РИ-370005, РИ-370017)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 177,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Технология программирования с помощью графических процессоров",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 178,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Тесты, Задания, Темы докладов - Черных О.А.",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 179,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Программирование на языке Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 180,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Дополнительные главы математики (2 семестр, Белоусова В.И.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 181,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Геймификация математических курсов (Учебная практика Белоусова В.И., Поторочина К.С., Горбунов Д.А.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 182,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Экономика и организация производства РтФ (Лямин Д.В.)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 183,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Иностранный язык специальности ИРИТ (Дымова Е.Е.)",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 184,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Иностранный язык специальности ИРИТ (Пономарева Е. В.)",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 185,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Иностранный язык специальности ИРИТ (Прокопенко Е.В.)",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 186,
+    "degree": "Бакалавриат",
+    "program": "Информатика и вычислительная техника",
+    "course": "Архитектура ЭВМ",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 187,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Электромагнитная совместимость устройств и систем",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 188,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Учебная практика, ознакомительная УГН 11.03.00",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 189,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Системное программирование",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 190,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Сетевое программное обеспечение",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 191,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Распространение радиоволн и антенно-фидерные устройства",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 192,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Электромагнитные поля и волны",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 193,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Основы интернета вещей",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 194,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Дискретная математика и математическая логика 2022 (Белоусова В.И.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 195,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Математика_2021 (Ермакова Галина Михайловна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 196,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Специальные главы математики (добор -Белоусова ВИ)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 197,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Векторный анализ - (Кныш А.А.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 198,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Введение в специальность (направление 11.03.02 Инфокоммуникационные технологии и системы связи)",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 199,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Выпускная квалификационная работа бакалавра (11.03.02 Инфокоммуникационные технологии и системы связи)",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Research / Academic Track"
+    ],
+    "difficulty": 5.6
+  },
+  {
+    "id": 200,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Основы теории телетрафика",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 201,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Учебная практика направления \"Инфокоммуникационные технологии и системы связи\"",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 202,
+    "degree": "Бакалавриат",
+    "program": "Инфокоммуникационные технологии и системы связи",
+    "course": "Векторный анализ_2024 (Белоусова Марина Михайловна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 203,
+    "degree": "Бакалавриат",
+    "program": "Конструирование и технология электронных средств",
+    "course": "Учебная практика, ознакомительная (11.03.03)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 204,
+    "degree": "Бакалавриат",
+    "program": "Конструирование и технология электронных средств",
+    "course": "Проектирование устройств цифровой обработки сигналов",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 205,
+    "degree": "Бакалавриат",
+    "program": "Конструирование и технология электронных средств",
+    "course": "Векторный анализ",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 206,
+    "degree": "Бакалавриат",
+    "program": "Конструирование и технология электронных средств",
+    "course": "Техническая электродинамика",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.0
+  },
+  {
+    "id": 207,
+    "degree": "Бакалавриат",
+    "program": "Конструирование и технология электронных средств",
+    "course": "Трехмерное моделирование для 3D - печати",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 208,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Основы технической защиты информации",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 209,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Учебная практика для программ по искусственному интеллекту",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 210,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Обработка естественного языка в прикладных задачах",
+    "specializations": [
+      "NLP / LLM Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 211,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Сбор и верификация данных",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 212,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Алгоритмы и методы машинного обучения, Машинное обучение",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 213,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Введение в инженерную деятельность",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 214,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Базы данных: SQL, реляционные и МРР СУБД (Карпов Курсы)",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 215,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Анализ данных и искусственный интеллект. Топ-трек",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Data Analyst",
+      "Data Engineer"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 216,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Программирование",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 217,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Теория вероятностей и математическая статистика",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 5.3
+  },
+  {
+    "id": 218,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Технологии программирования",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 219,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Информационные технологии и сервисы (Топ ИИ)",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 220,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Алгоритмы и методы машинного обучения",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 221,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Основы разработки игр на движке Unity",
+    "specializations": [
+      "Game Development",
+      "C# Backend"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 222,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Сбор и верификация данных",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 223,
+    "degree": "Бакалавриат",
+    "program": "Алгоритмы искусственного интеллекта",
+    "course": "Программирование на Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 224,
+    "degree": "Бакалавриат",
+    "program": "Управление в технических системах",
+    "course": "Микроконтроллеры",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 225,
+    "degree": "Бакалавриат",
+    "program": "Управление в технических системах",
+    "course": "Математика 数学 (Белоусова В.И. РИ-242902к)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 226,
+    "degree": "Бакалавриат",
+    "program": "Технология полиграфического и упаковочного производства",
+    "course": "Экономика",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.5
+  },
+  {
+    "id": 227,
+    "degree": "Бакалавриат",
+    "program": "Технология полиграфического и упаковочного производства",
+    "course": "Основы редактирования",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 228,
+    "degree": "Бакалавриат",
+    "program": "Технология полиграфического и упаковочного производства",
+    "course": "Русский язык и культура речи",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 229,
+    "degree": "Бакалавриат",
+    "program": "Прикладной искусственный интеллект",
+    "course": "Математика (Башуров ВВ)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 230,
+    "degree": "Бакалавриат",
+    "program": "Прикладной искусственный интеллект",
+    "course": "Анализ данных на Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 231,
+    "degree": "Бакалавриат",
+    "program": "Ядро",
+    "course": "Системная инженерия в технических отраслях",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 232,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Аналитика больших данных для бизнеса",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 233,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Инновации в бизнесе и ИТ",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 234,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Геометрические ядра",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 235,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Параллельное программирование",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 5.4
+  },
+  {
+    "id": 236,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Компьютерное моделирование",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 237,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Электронный бизнес (E-Business)",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 238,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Классические методы машинного обучения (Classical ML)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 239,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Клиент-серверные технологии",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Java Backend"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 240,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Системы искусственного интеллекта",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.0
+  },
+  {
+    "id": 241,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Интеллектуальные агенты и мультиагентные системы",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 4.7
+  },
+  {
+    "id": 242,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Web Technologies in Business",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 243,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Современные образовательные технологии",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 244,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Педагогика и методика преподавания",
+    "specializations": [
+      "Applied Informatics",
+      "Business Analyst"
+    ],
+    "difficulty": 1.8
+  },
+  {
+    "id": 245,
+    "degree": "Магистратура",
+    "program": "Прикладная информатика (09.04.03)",
+    "course": "Искусственный интеллект и нейронные сети",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 6.0
+  },
+  {
+    "id": 246,
+    "degree": "Магистратура",
+    "program": "Радиотехника (11.04.01)",
+    "course": "Design of Antenna Arrays for 5G Communication Systems",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 247,
+    "degree": "Магистратура",
+    "program": "Радиотехника (11.04.01)",
+    "course": "Introduction to Ansys HFSS",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 248,
+    "degree": "Магистратура",
+    "program": "Радиотехника (11.04.01)",
+    "course": "Схемотехника современной радиоэлектроники",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 249,
+    "degree": "Магистратура",
+    "program": "Радиотехника (11.04.01)",
+    "course": "Интеллектуальные информационные технологии проектирования электронных средств",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 6.1
+  },
+  {
+    "id": 250,
+    "degree": "Магистратура",
+    "program": "Радиотехника (11.04.01)",
+    "course": "Проектирование конструкций радиоэлектронных систем",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 5.6
+  },
+  {
+    "id": 251,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Time Series Analysis",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 252,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Технология командной разработки программного обеспечения",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 253,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Data Science Competition",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.4
+  },
+  {
+    "id": 254,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Математические основы машинного обучения",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 5.9
+  },
+  {
+    "id": 255,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Data Presentation with Pandas",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 256,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Машинное обучение",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 257,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Machine Learning Methods",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 258,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Машинное обучение (РИМ-201207)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 259,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Биотехнические системы и технологии",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 260,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Methods of Machine Learning (RIM-101203k)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 261,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Методы анализа данных и статистики",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 262,
+    "degree": "Магистратура",
+    "program": "Информационные системы и технологии (09.04.02)",
+    "course": "Applied Statistics",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 263,
+    "degree": "Магистратура",
+    "program": "Разработка программно-информационных систем (09.04.04)",
+    "course": "Научный семинар « Публикация научных результатов»",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 264,
+    "degree": "Магистратура",
+    "program": "Интеллектуальные информационные системы и технологии в медицине (09.04.02)",
+    "course": "Цифровые компетенции научного исследователя в медицине",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 265,
+    "degree": "Магистратура",
+    "program": "Интеллектуальные информационные системы и технологии в медицине (09.04.02)",
+    "course": "Интерфейсы мозг-компьютер",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 266,
+    "degree": "Магистратура",
+    "program": "Интеллектуальные информационные системы и технологии в медицине (09.04.02)",
+    "course": "Организация инфокоммуникационных сетей",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 267,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "ИИИ. Автоматизация машинного обучения (весна 2026)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 268,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Научный семинар",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 5.6
+  },
+  {
+    "id": 269,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Операционная система Linux",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 270,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Искусственный интеллект для информационной безопасности",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 271,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Автоматизация машинного обучения (демо 2025)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 272,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Базы данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 273,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Инжиниринг данных",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.4
+  },
+  {
+    "id": 274,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Machine Learning Fundamentals 1 and 2",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 275,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Mathematical Foundations of Artificial Intelligence",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 276,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Разработка ИТ проекта",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 277,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Управление проектами искусственного интеллекта",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 278,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Программирование на Python. Уровень Pro",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 279,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "и Обработка естественного языка",
+    "specializations": [
+      "NLP / LLM Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 6.0
+  },
+  {
+    "id": 280,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Математические основы искусственного интеллекта",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 281,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Специализированные инструменты Python для обработки и визуализации данных",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 282,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Операционная система Linux",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 283,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Основы SQL",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 284,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Обработка естественного языка",
+    "specializations": [
+      "NLP / LLM Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 285,
+    "degree": "Магистратура",
+    "program": "Инженерия искусственного интеллекта (09.04.01)",
+    "course": "Программная инженерия",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 286,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Проектное обучение - общение с командами",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 287,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Программное обеспечение цифровой обработки сигналов _спецкурс",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 5.4
+  },
+  {
+    "id": 288,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Введение в ОС Unix",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 289,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Оптимизация радиотехнических систем и машинное обучение",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 5.8
+  },
+  {
+    "id": 290,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Выпускная квалификационная работа магистранта",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 6.2
+  },
+  {
+    "id": 291,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Выпускная квалификационная работа (курс)",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 7.5
+  },
+  {
+    "id": 292,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Машинное обучение_110401",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 5.8
+  },
+  {
+    "id": 293,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Подготовка научных публикаций",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 1.8
+  },
+  {
+    "id": 294,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Радиотехника",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 295,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Микроволновые устройства радиоэлектронных систем",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 296,
+    "degree": "Магистратура",
+    "program": "Инженерия радиоэлектронных средств и систем (11.04.01)",
+    "course": "Микроволновые антенны и антенные системы",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 297,
+    "degree": "Магистратура",
+    "program": "Информационно-управляющие системы (09.04.01)",
+    "course": "Интеллектуальные и мультиагентные системы",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 298,
+    "degree": "Магистратура",
+    "program": "Информационно-управляющие системы (09.04.01)",
+    "course": "Методы анализа и синтеза информационных систем",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.5
+  },
+  {
+    "id": 299,
+    "degree": "Магистратура",
+    "program": "Информационно-управляющие системы (09.04.01)",
+    "course": "Введение в программное управление компонентами коммуникационных инфраструктур",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 300,
+    "degree": "Магистратура",
+    "program": "Информационно-управляющие системы (09.04.01)",
+    "course": "Постреляционные хранилища данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 4.7
+  },
+  {
+    "id": 301,
+    "degree": "Магистратура",
+    "program": "Информационно-управляющие системы (09.04.01)",
+    "course": "Компьютерная арифметика",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.5
+  },
+  {
+    "id": 302,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "UX-аналитика и проектирование интерфейсов",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "UX/UI Design"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 303,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Имитационное моделирование организационных систем",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 5.1
+  },
+  {
+    "id": 304,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Системный анализ в программных проектах",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 305,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Математические методы и модели в управлении",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 306,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Проектирование Бизнес-процессов",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 307,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Программирование на Java",
+    "specializations": [
+      "Java Backend"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 308,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Учебная практика. Магистратура РУПП",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 309,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Стратегический менеджмент и анализ",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 310,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Управление данными",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 311,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Промышленная разработка на Java",
+    "specializations": [
+      "Java Backend"
+    ],
+    "difficulty": 3.7
+  },
+  {
+    "id": 312,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Информационный менеджмент. Заочное отделение",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 313,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Проектный и продуктовый менеджмент в ИТ-индустрии",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 314,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Цифровые компетенции научной деятельности",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 315,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Инструменты поддержки принятия решений",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 316,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Человекоцентричный поход в создании и развитии продуктов",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 317,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Информационный менеджмент",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 318,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Управление продуктом",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 319,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Программирование на Java",
+    "specializations": [
+      "Java Backend"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 320,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Основы публичных выступлений",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 321,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Основы SQL",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 322,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Управление программными проектами",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 323,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Программирование на Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 324,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Командообразование",
+    "specializations": [
+      "General IT / Foundational Skills"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 325,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Управление командой",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 326,
+    "degree": "Магистратура",
+    "program": "Разработка и управление в программных проектах (09.04.04)",
+    "course": "Автоматизация администрирования (DevOps)",
+    "specializations": [
+      "DevOps / Cloud Engineer",
+      "System Administrator"
+    ],
+    "difficulty": 4.5
+  },
+  {
+    "id": 327,
+    "degree": "Магистратура",
+    "program": "Информационная безопасность (10.04.01)",
+    "course": "Стандарты и методы оценки защищенности ИСПДн, ГИС и значимых объектов КИИ",
+    "specializations": [
+      "Cybersecurity Specialist"
+    ],
+    "difficulty": 5.1
+  },
+  {
+    "id": 328,
+    "degree": "Магистратура",
+    "program": "Информационная безопасность (10.04.01)",
+    "course": "Переподготовка по теме Информационная безопасность. Безопасность значимых объектов критической информационной инфраструктуры.",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 329,
+    "degree": "Магистратура",
+    "program": "Информационная безопасность (10.04.01)",
+    "course": "Иностранный язык магистры (Пономарева Е. В.)",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 330,
+    "degree": "Магистратура",
+    "program": "Информационная безопасность (10.04.01)",
+    "course": "Информационная безопасность для работников образовательных организаций высшего образования",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 331,
+    "degree": "Магистратура",
+    "program": "Информационная безопасность (10.04.01)",
+    "course": "Автоматизированное конструирование электронных средств в системе Altium Designer",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 3.6
+  },
+  {
+    "id": 332,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Инструменты бизнес-анализа",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 333,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Управление разработкой ПО",
+    "specializations": [
+      "Business Analyst",
+      "Product Manager"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 334,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Бизнес-аналитика",
+    "specializations": [
+      "Business Analyst",
+      "Product Manager"
+    ],
+    "difficulty": 3.0
+  },
+  {
+    "id": 335,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Копия курса Саиф Муджахед Абдулла Хаель",
+    "specializations": [
+      "Business Analyst",
+      "Product Manager"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 336,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Практический Курс: Разработка Мобильных Приложений",
+    "specializations": [
+      "Mobile Development"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 337,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Разработка веб-приложений (web application development)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 338,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Веб-технологии в бизнесе (web technologies in business)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 339,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Управление разработкой ПО (software development management)",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 340,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Практическое предпринимательство",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 341,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Practical Entrepreneurship",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 342,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Управление жизненным циклом информационных систем",
+    "specializations": [
+      "Business Analyst",
+      "Product Manager"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 343,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Information Systems Lifecycle Management",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst",
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 344,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Modeling and optimization of business processes",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 3.3
+  },
+  {
+    "id": 345,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Практическое предпринимательство",
+    "specializations": [
+      "Project Manager",
+      "Product Manager",
+      "Team Lead"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 346,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Управление жизненным циклом информационных систем",
+    "specializations": [
+      "Business Analyst",
+      "Product Manager"
+    ],
+    "difficulty": 2.9
+  },
+  {
+    "id": 347,
+    "degree": "Магистратура",
+    "program": "IT инновации в бизнесе (09.04.03)",
+    "course": "Web Applications Development",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 3.4
+  },
+  {
+    "id": 348,
+    "degree": "Магистратура",
+    "program": "Интеллектуальные информационные системы и технологии функциональной диагностики и нейрореабилитации (09.04.02)",
+    "course": "Основы веб программирования (Свинцов Д. В.)",
+    "specializations": [
+      "Frontend",
+      "Fullstack Web Development",
+      "Python Backend"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 349,
+    "degree": "Магистратура",
+    "program": "Прикладной анализ данных (09.04.02)",
+    "course": "Генеративные и языковые модели",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "NLP / LLM Engineer"
+    ],
+    "difficulty": 6.2
+  },
+  {
+    "id": 350,
+    "degree": "Магистратура",
+    "program": "Прикладной анализ данных (09.04.02)",
+    "course": "Обработка больших объемов данных 2025",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 351,
+    "degree": "Магистратура",
+    "program": "Прикладной анализ данных (09.04.02)",
+    "course": "Управление разработкой продукта",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 2.6
+  },
+  {
+    "id": 352,
+    "degree": "Магистратура",
+    "program": "Прикладной анализ данных (09.04.02)",
+    "course": "Программирование на Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.7
+  },
+  {
+    "id": 353,
+    "degree": "Магистратура",
+    "program": "Прикладной анализ данных (09.04.02)",
+    "course": "Машинное обучение (Прикладной анализ данных)",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Data Analyst",
+      "Data Engineer"
+    ],
+    "difficulty": 6.0
+  },
+  {
+    "id": 354,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Нереляционные базы данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 4.1
+  },
+  {
+    "id": 355,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Спортивный анализ данных",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 356,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Инструменты бизнес-анализа (Business Analysis Tools)",
+    "specializations": [
+      "System Analyst",
+      "Business Analyst"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 357,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Computer vision",
+    "specializations": [
+      "Computer Vision Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 5.2
+  },
+  {
+    "id": 358,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Master's Thesis Seminar",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 6.5
+  },
+  {
+    "id": 359,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Программирование на Python",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 360,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Python Programming in Artificial Intelligence",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 361,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Программирование на Python. Base-Pro",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 2.4
+  },
+  {
+    "id": 362,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Design Workshop",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 5.0
+  },
+  {
+    "id": 363,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "Natural language processing",
+    "specializations": [
+      "NLP / LLM Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 364,
+    "degree": "Магистратура",
+    "program": "Прикладной искусственный интеллект (09.04.02)",
+    "course": "DL Computer Vision",
+    "specializations": [
+      "Computer Vision Engineer",
+      "ML Engineer",
+      "AI Engineer"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 365,
+    "degree": "Магистратура",
+    "program": "Защита информации в информационных системах персональных данных, государственных информационных системах и значимых объектах критической информационной инфраструктуры (10.04.01)",
+    "course": "Защита информации в системах беспроводной связи",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 366,
+    "degree": "Магистратура",
+    "program": "Защита информации в информационных системах персональных данных, государственных информационных системах и значимых объектах критической информационной инфраструктуры (10.04.01)",
+    "course": "Профессиональный иностранный язык",
+    "specializations": [
+      "Communication / Soft Skills"
+    ],
+    "difficulty": 1.6
+  },
+  {
+    "id": 367,
+    "degree": "Магистратура",
+    "program": "Ядро",
+    "course": "Специализированные инструменты Python для обработки и визуализации данных",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer",
+      "Data Scientist",
+      "Data Engineer"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 368,
+    "degree": "Магистратура",
+    "program": "Инженерия машинного обучения (09.04.01)",
+    "course": "Научный семинар по технологиям оформления результатов научной деятельности",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 4.6
+  },
+  {
+    "id": 369,
+    "degree": "Магистратура",
+    "program": "Инженерия машинного обучения (09.04.01)",
+    "course": "Машинное обучение",
+    "specializations": [
+      "ML Engineer",
+      "AI Engineer",
+      "Data Scientist"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 370,
+    "degree": "Магистратура",
+    "program": "Инженерия мультимедийных систем (09.04.04))",
+    "course": "Инженерия мультимедийных систем (2025)",
+    "specializations": [
+      "Game Development",
+      "Multimedia Systems Engineer"
+    ],
+    "difficulty": 5.9
+  },
+  {
+    "id": 371,
+    "degree": "Магистратура",
+    "program": "Инженерия мультимедийных систем (09.04.04))",
+    "course": "Разработка компьютерных игр",
+    "specializations": [
+      "Game Development",
+      "C# Backend"
+    ],
+    "difficulty": 4.2
+  },
+  {
+    "id": 372,
+    "degree": "Магистратура",
+    "program": "Инженерия мультимедийных систем (09.04.04))",
+    "course": "Программирование на C# и unity",
+    "specializations": [
+      "C# Backend",
+      "Game Development"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 373,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Безопасность сетей операторов связи",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 5.6
+  },
+  {
+    "id": 374,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Защита информации в системах беспроводной связи",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 375,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Видео уроки для изучение иностранных языков. Уровень подготовки ниже среднего (А2)",
+    "specializations": [
+      "Cybersecurity Specialist"
+    ],
+    "difficulty": 1.0
+  },
+  {
+    "id": 376,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Конфиденциальное делопроизводство",
+    "specializations": [
+      "Cybersecurity Specialist"
+    ],
+    "difficulty": 3.5
+  },
+  {
+    "id": 377,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Планирование и управление информационной безопасностью",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 378,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Защита систем электронного документооборота",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer",
+      "Business / Legal / Documentation"
+    ],
+    "difficulty": 5.7
+  },
+  {
+    "id": 379,
+    "degree": "Специалитет",
+    "program": "Информационная безопасность телекоммуникационных систем",
+    "course": "Дифференциальные уравнения и численные методы. 2 семестр ИРИТ-РТФ (Поторочина К.С.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 4.8
+  },
+  {
+    "id": 380,
+    "degree": "Специалитет",
+    "program": "Информационно-аналитические системы безопасности",
+    "course": "Банковское и налоговое право",
+    "specializations": [
+      "Business / Legal / Documentation"
+    ],
+    "difficulty": 1.5
+  },
+  {
+    "id": 381,
+    "degree": "Специалитет",
+    "program": "Информационно-аналитические системы безопасности",
+    "course": "Методология научного исследования",
+    "specializations": [
+      "Research / Academic Track"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 382,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Численные методы (Белоусова М.М)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 5.5
+  },
+  {
+    "id": 383,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Радиоматериалы",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 384,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Дополнительные главы математики (Шестакова И.А.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 5.6
+  },
+  {
+    "id": 385,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Математический анализ (Шестакова И.А.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 5.8
+  },
+  {
+    "id": 386,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Основы радиоголографии",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 5.4
+  },
+  {
+    "id": 387,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Методы повышения помехоустойчивости",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 388,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Радиоприемные устройства",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 389,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Устройства генерирования и формирования сигналов",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 390,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Основы конструирования и технологии производства РЭА",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 391,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Радиоэлектронные системы дистанционного зондирования Земли",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 5.1
+  },
+  {
+    "id": 392,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Численные методы (Поторочина К.С.)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 5.5
+  },
+  {
+    "id": 393,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Проектирование цифровой обработки сигналов на программируемых логических интегральных схемах",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 5.8
+  },
+  {
+    "id": 394,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Проектирование цифровых устройств на программируемых логических интегральных схемах",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 4.5
+  },
+  {
+    "id": 395,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Языки схемотехнического проектирования (препод. Долматов А.Г.)",
+    "specializations": [
+      "Embedded / Hardware Engineer",
+      "Robotics / IoT Engineer"
+    ],
+    "difficulty": 5.0
+  },
+  {
+    "id": 396,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Алгебра, геометрия и ТДУ (Чуксина Наталия Владимировна)",
+    "specializations": [
+      "Mathematics / Applied Math",
+      "Data Scientist"
+    ],
+    "difficulty": 5.1
+  },
+  {
+    "id": 397,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Практика",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 398,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Теория вероятностей и математическая статистика (Чуксина Наталия Владимировна)",
+    "specializations": [
+      "Data Analyst",
+      "Data Scientist",
+      "Data Engineer",
+      "Mathematics / Applied Math"
+    ],
+    "difficulty": 5.1
+  },
+  {
+    "id": 399,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Радиопередающие устройства",
+    "specializations": [
+      "Network Engineer",
+      "Telecom / Radio Engineer"
+    ],
+    "difficulty": 3.9
+  },
+  {
+    "id": 400,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Информатика (ИРИТ-РТФ)",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 6.3
+  },
+  {
+    "id": 401,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Основы теории массового обслуживания",
+    "specializations": [
+      "Telecom / Radio Engineer",
+      "Embedded / Hardware Engineer"
+    ],
+    "difficulty": 4.4
+  },
+  {
+    "id": 402,
+    "degree": "Специалитет",
+    "program": "Радиоэлектронные системы и комплексы (11.05.01)",
+    "course": "Базы данных и СУБД",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 403,
+    "degree": "Специалитет",
+    "program": "Правовое обеспечение национальной безопасности (40.05.01)",
+    "course": "Базы данных",
+    "specializations": [
+      "C# Backend",
+      "Python Backend",
+      "Data Analyst",
+      "Data Engineer",
+      "Database Engineer / DBA"
+    ],
+    "difficulty": 2.5
+  },
+  {
+    "id": 404,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Основы программирования на примере C#. Часть 1",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 2.3
+  },
+  {
+    "id": 405,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Основы программирования на примере C#. Часть 2",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 3.1
+  },
+  {
+    "id": 406,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Проектирование на языке C#",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 2.8
+  },
+  {
+    "id": 407,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Язык Python: интерактивный курс с нуля",
+    "specializations": [
+      "Python Backend",
+      "Data Analyst",
+      "ML Engineer"
+    ],
+    "difficulty": 1.8
+  },
+  {
+    "id": 408,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Основы компьютерной безопасности",
+    "specializations": [
+      "Cybersecurity Specialist",
+      "Secure Software Engineer"
+    ],
+    "difficulty": 2.2
+  },
+  {
+    "id": 409,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Практикум по языку запросов LINQ",
+    "specializations": [
+      "C# Backend"
+    ],
+    "difficulty": 1.9
+  },
+  {
+    "id": 410,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Тестирование ПО",
+    "specializations": [
+      "QA Engineer",
+      "Test Automation Engineer"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 411,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Оценка сложности алгоритмов",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 1.6
+  },
+  {
+    "id": 412,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Введение в функциональное программирование",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 3.2
+  },
+  {
+    "id": 413,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Playwright на C#",
+    "specializations": [
+      "C# Backend",
+      "QA Engineer",
+      "Test Automation Engineer"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 414,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Selenium на C#",
+    "specializations": [
+      "C# Backend",
+      "QA Engineer",
+      "Test Automation Engineer"
+    ],
+    "difficulty": 2.0
+  },
+  {
+    "id": 415,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Библиотеки тестирования на C#: NUnit и FluentAssertions",
+    "specializations": [
+      "C# Backend",
+      "QA Engineer",
+      "Test Automation Engineer"
+    ],
+    "difficulty": 2.1
+  },
+  {
+    "id": 416,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "The Clean Code Game",
+    "specializations": [
+      "Game Development",
+      "C# Backend",
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 1.2
+  },
+  {
+    "id": 417,
+    "degree": "КУРСЫ Ulearn",
+    "program": null,
+    "course": "Nand2Tetris",
+    "specializations": [
+      "Software Engineering",
+      "Algorithmic Programming"
+    ],
+    "difficulty": 5.5
+  }
+]

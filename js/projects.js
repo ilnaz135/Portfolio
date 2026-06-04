@@ -27,10 +27,50 @@ function renderStackTags(stacks) {
   return stacks.map((name) => renderStackTag(name)).join("");
 }
 
+let projectSpecializationTagNames = [];
+
 function getAllStackNames() {
-  return window.StackIcons?.ALL_STACK_NAMES?.length
-    ? window.StackIcons.ALL_STACK_NAMES
-    : ["Python", "React", "JavaScript", "FastAPI", "Docker", "PostgreSQL", "TypeScript", "Vue", "Node"];
+  if (projectSpecializationTagNames.length) {
+    return projectSpecializationTagNames;
+  }
+
+  return window.StackIcons?.SPECIALIZATION_TAG_NAMES?.length
+    ? window.StackIcons.SPECIALIZATION_TAG_NAMES
+    : ["Frontend", "Python Backend", "Data Analyst", "ML Engineer", "UX/UI Design", "DevOps / Cloud Engineer"];
+}
+
+function normalizeSpecializationName(name) {
+  return String(name || "").trim();
+}
+
+function extractSpecializationNames(catalogItems) {
+  return [...new Set(
+    (Array.isArray(catalogItems) ? catalogItems : [])
+      .flatMap((item) => Array.isArray(item?.specializations) ? item.specializations : [])
+      .map(normalizeSpecializationName)
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, "ru", { numeric: true, sensitivity: "base" }));
+}
+
+async function loadProjectSpecializationTags() {
+  try {
+    const data = await window.AuthClient.fetchJsonWithAuth("/users/course-catalog");
+    projectSpecializationTagNames = extractSpecializationNames(data);
+  } catch (error) {
+    console.warn("Failed to load project specialization tags from API:", error);
+    try {
+      const response = await fetch("backend/course_difficulty_scores_Ru.json");
+      if (!response.ok) {
+        throw new Error("Course catalog file request failed");
+      }
+
+      const data = await response.json();
+      projectSpecializationTagNames = extractSpecializationNames(data);
+    } catch (fallbackError) {
+      console.warn("Failed to load project specialization tags from catalog file:", fallbackError);
+      projectSpecializationTagNames = [];
+    }
+  }
 }
 
 const STATUS_LABELS = {
@@ -51,6 +91,7 @@ const MEMBER_ROLES = [
 const OWNER_ROLE = "Владелец";
 const ASSIGNABLE_MEMBER_ROLES = MEMBER_ROLES.filter((role) => role !== OWNER_ROLE);
 const PROFILE_PREVIEW_STORAGE_KEY = "portfolioProfilePreview";
+const PROJECTS_STORAGE_KEY = "portfolioProjects";
 
 let currentUser = null;
 let projects = [];
@@ -59,6 +100,8 @@ let selectedProjectId = null;
 let nextProjectId = 100;
 let detailEditMode = false;
 let detailMdTab = "code";
+let projectCurrentPage = 1;
+let projectPageSize = 10;
 
 const listFilters = {
   query: "",
@@ -85,9 +128,16 @@ const createForm = {
   stackSearch: "",
 };
 
+const CREATE_REQUIRED_FIELDS = [
+  { key: "slug", label: "Название проекта", id: "createSlug" },
+  { key: "projectType", label: "Тип проекта", id: "createType" },
+  { key: "shortDescription", label: "Краткое описание", id: "createShort" },
+];
+
 let filtersOpen = false;
 let stackDropdownOpen = false;
 let createStackDropdownOpen = false;
+let createValidationSubmitted = false;
 let searchDebounceTimer = null;
 
 function personName(p) {
@@ -162,6 +212,147 @@ function buildFullName(ownerUsername, slug) {
 
 function sameUserId(a, b) {
   return Number(a) === Number(b);
+}
+
+function getNextProjectIdFromList(list) {
+  const maxId = list.reduce((max, project) => Math.max(max, Number(project.id) || 0), 0);
+  return Math.max(maxId + 1, list.length + 100);
+}
+
+function loadProjectsSnapshot(user) {
+  if (!user || !window.localStorage) {
+    return null;
+  }
+
+  try {
+    const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const snapshot = JSON.parse(raw);
+    if (!sameUserId(snapshot?.userId, user.id) || !Array.isArray(snapshot?.projects)) {
+      return null;
+    }
+
+    return {
+      projects: snapshot.projects,
+      nextProjectId: Number(snapshot.nextProjectId) || getNextProjectIdFromList(snapshot.projects),
+    };
+  } catch (error) {
+    console.warn("Failed to load projects snapshot:", error);
+    return null;
+  }
+}
+
+function saveProjectsSnapshot() {
+  if (!currentUser || !window.localStorage) {
+    return;
+  }
+
+  try {
+    localStorage.setItem(
+      PROJECTS_STORAGE_KEY,
+      JSON.stringify({
+        userId: currentUser.id,
+        nextProjectId,
+        projects,
+      })
+    );
+  } catch (error) {
+    console.warn("Failed to save projects snapshot:", error);
+  }
+}
+
+function normalizeProjectFromApi(project) {
+  return {
+    ...project,
+    id: Number(project.id),
+    owner: project.owner || {},
+    teamLead: project.teamLead || project.owner || null,
+    members: Array.isArray(project.members) ? project.members : [],
+    stacks: Array.isArray(project.stacks) ? project.stacks : [],
+    memberCount: Number(project.memberCount) || (Array.isArray(project.members) ? project.members.length : 0),
+    detailedDescription: project.detailedDescription || "",
+    shortDescription: project.shortDescription || "",
+    cloudUrl: project.cloudUrl || "",
+    teamProjectUrl: project.teamProjectUrl || "",
+    deadlineFrom: project.deadlineFrom || "",
+    deadlineTo: project.deadlineTo || "",
+    visibility: project.visibility || "public",
+    status: project.status || "in_progress",
+    projectType: project.projectType || "",
+    customer: project.customer || "",
+    fullName: project.fullName || buildFullName(project.ownerUsername || project.owner?.username || "project", project.slug || `project-${project.id}`),
+  };
+}
+
+async function loadProjectsFromApi() {
+  const response = await window.AuthClient.fetchJsonWithAuth("/projects?limit=100&offset=0");
+  const items = Array.isArray(response?.items) ? response.items : [];
+  if (!items.length) {
+    const snapshot = loadProjectsSnapshot(currentUser);
+    const localOwnedProjects = (snapshot?.projects || []).filter((project) =>
+      sameUserId(project?.owner?.id, currentUser?.id)
+    );
+    const migratedProjects = [];
+    for (const project of localOwnedProjects) {
+      try {
+        const created = await window.AuthClient.fetchJsonWithAuth("/projects", {
+          method: "POST",
+          body: JSON.stringify(projectPayload(project)),
+        });
+        migratedProjects.push(created);
+      } catch (error) {
+        console.warn("Failed to migrate local project:", error);
+      }
+    }
+
+    if (migratedProjects.length) {
+      projects = migratedProjects.map(normalizeProjectFromApi);
+      nextProjectId = getNextProjectIdFromList(projects);
+      saveProjectsSnapshot();
+      return;
+    }
+  }
+  projects = items.map(normalizeProjectFromApi);
+  nextProjectId = getNextProjectIdFromList(projects);
+  saveProjectsSnapshot();
+}
+
+function projectPayload(project) {
+  return {
+    slug: project.slug,
+    projectType: project.projectType,
+    customer: project.customer,
+    deadlineFrom: project.deadlineFrom || null,
+    deadlineTo: project.deadlineTo || null,
+    status: project.status,
+    shortDescription: project.shortDescription,
+    detailedDescription: project.detailedDescription || "",
+    cloudUrl: project.cloudUrl || "",
+    teamProjectUrl: project.teamProjectUrl || "",
+    visibility: project.visibility || "public",
+    stacks: project.stacks || [],
+  };
+}
+
+async function saveProjectToApi(project) {
+  if (!project?.id) {
+    return project;
+  }
+
+  const updated = await window.AuthClient.fetchJsonWithAuth(`/projects/${encodeURIComponent(project.id)}`, {
+    method: "PUT",
+    body: JSON.stringify(projectPayload(project)),
+  });
+  const normalized = normalizeProjectFromApi(updated);
+  const index = projects.findIndex((item) => sameUserId(item.id, project.id));
+  if (index >= 0) {
+    projects[index] = normalized;
+  }
+  saveProjectsSnapshot();
+  return normalized;
 }
 
 function getMyRole(project) {
@@ -308,7 +499,7 @@ function buildMockProjects(user) {
       detailedDescription: "# Портфолио УрФУ\n\nРазработка клиентской части портфолио.\n\n- Профиль студента\n- Научные достижения\n- Проекты",
       cloudUrl: "https://github.com/example/portfolio",
       teamProjectUrl: "",
-      stacks: ["React", "JavaScript", "CSS"],
+      stacks: ["Frontend", "UX/UI Design", "Software Engineering"],
       teamLead: { id: uid, username: uname, firstName: fn, lastName: ln, patronymic: pat },
       members: [
         { userId: uid, username: uname, firstName: fn, lastName: ln, patronymic: pat, role: "Владелец" },
@@ -330,7 +521,7 @@ function buildMockProjects(user) {
       detailedDescription: "## Цели\n\n1. Сбор датасета\n2. Обучение моделей\n3. Валидация",
       cloudUrl: "https://drive.google.com/example",
       teamProjectUrl: "https://teamproject.urfu.ru/example",
-      stacks: ["Python", "TensorFlow", "PostgreSQL"],
+      stacks: ["ML Engineer", "Data Scientist", "Data Engineer"],
       teamLead: otherOwners[0],
       members: [
         { userId: otherOwners[0].id, firstName: otherOwners[0].firstName, lastName: otherOwners[0].lastName, patronymic: otherOwners[0].patronymic, role: "Владелец" },
@@ -352,7 +543,7 @@ function buildMockProjects(user) {
       detailedDescription: "Проект завершён. Развёрнут MVP в тестовом контуре.",
       cloudUrl: "https://gitlab.com/example/iot",
       teamProjectUrl: "",
-      stacks: ["Go", "Docker", "PostgreSQL", "Redis"],
+      stacks: ["Robotics / IoT Engineer", "Embedded / Hardware Engineer", "DevOps / Cloud Engineer"],
       teamLead: { id: uid + 13, username: "morozov", firstName: "Сергей", lastName: "Морозов", patronymic: "" },
       members: [
         { userId: otherOwners[1].id, firstName: otherOwners[1].firstName, lastName: otherOwners[1].lastName, patronymic: otherOwners[1].patronymic, role: "Владелец" },
@@ -373,7 +564,7 @@ function buildMockProjects(user) {
       detailedDescription: "# Mobile Campus\n\nReact Native прототип.",
       cloudUrl: "",
       teamProjectUrl: "",
-      stacks: ["React Native", "JavaScript"],
+      stacks: ["Mobile Development", "UX/UI Design", "Frontend"],
       teamLead: owner,
       members: [
         { userId: uid, username: uname, firstName: fn, lastName: ln, patronymic: pat, role: "Владелец" },
@@ -393,7 +584,7 @@ function buildMockProjects(user) {
       detailedDescription: "## Архитектура\n\nFastAPI + Redis + JWT",
       cloudUrl: "https://github.com/example/gateway",
       teamProjectUrl: "https://teamproject.urfu.ru/gateway",
-      stacks: ["FastAPI", "Python", "Redis", "Docker"],
+      stacks: ["Python Backend", "DevOps / Cloud Engineer", "Database Engineer / DBA"],
       teamLead: otherOwners[2],
       members: [
         { userId: otherOwners[2].id, firstName: otherOwners[2].firstName, lastName: otherOwners[2].lastName, patronymic: otherOwners[2].patronymic, role: "Владелец" },
@@ -416,7 +607,7 @@ function buildMockProjects(user) {
       detailedDescription: "D3.js + React",
       cloudUrl: "https://github.com/example/dashboard",
       teamProjectUrl: "",
-      stacks: ["React", "JavaScript", "PostgreSQL"],
+      stacks: ["Fullstack Web Development", "Frontend", "Database Engineer / DBA"],
       teamLead: otherOwners[0],
       members: [
         { userId: otherOwners[0].id, firstName: otherOwners[0].firstName, lastName: otherOwners[0].lastName, patronymic: otherOwners[0].patronymic, role: "Владелец" },
@@ -437,7 +628,7 @@ function buildMockProjects(user) {
       detailedDescription: "Solidity + Web3.js",
       cloudUrl: "https://ipfs.io/example",
       teamProjectUrl: "",
-      stacks: ["JavaScript", "Node"],
+      stacks: ["Frontend", "Fullstack Web Development", "Product Manager"],
       teamLead: owner,
       members: [
         { userId: uid, username: uname, firstName: fn, lastName: ln, patronymic: pat, role: "Владелец" },
@@ -458,7 +649,7 @@ function buildMockProjects(user) {
       detailedDescription: "# Chatbot\n\nИнтеграция с Telegram API.",
       cloudUrl: "https://github.com/example/chatbot",
       teamProjectUrl: "https://teamproject.urfu.ru/chatbot",
-      stacks: ["Python", "FastAPI", "PostgreSQL"],
+      stacks: ["Python Backend", "Data Engineer", "Database Engineer / DBA"],
       teamLead: otherOwners[1],
       members: [
         { userId: otherOwners[1].id, firstName: otherOwners[1].firstName, lastName: otherOwners[1].lastName, patronymic: otherOwners[1].patronymic, role: "Владелец" },
@@ -511,6 +702,243 @@ function renderMarkdown(md) {
     return marked.parse(md || "");
   }
   return escapeHtml(md || "").replace(/\n/g, "<br>");
+}
+
+function normalizeText(value) {
+  return String(value || "").replace(/\s+/g, " ").trim();
+}
+
+function stripTrailingColon(value) {
+  return normalizeText(value).replace(/:$/, "");
+}
+
+function markdownFromTeamProjectValue(element) {
+  if (!element) {
+    return "";
+  }
+
+  const parts = [];
+
+  Array.from(element.childNodes).forEach((node) => {
+    if (node.nodeType === 3) {
+      const text = normalizeText(node.textContent);
+      if (text) parts.push(text);
+      return;
+    }
+
+    if (node.nodeType !== 1) {
+      return;
+    }
+
+    const tag = node.tagName.toLowerCase();
+    if (tag === "br") {
+      parts.push("\n");
+    } else if (tag === "ul" || tag === "ol") {
+      Array.from(node.querySelectorAll(":scope > li")).forEach((item, index) => {
+        const marker = tag === "ol" ? `${index + 1}.` : "-";
+        parts.push(`${marker} ${normalizeText(item.textContent)}`);
+      });
+    } else {
+      const text = markdownFromTeamProjectValue(node) || normalizeText(node.textContent);
+      if (text) parts.push(text);
+    }
+  });
+
+  return parts
+    .join("\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function parseTeamProjectHtml(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const details = doc.querySelector(".project-details") || doc.body;
+  if (!details) {
+    return null;
+  }
+
+  const title = normalizeText(details.querySelector("h2")?.textContent) || "О проекте";
+  const properties = {};
+  const rows = Array.from(details.querySelectorAll(".property"));
+
+  rows.forEach((row) => {
+    const label = stripTrailingColon(row.querySelector(".property-title")?.textContent);
+    const valueElement = row.querySelector(".property-value");
+    if (!label || !valueElement) {
+      return;
+    }
+
+    const value = markdownFromTeamProjectValue(valueElement);
+    if (value) {
+      properties[label] = value;
+    }
+  });
+
+  if (!Object.keys(properties).length) {
+    return null;
+  }
+
+  const markdown = [
+    `# ${title}`,
+    ...Object.entries(properties).flatMap(([label, value]) => [`## ${label}`, value]),
+  ].join("\n\n");
+
+  return { title, properties, markdown };
+}
+
+function updateCreateTextField(id, value) {
+  const field = document.getElementById(id);
+  if (field) {
+    field.value = value || "";
+  }
+}
+
+function applyTeamProjectImport(data) {
+  const shortName = data.properties["Краткое название"] || "";
+  const customer = data.properties["Организация заказчика"] || "";
+
+  if (shortName) {
+    createForm.slug = shortName;
+    updateCreateTextField("createSlug", createForm.slug);
+  }
+
+  if (customer) {
+    createForm.customer = customer;
+    updateCreateTextField("createCustomer", createForm.customer);
+  }
+
+  createForm.detailedDescription = data.markdown;
+  updateCreateTextField("createMdTextarea", createForm.detailedDescription);
+
+  const preview = document.getElementById("createMdPreview");
+  if (preview) {
+    preview.innerHTML = renderMarkdown(createForm.detailedDescription);
+  }
+
+  updateCreateValidationState();
+}
+
+async function loadTeamProjectHtml(url) {
+  if (!url) {
+    return "";
+  }
+
+  const response = await fetch(url, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error(`TeamProject returned ${response.status}`);
+  }
+  return response.text();
+}
+
+function requestTeamProjectHtmlFallback(reason = "") {
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.className = "projects-import-modal";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.innerHTML = `
+      <div class="projects-import-dialog">
+        <div class="projects-import-header">
+          <h3>Импорт из TeamProject</h3>
+          <button type="button" class="projects-import-close" data-import-cancel aria-label="Закрыть">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <p class="projects-import-hint">
+          Не удалось автоматически прочитать страницу TeamProject${reason ? `: ${escapeHtml(reason)}` : ""}.
+          Вставьте HTML страницы или блока “О проекте”.
+        </p>
+        <textarea class="projects-import-textarea" id="teamProjectImportHtml" placeholder="Вставьте HTML body или блок project-details"></textarea>
+        <div class="projects-import-actions">
+          <button type="button" class="projects-btn" data-import-cancel>Отмена</button>
+          <button type="button" class="projects-btn primary" data-import-submit>Импортировать</button>
+        </div>
+      </div>
+    `;
+
+    function cleanup(value) {
+      document.removeEventListener("keydown", onKeyDown);
+      overlay.remove();
+      resolve(value);
+    }
+
+    function onKeyDown(event) {
+      if (event.key === "Escape") {
+        cleanup("");
+      }
+    }
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest("[data-import-cancel]")) {
+        cleanup("");
+      }
+      if (event.target.closest("[data-import-submit]")) {
+        cleanup(document.getElementById("teamProjectImportHtml")?.value || "");
+      }
+    });
+
+    document.addEventListener("keydown", onKeyDown);
+    document.body.appendChild(overlay);
+    document.getElementById("teamProjectImportHtml")?.focus();
+  });
+}
+
+async function importTeamProject() {
+  const importButton = document.getElementById("createImportBtn");
+  const urlInput = document.getElementById("createTeamProject");
+  const url = urlInput?.value.trim() || createForm.teamProjectUrl.trim();
+
+  if (urlInput) {
+    createForm.teamProjectUrl = urlInput.value.trim();
+  }
+
+  if (importButton) {
+    importButton.disabled = true;
+    importButton.classList.add("is-loading");
+  }
+
+  try {
+    let html = "";
+    let parseResult = null;
+    let fallbackReason = "";
+
+    if (url) {
+      try {
+        html = await loadTeamProjectHtml(url);
+        parseResult = parseTeamProjectHtml(html);
+        if (!parseResult) {
+          fallbackReason = "в загруженной странице не найден блок О проекте";
+        }
+      } catch (error) {
+        fallbackReason = error.message || "браузер заблокировал загрузку";
+      }
+    } else {
+      fallbackReason = "ссылка на TeamProject не указана";
+    }
+
+    if (!parseResult) {
+      html = await requestTeamProjectHtmlFallback(fallbackReason);
+      if (!html.trim()) {
+        return;
+      }
+      parseResult = parseTeamProjectHtml(html);
+    }
+
+    if (!parseResult) {
+      alert("Не удалось найти данные проекта в HTML TeamProject.");
+      return;
+    }
+
+    applyTeamProjectImport(parseResult);
+  } finally {
+    if (importButton) {
+      importButton.disabled = false;
+      importButton.classList.remove("is-loading");
+    }
+  }
 }
 
 function visibilityLabel(v) {
@@ -589,8 +1017,54 @@ function renderMyProjectsList() {
   });
 }
 
+function renderProjectPagination(total) {
+  const totalPages = Math.ceil(total / projectPageSize);
+  const pageButtons = [];
+
+  if (totalPages > 1) {
+    pageButtons.push(`<button class="page-btn arrow" data-project-page="${projectCurrentPage - 1}" ${projectCurrentPage === 1 ? "disabled" : ""}><i class="fas fa-chevron-left"></i></button>`);
+    const range = [];
+    for (let page = 1; page <= totalPages; page += 1) {
+      if (page === 1 || page === totalPages || (page >= projectCurrentPage - 2 && page <= projectCurrentPage + 2)) {
+        range.push(page);
+      } else if (range[range.length - 1] !== "...") {
+        range.push("...");
+      }
+    }
+
+    range.forEach((page) => {
+      if (page === "...") {
+        pageButtons.push('<span class="page-info">…</span>');
+      } else {
+        pageButtons.push(`<button class="page-btn ${page === projectCurrentPage ? "active" : ""}" data-project-page="${page}">${page}</button>`);
+      }
+    });
+    pageButtons.push(`<button class="page-btn arrow" data-project-page="${projectCurrentPage + 1}" ${projectCurrentPage === totalPages ? "disabled" : ""}><i class="fas fa-chevron-right"></i></button>`);
+    pageButtons.push(`<span class="page-info">${projectCurrentPage} / ${totalPages}</span>`);
+  }
+
+  return `
+    <div class="pagination-section projects-pagination-section">
+      <div></div>
+      <div class="pagination-controls" id="projectPaginationControls">${pageButtons.join("")}</div>
+      <div class="page-size-selector">
+        <span>Показывать:</span>
+        <div class="page-size-btns">
+          ${[10, 50, 100].map((size) => `<button type="button" class="page-size-btn${projectPageSize === size ? " active" : ""}" data-project-page-size="${size}">${size}</button>`).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderListPanel() {
   const filtered = filterProjects();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / projectPageSize));
+  if (projectCurrentPage > totalPages) {
+    projectCurrentPage = totalPages;
+  }
+  const start = (projectCurrentPage - 1) * projectPageSize;
+  const pageProjects = filtered.slice(start, start + projectPageSize);
   const stackOptions = getAllStackNames().map((name) => {
     const checked = listFilters.stacks.includes(name) ? " checked" : "";
     return `
@@ -639,9 +1113,9 @@ function renderListPanel() {
               <input type="text" id="filterCustomer" class="projects-filter-input" value="${escapeHtml(listFilters.customer)}">
             </div>
             <div class="projects-filter-item projects-filter-item--sm projects-stack-filter">
-              <label>Стек</label>
+              <label>Специализации</label>
               <button type="button" class="projects-filter-stackbtn" id="filterStackBtn">
-                ${listFilters.stacks.length ? `Выбрано: ${listFilters.stacks.length}` : "Стек"}
+                ${listFilters.stacks.length ? `Выбрано: ${listFilters.stacks.length}` : "Специализации"}
                 <i class="fas fa-chevron-down"></i>
               </button>
               <div class="projects-stack-dropdown${stackDropdownOpen ? " open" : ""}" id="filterStackDropdown">
@@ -662,10 +1136,11 @@ function renderListPanel() {
       <div class="projects-cards-scroll" id="projectCardsList">
         ${
           filtered.length
-            ? filtered.map((p) => renderProjectCard(p)).join("")
+            ? pageProjects.map((p) => renderProjectCard(p)).join("")
             : '<p class="projects-empty">Проекты не найдены</p>'
         }
       </div>
+      ${renderProjectPagination(filtered.length)}
     </div>
   `;
 }
@@ -701,8 +1176,8 @@ function renderProjectCard(p) {
   `;
 }
 
-function renderCreatePanel() {
-  const stackOpts = getAllStackNames().filter((n) =>
+function renderCreateStackOptions() {
+  return getAllStackNames().filter((n) =>
     n.toLowerCase().includes(createForm.stackSearch.toLowerCase())
   )
     .map((name) => {
@@ -715,6 +1190,122 @@ function renderCreatePanel() {
       `;
     })
     .join("");
+}
+
+function renderCreateSelectedStacks() {
+  const container = document.getElementById("createSelectedStacks");
+  if (container) {
+    container.innerHTML = createForm.stacks.map((s) => renderCreateSelectedStackTag(s)).join("");
+  }
+}
+
+function renderCreateSelectedStackTag(name) {
+  const icon = window.StackIcons?.getStackIconClass?.(name) || "fas fa-layer-group";
+  return `
+    <span class="stack-tag stack-tag--removable">
+      <i class="${icon}"></i>
+      ${escapeHtml(name)}
+      <button type="button" class="stack-tag-remove" data-remove-create-stack="${escapeHtml(name)}" aria-label="Удалить ${escapeHtml(name)}">
+        <i class="fas fa-times"></i>
+      </button>
+    </span>
+  `;
+}
+
+function updateCreateStackDropdown() {
+  const dropdown = document.getElementById("createStackDropdown");
+  const toggleButton = document.getElementById("createStackToggleBtn");
+  if (toggleButton) {
+    toggleButton.classList.toggle("open", createStackDropdownOpen);
+    toggleButton.setAttribute("aria-expanded", String(createStackDropdownOpen));
+  }
+
+  if (!dropdown) {
+    return;
+  }
+
+  dropdown.innerHTML = renderCreateStackOptions();
+  dropdown.classList.toggle("open", createStackDropdownOpen);
+}
+
+function closeCreateStackDropdown() {
+  if (!createStackDropdownOpen) {
+    return;
+  }
+
+  createStackDropdownOpen = false;
+  updateCreateStackDropdown();
+}
+
+function toggleCreateStackDropdown() {
+  createStackDropdownOpen = !createStackDropdownOpen;
+  updateCreateStackDropdown();
+}
+
+function isCreateRequiredKeyMissing(key) {
+  if (key === "stacks") {
+    return !createForm.stacks.length;
+  }
+  return !String(createForm[key] || "").trim();
+}
+
+function getCreateValidationErrors() {
+  return CREATE_REQUIRED_FIELDS.filter((field) => isCreateRequiredKeyMissing(field.key));
+}
+
+function renderRequiredMark() {
+  return '<span class="projects-required-star" aria-hidden="true">*</span>';
+}
+
+function renderRequiredLabel(text) {
+  return `${escapeHtml(text)} ${renderRequiredMark()}`;
+}
+
+function createRequiredAttrs(...keys) {
+  return `data-create-required="${keys.join(" ")}"`;
+}
+
+function createInvalidClass(...keys) {
+  if (!createValidationSubmitted) {
+    return "";
+  }
+  return keys.some((key) => isCreateRequiredKeyMissing(key)) ? " is-invalid" : "";
+}
+
+function renderCreateFieldError(...keys) {
+  const hidden = !createValidationSubmitted || !keys.some((key) => isCreateRequiredKeyMissing(key)) ? " hidden" : "";
+  return `<div class="projects-field-error"${hidden} data-create-error>Заполните поле</div>`;
+}
+
+function updateCreateValidationState() {
+  if (!createValidationSubmitted) {
+    return;
+  }
+
+  document.querySelectorAll("[data-create-required]").forEach((group) => {
+    const keys = (group.dataset.createRequired || "").split(/\s+/).filter(Boolean);
+    const isInvalid = keys.some((key) => isCreateRequiredKeyMissing(key));
+    group.classList.toggle("is-invalid", isInvalid);
+    const error = group.querySelector("[data-create-error]");
+    if (error) {
+      error.hidden = !isInvalid;
+    }
+  });
+}
+
+function focusFirstCreateValidationError() {
+  const firstError = getCreateValidationErrors()[0];
+  if (!firstError) {
+    return;
+  }
+
+  requestAnimationFrame(() => {
+    document.getElementById(firstError.id)?.focus();
+  });
+}
+
+function renderCreatePanel() {
+  const stackOpts = renderCreateStackOptions();
 
   const previewHidden = createForm.mdTab === "code" ? " hidden" : "";
   const codeHidden = createForm.mdTab === "preview" ? " hidden" : "";
@@ -743,30 +1334,30 @@ function renderCreatePanel() {
           </div>
         </div>
         <div class="projects-create-sidebar">
-          <div class="projects-form-group">
-            <label>Ссылка на teamproject</label>
-            <div class="projects-input-with-btn">
-              <input type="url" id="createTeamProject" value="${escapeHtml(createForm.teamProjectUrl)}">
-              <button type="button" class="projects-icon-btn muted" disabled title="In progress">
-                <i class="fas fa-arrow-down"></i>
-              </button>
-            </div>
+          <div class="projects-form-group projects-import-top">
+            <button type="button" class="projects-btn primary projects-import-btn" id="createImportBtn">
+              <i class="fas fa-arrow-down"></i>
+              Импортировать из teamproject
+            </button>
           </div>
-          <div class="projects-form-group">
-            <label>Название проекта</label>
-            <input type="text" id="createSlug" value="${escapeHtml(createForm.slug)}">
+          <div class="projects-form-group${createInvalidClass("slug")}" ${createRequiredAttrs("slug")}>
+            <label>${renderRequiredLabel("Название проекта")}</label>
+            <input type="text" id="createSlug" value="${escapeHtml(createForm.slug)}" maxlength="120">
+            ${renderCreateFieldError("slug")}
           </div>
-          <div class="projects-form-group">
-            <label>Тип проекта</label>
-            <input type="text" id="createType" value="${escapeHtml(createForm.projectType)}">
+          <div class="projects-form-group${createInvalidClass("projectType")}" ${createRequiredAttrs("projectType")}>
+            <label>${renderRequiredLabel("Тип проекта")}</label>
+            <input type="text" id="createType" value="${escapeHtml(createForm.projectType)}" maxlength="120">
+            ${renderCreateFieldError("projectType")}
           </div>
-          <div class="projects-form-group">
-            <label>Краткое описание</label>
-            <textarea id="createShort" class="projects-auto-resize" rows="2">${escapeHtml(createForm.shortDescription)}</textarea>
+          <div class="projects-form-group${createInvalidClass("shortDescription")}" ${createRequiredAttrs("shortDescription")}>
+            <label>${renderRequiredLabel("Краткое описание")}</label>
+            <textarea id="createShort" class="projects-auto-resize" rows="2" maxlength="600">${escapeHtml(createForm.shortDescription)}</textarea>
+            ${renderCreateFieldError("shortDescription")}
           </div>
           <div class="projects-form-group">
             <label>Заказчик</label>
-            <input type="text" id="createCustomer" value="${escapeHtml(createForm.customer)}">
+            <input type="text" id="createCustomer" value="${escapeHtml(createForm.customer)}" maxlength="150">
           </div>
           <div class="projects-form-group">
             <label>Срок выполнения</label>
@@ -777,18 +1368,27 @@ function renderCreatePanel() {
             </div>
           </div>
           <div class="projects-form-group projects-stack-filter">
-            <label>Необходимый стек</label>
-            <input type="search" id="createStackSearch" value="${escapeHtml(createForm.stackSearch)}">
+            <label>Специализации проекта</label>
+            <div class="projects-stack-search-row">
+              <input type="search" id="createStackSearch" value="${escapeHtml(createForm.stackSearch)}" maxlength="100">
+              <button type="button" class="projects-stack-toggle-btn${createStackDropdownOpen ? " open" : ""}" id="createStackToggleBtn" aria-label="Открыть или закрыть список специализаций" aria-expanded="${createStackDropdownOpen}">
+                <i class="fas fa-chevron-down"></i>
+              </button>
+            </div>
             <div class="projects-stack-dropdown${createStackDropdownOpen ? " open" : ""}" id="createStackDropdown" style="position:relative;margin-top:4px;">
               ${stackOpts}
             </div>
             <div class="projects-selected-stacks" id="createSelectedStacks">
-              ${createForm.stacks.map((s) => renderStackTag(s)).join("")}
+              ${createForm.stacks.map((s) => renderCreateSelectedStackTag(s)).join("")}
             </div>
           </div>
           <div class="projects-form-group">
             <label>Ссылка на облачное хранилище</label>
-            <input type="url" id="createCloud" value="${escapeHtml(createForm.cloudUrl)}">
+            <input type="url" id="createCloud" value="${escapeHtml(createForm.cloudUrl)}" maxlength="500">
+          </div>
+          <div class="projects-form-group">
+            <label>Ссылка на teamproject</label>
+            <input type="url" id="createTeamProject" value="${escapeHtml(createForm.teamProjectUrl)}" maxlength="500">
           </div>
           <div class="projects-form-group">
             <label>Доступ к проекту</label>
@@ -831,7 +1431,7 @@ function renderDetailPanel() {
         <p><strong>Тип:</strong> ${escapeHtml(project.projectType)}</p>
         <p><strong>Заказчик:</strong> ${escapeHtml(project.customer)}</p>
         <p><strong>Сроки:</strong> ${escapeHtml(formatDateRange(project.deadlineFrom, project.deadlineTo))}</p>
-        <div class="projects-detail-meta-stacks"><strong>Стек:</strong> ${renderStackTags(project.stacks)}</div>
+        <div class="projects-detail-meta-stacks"><strong>Специализации:</strong> ${renderStackTags(project.stacks)}</div>
         <p><strong>Облако:</strong> ${project.cloudUrl ? `<a href="${escapeHtml(project.cloudUrl)}" target="_blank" rel="noopener">${escapeHtml(project.cloudUrl)}</a>` : "—"}</p>
         <p><strong>Teamproject:</strong> ${project.teamProjectUrl ? `<a href="${escapeHtml(project.teamProjectUrl)}" target="_blank" rel="noopener">${escapeHtml(project.teamProjectUrl)}</a>` : "—"}</p>
       </div>
@@ -841,12 +1441,12 @@ function renderDetailPanel() {
   const metaFormHtml = ownerMode
     ? `
     <form class="projects-meta-form${editMode ? " open" : ""}" id="detailMetaForm">
-      <div class="projects-form-group"><label>Тип</label><input type="text" id="editType" value="${escapeHtml(project.projectType)}"></div>
-      <div class="projects-form-group"><label>Заказчик</label><input type="text" id="editCustomer" value="${escapeHtml(project.customer)}"></div>
+      <div class="projects-form-group"><label>Тип</label><input type="text" id="editType" value="${escapeHtml(project.projectType)}" maxlength="120"></div>
+      <div class="projects-form-group"><label>Заказчик</label><input type="text" id="editCustomer" value="${escapeHtml(project.customer)}" maxlength="150"></div>
       <div class="projects-form-group"><label>Срок с</label><input type="date" id="editFrom" value="${escapeHtml(project.deadlineFrom)}"></div>
       <div class="projects-form-group"><label>Срок по</label><input type="date" id="editTo" value="${escapeHtml(project.deadlineTo)}"></div>
-      <div class="projects-form-group"><label>Облако</label><input type="url" id="editCloud" value="${escapeHtml(project.cloudUrl)}"></div>
-      <div class="projects-form-group"><label>Teamproject</label><input type="url" id="editTeam" value="${escapeHtml(project.teamProjectUrl)}"></div>
+      <div class="projects-form-group"><label>Облако</label><input type="url" id="editCloud" value="${escapeHtml(project.cloudUrl)}" maxlength="500"></div>
+      <div class="projects-form-group"><label>Teamproject</label><input type="url" id="editTeam" value="${escapeHtml(project.teamProjectUrl)}" maxlength="500"></div>
       <button type="button" class="projects-btn primary" id="saveMetaBtn">Применить</button>
     </form>
   `
@@ -977,6 +1577,7 @@ function renderAll() {
 }
 
 function resetCreateForm() {
+  createValidationSubmitted = false;
   createForm.slug = "";
   createForm.projectType = "";
   createForm.shortDescription = "";
@@ -992,10 +1593,12 @@ function resetCreateForm() {
   createForm.stackSearch = "";
 }
 
-function saveNewProject() {
+async function saveNewProject() {
   const slug = createForm.slug.trim().toLowerCase().replace(/\s+/g, "-");
-  if (!slug || !createForm.projectType.trim() || !createForm.shortDescription.trim()) {
-    alert("Заполните название проекта, тип и краткое описание.");
+  createValidationSubmitted = true;
+  if (getCreateValidationErrors().length) {
+    renderWorkspace();
+    focusFirstCreateValidationError();
     return;
   }
 
@@ -1039,8 +1642,20 @@ function saveNewProject() {
     memberCount: 1,
   };
 
-  projects.unshift(newProject);
-  selectedProjectId = newProject.id;
+  try {
+    const createdProject = await window.AuthClient.fetchJsonWithAuth("/projects", {
+      method: "POST",
+      body: JSON.stringify(projectPayload(newProject)),
+    });
+    const normalizedProject = normalizeProjectFromApi(createdProject);
+    projects.unshift(normalizedProject);
+    selectedProjectId = normalizedProject.id;
+  } catch (error) {
+    console.warn("Project API create failed, using local fallback:", error);
+    projects.unshift(newProject);
+    selectedProjectId = newProject.id;
+  }
+  saveProjectsSnapshot();
   resetCreateForm();
   rightView = "detail";
   detailEditMode = false;
@@ -1064,6 +1679,7 @@ function bindListEvents() {
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(() => {
       listFilters.query = e.target.value;
+      projectCurrentPage = 1;
       renderWorkspace();
     }, 200);
   });
@@ -1086,6 +1702,7 @@ function bindListEvents() {
     listFilters.status = "";
     listFilters.customer = "";
     listFilters.stacks = [];
+    projectCurrentPage = 1;
     const searchInput = document.getElementById("projectSearchInput");
     if (searchInput) searchInput.value = "";
     filtersOpen = false;
@@ -1103,6 +1720,7 @@ function bindListEvents() {
               ? "status"
               : "customer";
       listFilters[key] = e.target.value;
+      projectCurrentPage = 1;
       renderWorkspace();
     });
   });
@@ -1127,6 +1745,26 @@ function bindListEvents() {
       } else {
         listFilters.stacks = listFilters.stacks.filter((s) => s !== val);
       }
+      projectCurrentPage = 1;
+      renderWorkspace();
+    });
+  });
+
+  document.querySelectorAll("[data-project-page]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextPage = Number(button.dataset.projectPage);
+      if (!Number.isFinite(nextPage) || nextPage < 1) {
+        return;
+      }
+      projectCurrentPage = nextPage;
+      renderWorkspace();
+    });
+  });
+
+  document.querySelectorAll("[data-project-page-size]").forEach((button) => {
+    button.addEventListener("click", () => {
+      projectPageSize = Number(button.dataset.projectPageSize) || 10;
+      projectCurrentPage = 1;
       renderWorkspace();
     });
   });
@@ -1193,15 +1831,14 @@ function bindCreateEvents() {
 
   document.getElementById("createSaveBtn")?.addEventListener("click", saveNewProject);
 
-  document.getElementById("createImportBtn")?.addEventListener("click", () => {
-    alert("Импорт из teamproject — in progress");
-  });
+  document.getElementById("createImportBtn")?.addEventListener("click", importTeamProject);
 
   const textarea = document.getElementById("createMdTextarea");
   textarea?.addEventListener("input", (e) => {
     createForm.detailedDescription = e.target.value;
     const preview = document.getElementById("createMdPreview");
     if (preview) preview.innerHTML = renderMarkdown(createForm.detailedDescription);
+    updateCreateValidationState();
   });
 
   document.querySelectorAll("[data-md-tab]").forEach((btn) => {
@@ -1225,32 +1862,61 @@ function bindCreateEvents() {
   Object.entries(fieldMap).forEach(([id, key]) => {
     document.getElementById(id)?.addEventListener("input", (e) => {
       createForm[key] = e.target.value;
+      updateCreateValidationState();
     });
   });
 
   document.getElementById("createStackSearch")?.addEventListener("focus", () => {
     createStackDropdownOpen = true;
-    renderWorkspace();
+    updateCreateStackDropdown();
   });
 
   document.getElementById("createStackSearch")?.addEventListener("input", (e) => {
     createForm.stackSearch = e.target.value;
     createStackDropdownOpen = true;
-    renderWorkspace();
+    updateCreateStackDropdown();
+  });
+
+  document.getElementById("createStackSearch")?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeCreateStackDropdown();
+      event.currentTarget.blur();
+    }
+  });
+
+  document.getElementById("createStackToggleBtn")?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleCreateStackDropdown();
   });
 
   document.getElementById("createStackDropdown")?.addEventListener("click", (e) => e.stopPropagation());
 
-  document.getElementById("createStackDropdown")?.querySelectorAll("[data-create-stack]").forEach((cb) => {
-    cb.addEventListener("change", () => {
+  document.getElementById("createStackDropdown")?.addEventListener("change", (event) => {
+    const cb = event.target.closest("[data-create-stack]");
+    if (cb) {
       const val = cb.value;
       if (cb.checked) {
         if (!createForm.stacks.includes(val)) createForm.stacks.push(val);
       } else {
         createForm.stacks = createForm.stacks.filter((s) => s !== val);
       }
-      renderWorkspace();
-    });
+      renderCreateSelectedStacks();
+      updateCreateValidationState();
+    }
+  });
+
+  document.getElementById("createSelectedStacks")?.addEventListener("click", (event) => {
+    const removeButton = event.target.closest("[data-remove-create-stack]");
+    if (!removeButton) {
+      return;
+    }
+
+    event.stopPropagation();
+    const stackName = removeButton.dataset.removeCreateStack;
+    createForm.stacks = createForm.stacks.filter((s) => s !== stackName);
+    renderCreateSelectedStacks();
+    updateCreateStackDropdown();
+    updateCreateValidationState();
   });
 
   document.querySelectorAll("[data-visibility]").forEach((btn) => {
@@ -1314,9 +1980,15 @@ function bindDetailEvents() {
 
   const ownerMode = isOwner(project);
 
-  document.getElementById("editMetaToggle")?.addEventListener("click", () => {
+  document.getElementById("editMetaToggle")?.addEventListener("click", async () => {
     if (detailEditMode) {
       persistDetailDescriptionEdits(project);
+      saveProjectsSnapshot();
+      try {
+        await saveProjectToApi(project);
+      } catch (error) {
+        console.warn("Project API update failed:", error);
+      }
     } else {
       detailMdTab = "code";
     }
@@ -1324,7 +1996,7 @@ function bindDetailEvents() {
     renderAll();
   });
 
-  document.getElementById("saveMetaBtn")?.addEventListener("click", () => {
+  document.getElementById("saveMetaBtn")?.addEventListener("click", async () => {
     project.projectType = document.getElementById("editType")?.value || project.projectType;
     project.customer = document.getElementById("editCustomer")?.value || project.customer;
     project.deadlineFrom = document.getElementById("editFrom")?.value || project.deadlineFrom;
@@ -1334,13 +2006,25 @@ function bindDetailEvents() {
     persistDetailDescriptionEdits(project);
     detailEditMode = false;
     detailMdTab = "code";
+    saveProjectsSnapshot();
+    try {
+      await saveProjectToApi(project);
+    } catch (error) {
+      console.warn("Project API update failed:", error);
+    }
     renderAll();
   });
 
   if (ownerMode) {
     const shortEl = document.getElementById("detailShortDesc");
-    shortEl?.addEventListener("blur", () => {
+    shortEl?.addEventListener("blur", async () => {
       project.shortDescription = shortEl.textContent.trim();
+      saveProjectsSnapshot();
+      try {
+        await saveProjectToApi(project);
+      } catch (error) {
+        console.warn("Project API update failed:", error);
+      }
     });
 
     const longEl = document.getElementById("detailLongDesc");
@@ -1352,11 +2036,17 @@ function bindDetailEvents() {
           preview.innerHTML = renderMarkdown(project.detailedDescription);
         }
       });
-      longEl.addEventListener("blur", () => {
+      longEl.addEventListener("blur", async () => {
         project.detailedDescription = longEl.value.trim();
         longEl.value = project.detailedDescription;
         if (preview) {
           preview.innerHTML = renderMarkdown(project.detailedDescription);
+        }
+        saveProjectsSnapshot();
+        try {
+          await saveProjectToApi(project);
+        } catch (error) {
+          console.warn("Project API update failed:", error);
         }
       });
     }
@@ -1403,6 +2093,7 @@ function bindDetailEvents() {
         if (member && role && role !== OWNER_ROLE) {
           setMemberRoles(member, [...getMemberRoles(member), role]);
           normalizeProjectOwnerRole(project);
+          saveProjectsSnapshot();
           renderAll();
         }
       });
@@ -1421,6 +2112,7 @@ function bindDetailEvents() {
           }
           setMemberRoles(member, getMemberRoles(member).filter((memberRole) => memberRole !== role));
           normalizeProjectOwnerRole(project);
+          saveProjectsSnapshot();
           renderAll();
         }
       });
@@ -1444,6 +2136,7 @@ function bindDetailEvents() {
       });
       normalizeProjectOwnerRole(project);
       project.memberCount = project.members.length;
+      saveProjectsSnapshot();
       renderAll();
     });
   }
@@ -1473,14 +2166,28 @@ function setupLogout() {
 }
 
 document.addEventListener("click", (event) => {
-  if (!stackDropdownOpen) {
-    return;
+  let shouldRenderWorkspace = false;
+
+  if (stackDropdownOpen) {
+    if (!event.target.closest("#filterStackDropdown") && !event.target.closest("#filterStackBtn")) {
+      stackDropdownOpen = false;
+      shouldRenderWorkspace = rightView === "list";
+    }
   }
-  if (event.target.closest("#filterStackDropdown") || event.target.closest("#filterStackBtn")) {
-    return;
+
+  if (createStackDropdownOpen) {
+    const clickedInsideCreateStack =
+      event.target.closest("#createStackDropdown") ||
+      event.target.closest("#createStackSearch") ||
+      event.target.closest("#createStackToggleBtn") ||
+      event.target.closest("#createSelectedStacks");
+
+    if (!clickedInsideCreateStack) {
+      closeCreateStackDropdown();
+    }
   }
-  stackDropdownOpen = false;
-  if (rightView === "list") {
+
+  if (shouldRenderWorkspace) {
     renderWorkspace();
   }
 });
@@ -1509,21 +2216,62 @@ async function resolveCurrentUser() {
   }
 }
 
+function getRequestedProjectId() {
+  const params = new URLSearchParams(window.location.search);
+  const value = Number(params.get("projectId"));
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function applyRequestedProjectSelection() {
+  const requestedProjectId = getRequestedProjectId();
+  if (!requestedProjectId || !projects.some((project) => sameUserId(project.id, requestedProjectId))) {
+    return;
+  }
+
+  selectedProjectId = requestedProjectId;
+  rightView = "detail";
+  detailEditMode = false;
+  detailMdTab = "code";
+}
+
 async function initProjectsPage() {
   setupLogout();
   setupSidebarNav();
 
   try {
     currentUser = await resolveCurrentUser();
-    projects = buildMockProjects(currentUser);
-    nextProjectId = projects.length + 100;
+    await loadProjectSpecializationTags();
+    try {
+      await loadProjectsFromApi();
+    } catch (projectLoadError) {
+      console.warn("Project API load failed, using local fallback:", projectLoadError);
+      const snapshot = loadProjectsSnapshot(currentUser);
+      if (snapshot) {
+        projects = snapshot.projects;
+        nextProjectId = snapshot.nextProjectId;
+      } else {
+        projects = buildMockProjects(currentUser);
+        nextProjectId = getNextProjectIdFromList(projects);
+        saveProjectsSnapshot();
+      }
+    }
+    applyRequestedProjectSelection();
     renderAll();
   } catch (error) {
     if (error.message !== "AUTH_REQUIRED") {
       console.error("Projects page init failed:", error);
       currentUser = createDemoUser();
-      projects = buildMockProjects(currentUser);
-      nextProjectId = projects.length + 100;
+      await loadProjectSpecializationTags();
+      const snapshot = loadProjectsSnapshot(currentUser);
+      if (snapshot) {
+        projects = snapshot.projects;
+        nextProjectId = snapshot.nextProjectId;
+      } else {
+        projects = buildMockProjects(currentUser);
+        nextProjectId = getNextProjectIdFromList(projects);
+        saveProjectsSnapshot();
+      }
+      applyRequestedProjectSelection();
       renderAll();
     }
   }
