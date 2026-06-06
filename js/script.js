@@ -26,6 +26,11 @@ const ACHIEVEMENT_TYPE_LABELS = {
   scholarship: "Стипендия",
   internship: "Стажировка",
 };
+const PORTFOLIO_PROJECT_STATUS_LABELS = {
+  in_progress: "В процессе",
+  completed: "Завершён",
+  abandoned: "Заброшен",
+};
 
 let profileNotifications = [];
 
@@ -181,6 +186,46 @@ function achievementTypeLabel(type) {
   const normalized = String(type || "").trim();
   const key = normalized.toLowerCase();
   return ACHIEVEMENT_TYPE_LABELS[key] || normalized;
+}
+
+function formatPortfolioDate(value) {
+  if (!value) {
+    return "Не указано";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
+}
+
+function normalizePortfolioFilePart(value) {
+  const normalized = String(value || "portfolio")
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, "_")
+    .replace(/\s+/g, "_")
+    .slice(0, 80);
+  return normalized || "portfolio";
+}
+
+function safePortfolioUrl(value) {
+  const url = String(value || "").trim();
+  if (!url) {
+    return "";
+  }
+
+  try {
+    const parsed = new URL(url);
+    return ["http:", "https:"].includes(parsed.protocol) ? url : "";
+  } catch (error) {
+    return "";
+  }
 }
 
 function buildFallbackInviteProjects(user) {
@@ -354,6 +399,7 @@ function normalizeProfileUser(user, fallbackId = "") {
   return {
     id: user?.id ?? fallbackId,
     username: user?.username || (fallbackId ? `student_${fallbackId}` : "student"),
+    email: user?.email || "",
     first_name: user?.first_name || user?.firstName || "Студент",
     last_name: user?.last_name || user?.lastName || "",
     patronymic: user?.patronymic || "",
@@ -582,7 +628,7 @@ function renderProfileCard(user, { editable = true } = {}) {
       <a href="${escapeHtml(cloudUrl)}" class="github-link${cloudDisabled ? " github-link--disabled" : ""}" id="displayCloud"${cloudDisabled ? ' aria-disabled="true" tabindex="-1"' : ""}>
         <i class="fab fa-github"></i> ${escapeHtml(cloudValue || "Не указано")}
       </a>
-      <button onclick="alert('In progress')" class="download-resume"><i class="fas fa-file-pdf"></i> Создать резюме</button>
+      <button type="button" class="download-resume" id="createPortfolioBtn"><i class="fas fa-file-word"></i> Создать портфолио</button>
       <div class="education-compact">
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-university"></i></span><span class="edu-label-small">Направление:</span><span class="edu-value-small">${escapeHtml(user.academic_direction)}</span></div>
         <div class="edu-row"><span class="edu-icon-small"><i class="fas fa-graduation-cap"></i></span><span class="edu-label-small">Курс:</span><span class="edu-value-small">${escapeHtml(user.class_)}</span></div>
@@ -1274,6 +1320,874 @@ function renderCourses(user) {
   });
 }
 
+function getPortfolioSpecializations(user) {
+  const courses = getCourseItems(user);
+  const courseSpecializations = getCourseSpecializations(courses);
+  if (courseSpecializations.length) {
+    return courseSpecializations;
+  }
+
+  return [...new Set(
+    (user?.stacks || [])
+      .map((item) => item?.stack || item)
+      .map((name) => String(name || "").trim())
+      .filter(Boolean)
+  )];
+}
+
+async function loadPortfolioProjects() {
+  if (profileReadOnly) {
+    return [];
+  }
+
+  try {
+    const response = await window.AuthClient.fetchJsonWithAuth("/projects?mine=true&limit=100");
+    if (Array.isArray(response?.items)) {
+      return response.items;
+    }
+  } catch (error) {
+    console.warn("Failed to load portfolio projects from API:", error);
+  }
+
+  const storedProjects = readStoredProjectsForCurrentUser();
+  return Array.isArray(storedProjects) ? storedProjects : [];
+}
+
+function getPortfolioProjectRole(project, user) {
+  if (!project || !user) {
+    return "";
+  }
+
+  if (sameProfileId(project.owner?.id, user.id) || project.owner?.username === user.username) {
+    return "Владелец";
+  }
+
+  if (sameProfileId(project.teamLead?.id, user.id) || project.teamLead?.username === user.username) {
+    return "Team Lead";
+  }
+
+  const member = project.members?.find((item) => {
+    const normalized = normalizeProjectPerson(item);
+    return sameProfileId(normalized.id, user.id) || normalized.username === user.username;
+  });
+  return getProjectMemberRoles(member).join(", ");
+}
+
+function escapeXml(value) {
+  return escapeHtml(value);
+}
+
+function getCrc32Table() {
+  if (getCrc32Table.table) {
+    return getCrc32Table.table;
+  }
+
+  const table = new Uint32Array(256);
+  for (let index = 0; index < 256; index += 1) {
+    let value = index;
+    for (let bit = 0; bit < 8; bit += 1) {
+      value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+    }
+    table[index] = value >>> 0;
+  }
+  getCrc32Table.table = table;
+  return table;
+}
+
+function crc32(bytes) {
+  const table = getCrc32Table();
+  let crc = 0xffffffff;
+  for (let index = 0; index < bytes.length; index += 1) {
+    crc = table[(crc ^ bytes[index]) & 0xff] ^ (crc >>> 8);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function writeUint16LE(bytes, offset, value) {
+  bytes[offset] = value & 0xff;
+  bytes[offset + 1] = (value >>> 8) & 0xff;
+}
+
+function writeUint32LE(bytes, offset, value) {
+  bytes[offset] = value & 0xff;
+  bytes[offset + 1] = (value >>> 8) & 0xff;
+  bytes[offset + 2] = (value >>> 16) & 0xff;
+  bytes[offset + 3] = (value >>> 24) & 0xff;
+}
+
+function concatBytes(parts) {
+  const totalLength = parts.reduce((sum, part) => sum + part.length, 0);
+  const output = new Uint8Array(totalLength);
+  let offset = 0;
+  parts.forEach((part) => {
+    output.set(part, offset);
+    offset += part.length;
+  });
+  return output;
+}
+
+function encodeUtf8(value) {
+  return new TextEncoder().encode(String(value));
+}
+
+function zipDateParts(date = new Date()) {
+  const year = Math.max(1980, date.getFullYear());
+  return {
+    time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+    date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),
+  };
+}
+
+function createStoredZip(files, mimeType) {
+  const localParts = [];
+  const centralParts = [];
+  const { time, date } = zipDateParts();
+  const utf8Flag = 0x0800;
+  let offset = 0;
+
+  files.forEach((file) => {
+    const nameBytes = encodeUtf8(file.name);
+    const dataBytes = file.content instanceof Uint8Array ? file.content : encodeUtf8(file.content);
+    const checksum = crc32(dataBytes);
+
+    const localHeader = new Uint8Array(30 + nameBytes.length);
+    writeUint32LE(localHeader, 0, 0x04034b50);
+    writeUint16LE(localHeader, 4, 20);
+    writeUint16LE(localHeader, 6, utf8Flag);
+    writeUint16LE(localHeader, 8, 0);
+    writeUint16LE(localHeader, 10, time);
+    writeUint16LE(localHeader, 12, date);
+    writeUint32LE(localHeader, 14, checksum);
+    writeUint32LE(localHeader, 18, dataBytes.length);
+    writeUint32LE(localHeader, 22, dataBytes.length);
+    writeUint16LE(localHeader, 26, nameBytes.length);
+    writeUint16LE(localHeader, 28, 0);
+    localHeader.set(nameBytes, 30);
+    localParts.push(localHeader, dataBytes);
+
+    const centralHeader = new Uint8Array(46 + nameBytes.length);
+    writeUint32LE(centralHeader, 0, 0x02014b50);
+    writeUint16LE(centralHeader, 4, 20);
+    writeUint16LE(centralHeader, 6, 20);
+    writeUint16LE(centralHeader, 8, utf8Flag);
+    writeUint16LE(centralHeader, 10, 0);
+    writeUint16LE(centralHeader, 12, time);
+    writeUint16LE(centralHeader, 14, date);
+    writeUint32LE(centralHeader, 16, checksum);
+    writeUint32LE(centralHeader, 20, dataBytes.length);
+    writeUint32LE(centralHeader, 24, dataBytes.length);
+    writeUint16LE(centralHeader, 28, nameBytes.length);
+    writeUint16LE(centralHeader, 30, 0);
+    writeUint16LE(centralHeader, 32, 0);
+    writeUint16LE(centralHeader, 34, 0);
+    writeUint16LE(centralHeader, 36, 0);
+    writeUint32LE(centralHeader, 38, 0);
+    writeUint32LE(centralHeader, 42, offset);
+    centralHeader.set(nameBytes, 46);
+    centralParts.push(centralHeader);
+
+    offset += localHeader.length + dataBytes.length;
+  });
+
+  const centralDirectory = concatBytes(centralParts);
+  const endRecord = new Uint8Array(22);
+  writeUint32LE(endRecord, 0, 0x06054b50);
+  writeUint16LE(endRecord, 4, 0);
+  writeUint16LE(endRecord, 6, 0);
+  writeUint16LE(endRecord, 8, files.length);
+  writeUint16LE(endRecord, 10, files.length);
+  writeUint32LE(endRecord, 12, centralDirectory.length);
+  writeUint32LE(endRecord, 16, offset);
+  writeUint16LE(endRecord, 20, 0);
+
+  return new Blob([...localParts, centralDirectory, endRecord], { type: mimeType });
+}
+
+function wordRun(text, options = {}) {
+  const properties = [];
+  if (options.bold) {
+    properties.push("<w:b/>");
+  }
+  if (options.italic) {
+    properties.push("<w:i/>");
+  }
+  properties.push("<w:noProof/>");
+  if (options.color) {
+    properties.push(`<w:color w:val="${escapeXml(options.color)}"/>`);
+  }
+  if (options.size) {
+    properties.push(`<w:sz w:val="${Number(options.size)}"/>`);
+  }
+
+  const textParts = String(text ?? "").split(/\r?\n/).map((part, index) => {
+    const breakXml = index > 0 ? "<w:br/>" : "";
+    return `${breakXml}<w:t xml:space="preserve">${escapeXml(part)}</w:t>`;
+  }).join("");
+
+  return `<w:r>${properties.length ? `<w:rPr>${properties.join("")}</w:rPr>` : ""}${textParts}</w:r>`;
+}
+
+function wordParagraph(text, options = {}) {
+  const paragraphProperties = [];
+  if (options.style) {
+    paragraphProperties.push(`<w:pStyle w:val="${escapeXml(options.style)}"/>`);
+  }
+  if (options.keepNext) {
+    paragraphProperties.push("<w:keepNext/>");
+  }
+  if (options.borderBottom) {
+    paragraphProperties.push(
+      `<w:pBdr><w:bottom w:val="single" w:sz="8" w:space="8" w:color="${escapeXml(options.borderBottom)}"/></w:pBdr>`
+    );
+  }
+  if (options.shading) {
+    paragraphProperties.push(`<w:shd w:val="clear" w:fill="${escapeXml(options.shading)}"/>`);
+  }
+  if (options.spacingAfter !== undefined || options.spacingBefore !== undefined) {
+    paragraphProperties.push(
+      `<w:spacing w:before="${Number(options.spacingBefore || 0)}" w:after="${Number(options.spacingAfter ?? 160)}"/>`
+    );
+  }
+  if (options.align) {
+    paragraphProperties.push(`<w:jc w:val="${escapeXml(options.align)}"/>`);
+  }
+
+  return `<w:p>${paragraphProperties.length ? `<w:pPr>${paragraphProperties.join("")}</w:pPr>` : ""}${wordRun(text, options)}</w:p>`;
+}
+
+function wordKeyValue(label, value) {
+  return wordParagraph(`${label}: ${value || "Не указано"}`, { spacingAfter: 80 });
+}
+
+const PORTFOLIO_DOCX_WIDTH = 11186;
+const PORTFOLIO_SIDEBAR_WIDTH = 3450;
+const PORTFOLIO_MAIN_WIDTH = PORTFOLIO_DOCX_WIDTH - PORTFOLIO_SIDEBAR_WIDTH;
+const PORTFOLIO_DARK = "202020";
+
+function wordSpacer(size = 120) {
+  return wordParagraph("", { spacingAfter: size });
+}
+
+function wordTableBorders(style = "light") {
+  if (style === "none") {
+    return `<w:tblBorders>
+      <w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/>
+    </w:tblBorders>`;
+  }
+
+  const color = style === "accent" ? "BFDBFE" : "DBE4EF";
+  return `<w:tblBorders>
+    <w:top w:val="single" w:sz="6" w:space="0" w:color="${color}"/>
+    <w:left w:val="single" w:sz="6" w:space="0" w:color="${color}"/>
+    <w:bottom w:val="single" w:sz="6" w:space="0" w:color="${color}"/>
+    <w:right w:val="single" w:sz="6" w:space="0" w:color="${color}"/>
+    <w:insideH w:val="single" w:sz="6" w:space="0" w:color="${color}"/>
+    <w:insideV w:val="single" w:sz="6" w:space="0" w:color="${color}"/>
+  </w:tblBorders>`;
+}
+
+function wordTableCell(cell, fallbackWidth) {
+  const normalized = typeof cell === "string" ? { content: [wordParagraph(cell)] } : cell;
+  const width = Number(normalized.width || fallbackWidth || PORTFOLIO_DOCX_WIDTH);
+  const content = Array.isArray(normalized.content)
+    ? [...normalized.content]
+    : [wordParagraph(normalized.content || "")];
+  if (!content.length || /^\s*<w:tbl\b/.test(content[content.length - 1])) {
+    content.push(wordParagraph("", { spacingAfter: 0 }));
+  }
+  const properties = [
+    `<w:tcW w:w="${width}" w:type="dxa"/>`,
+  ];
+
+  if (normalized.shading) {
+    properties.push(`<w:shd w:val="clear" w:fill="${escapeXml(normalized.shading)}"/>`);
+  }
+  properties.push(
+    `<w:tcMar><w:top w:w="${normalized.paddingTop ?? 160}" w:type="dxa"/><w:left w:w="${normalized.paddingLeft ?? 180}" w:type="dxa"/><w:bottom w:w="${normalized.paddingBottom ?? 160}" w:type="dxa"/><w:right w:w="${normalized.paddingRight ?? 180}" w:type="dxa"/></w:tcMar>`
+  );
+  if (normalized.vAlign) {
+    properties.push(`<w:vAlign w:val="${escapeXml(normalized.vAlign)}"/>`);
+  }
+
+  return `<w:tc><w:tcPr>${properties.join("")}</w:tcPr>${content.join("")}</w:tc>`;
+}
+
+function wordTable(rows, options = {}) {
+  const width = Number(options.width || PORTFOLIO_DOCX_WIDTH);
+  const firstRow = rows[0] || [];
+  const columnWidth = Math.floor(width / Math.max(1, firstRow.length));
+  const gridWidths = firstRow.map((cell) => Number(cell?.width || columnWidth));
+  const rowProperties = options.rowHeight
+    ? `<w:trPr><w:trHeight w:val="${Number(options.rowHeight)}" w:hRule="${options.rowHeightRule || "atLeast"}"/></w:trPr>`
+    : "";
+
+  return `<w:tbl>
+    <w:tblPr>
+      <w:tblW w:w="${width}" w:type="dxa"/>
+      ${wordTableBorders(options.borders || "light")}
+      <w:tblLayout w:type="fixed"/>
+    </w:tblPr>
+    <w:tblGrid>${gridWidths.map((gridWidth) => `<w:gridCol w:w="${gridWidth}"/>`).join("")}</w:tblGrid>
+    ${rows.map((row) => `<w:tr>${rowProperties}${row.map((cell, index) => wordTableCell(cell, gridWidths[index] || columnWidth)).join("")}</w:tr>`).join("")}
+  </w:tbl>`;
+}
+
+function wordHeroBlock(fullName, username, generatedAt) {
+  return wordTable(
+    [[
+      {
+        width: PORTFOLIO_DOCX_WIDTH,
+        shading: "0B2B5C",
+        paddingTop: 300,
+        paddingBottom: 320,
+        paddingLeft: 340,
+        paddingRight: 340,
+        content: [
+          wordParagraph("Цифровое портфолио УрФУ", { color: "DBEAFE", size: 22, spacingAfter: 80 }),
+          wordParagraph(fullName, { bold: true, color: "FFFFFF", size: 44, spacingAfter: 80 }),
+          wordParagraph(`@${username} | создано ${generatedAt}`, { color: "DBEAFE", size: 20, spacingAfter: 0 }),
+        ],
+      },
+    ]],
+    { borders: "none" }
+  );
+}
+
+function wordMetricCell(label, value, width) {
+  return {
+    width,
+    shading: "F8FAFC",
+    vAlign: "center",
+    content: [
+      wordParagraph(label, { color: "64748B", size: 18, spacingAfter: 45 }),
+      wordParagraph(value || "Не указано", { bold: true, color: "172033", size: 22, spacingAfter: 0 }),
+    ],
+  };
+}
+
+function wordCard(title, lines, options = {}) {
+  return wordTable(
+    [[
+      {
+        width: PORTFOLIO_DOCX_WIDTH,
+        shading: options.shading || "FFFFFF",
+        paddingTop: 170,
+        paddingBottom: 170,
+        paddingLeft: 220,
+        paddingRight: 220,
+        content: [
+          wordParagraph(title, { bold: true, color: options.titleColor || "172033", size: 24, spacingAfter: 80, keepNext: true }),
+          ...lines.filter(Boolean).map((line) => wordParagraph(line, { color: "475569", size: 20, spacingAfter: 60 })),
+        ],
+      },
+    ]],
+    { borders: options.borders || "light" }
+  );
+}
+
+function wordResumeHeader(fullName, roleLabel) {
+  return wordTable(
+    [[
+      {
+        width: PORTFOLIO_DOCX_WIDTH,
+        shading: PORTFOLIO_DARK,
+        paddingTop: 520,
+        paddingBottom: 360,
+        paddingLeft: 300,
+        paddingRight: 300,
+        content: [
+          wordParagraph(fullName.toLocaleUpperCase("ru-RU"), {
+            align: "center",
+            color: "FFFFFF",
+            size: 42,
+            spacingAfter: 120,
+          }),
+          wordParagraph(roleLabel || "IT-специалист", {
+            align: "center",
+            bold: true,
+            color: "FFFFFF",
+            size: 18,
+            spacingAfter: 0,
+          }),
+        ],
+      },
+    ]],
+    { borders: "none" }
+  );
+}
+
+function wordResumePhotoBlock(user) {
+  const initials = getProfileInitials(user) || "IT";
+  return wordTable(
+    [[
+      {
+        width: 1320,
+        shading: "FFFFFF",
+        paddingTop: 260,
+        paddingBottom: 260,
+        paddingLeft: 120,
+        paddingRight: 120,
+        content: [
+          wordParagraph(initials.toLocaleUpperCase("ru-RU"), {
+            align: "center",
+            bold: true,
+            color: PORTFOLIO_DARK,
+            size: 34,
+            spacingAfter: 0,
+          }),
+        ],
+      },
+    ]],
+    { width: 1320, borders: "light" }
+  );
+}
+
+function wordSidebarTitle(title) {
+  return wordParagraph(title.toLocaleUpperCase("ru-RU"), {
+    color: "4A4A4A",
+    size: 20,
+    spacingBefore: 260,
+    spacingAfter: 120,
+    borderBottom: "B8B8B8",
+  });
+}
+
+function wordSidebarText(text, options = {}) {
+  return wordParagraph(text, {
+    color: options.color || "333333",
+    size: options.size || 18,
+    spacingAfter: options.spacingAfter ?? 80,
+    bold: options.bold,
+  });
+}
+
+function wordResumeSectionTitle(title) {
+  return wordParagraph(title.toLocaleUpperCase("ru-RU"), {
+    color: "555555",
+    size: 20,
+    spacingBefore: 120,
+    spacingAfter: 110,
+    borderBottom: "8A8A8A",
+    keepNext: true,
+  });
+}
+
+function collectPortfolioSkillNames(user) {
+  const courses = getCourseItems(user);
+  const names = [
+    ...getPortfolioSpecializations(user),
+    ...courses.map((course) => course.course || course.name_course),
+  ]
+    .map((name) => String(name || "").trim())
+    .filter(Boolean);
+
+  return [...new Set(names)].slice(0, 10);
+}
+
+function wordSkillsGrid(skills) {
+  if (!skills.length) {
+    return wordParagraph("Навыки пока не указаны.", { italic: true, color: "777777", size: 18, spacingAfter: 120 });
+  }
+
+  const half = Math.ceil(skills.length / 2);
+  const leftSkills = skills.slice(0, half);
+  const rightSkills = skills.slice(half);
+  const columnWidth = Math.floor((PORTFOLIO_MAIN_WIDTH - 420) / 2);
+
+  return wordTable(
+    [[
+      {
+        width: columnWidth,
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 210,
+        content: leftSkills.map((skill) => wordParagraph(skill, { color: "222222", size: 18, spacingAfter: 95 })),
+      },
+      {
+        width: columnWidth,
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 210,
+        paddingRight: 0,
+        content: rightSkills.map((skill) => wordParagraph(skill, { color: "222222", size: 18, spacingAfter: 95 })),
+      },
+    ]],
+    { width: PORTFOLIO_MAIN_WIDTH - 300, borders: "none" }
+  );
+}
+
+function buildResumeSidebar(user, achievements, projects) {
+  const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim() || user.username;
+  const contactLines = [
+    user.email ? `Email: ${user.email}` : "",
+    user.username ? `Username: ${user.username}` : "",
+    user.cloude_storage ? `Хранилище: ${user.cloude_storage}` : "",
+  ].filter(Boolean);
+  const aboutLines = [
+    `${fullName} - ${user.user_directions || "IT-специалист"}.`,
+    `Направление: ${user.academic_direction || "не указано"}.`,
+    `Курс: ${user.class_ || "не указан"}. Средний балл: ${user.avg_score ?? "не указан"}.`,
+    achievements.length ? `Научных достижений: ${achievements.length}.` : "",
+    projects.length ? `Проектов в портфолио: ${projects.length}.` : "",
+  ].filter(Boolean);
+
+  return [
+    wordResumePhotoBlock(user),
+    wordSidebarTitle("Контакты"),
+    ...contactLines.map((line) => wordSidebarText(line)),
+    wordSidebarTitle("Профиль"),
+    wordSidebarText(user.user_directions || "IT-специалист", { bold: true }),
+    wordSidebarText(user.academic_direction || "Направление не указано"),
+    wordSidebarTitle("О себе"),
+    ...aboutLines.map((line) => wordSidebarText(line, { spacingAfter: 90 })),
+  ];
+}
+
+function buildResumeMain(user, courses, achievements, projects, skills) {
+  const blocks = [wordResumeSectionTitle("Опыт и проекты")];
+  if (projects.length) {
+    projects.slice(0, 6).forEach((project) => {
+      const statusLabel = PORTFOLIO_PROJECT_STATUS_LABELS[project.status] || project.status || "Статус не указан";
+      const role = getPortfolioProjectRole(project, user);
+      blocks.push(wordParagraph(project.fullName || project.slug || "Проект без названия", {
+        bold: true,
+        color: "222222",
+        size: 21,
+        spacingAfter: 45,
+        keepNext: true,
+      }));
+      blocks.push(wordParagraph(`${role || "Участник"} | ${statusLabel}`, {
+        italic: true,
+        color: "555555",
+        size: 18,
+        spacingAfter: 55,
+      }));
+      blocks.push(wordParagraph(project.shortDescription || "Описание не указано", {
+        color: "333333",
+        size: 18,
+        spacingAfter: 115,
+      }));
+    });
+  } else {
+    pushPortfolioEmpty(blocks, "Проекты пока не добавлены.");
+  }
+
+  blocks.push(wordResumeSectionTitle("Образование"));
+  blocks.push(wordParagraph("УрФУ / ИРИТ-РТФ", { bold: true, size: 21, spacingAfter: 45 }));
+  blocks.push(wordParagraph(`${user.academic_direction || "Направление не указано"} | ${user.class_ || "курс не указан"}`, {
+    color: "555555",
+    size: 18,
+    spacingAfter: 55,
+  }));
+  blocks.push(wordParagraph(`Средний балл: ${user.avg_score ?? "не указан"}`, { color: "555555", size: 18, spacingAfter: 120 }));
+
+  blocks.push(wordResumeSectionTitle("Курсы"));
+  if (courses.length) {
+    courses.slice(0, 8).forEach((course) => {
+      const courseName = course.course || course.name_course || "Курс без названия";
+      blocks.push(wordParagraph(courseName, { bold: true, size: 19, spacingAfter: 30 }));
+      blocks.push(wordParagraph(`Сложность: ${formatDifficulty(course.difficulty)}`, {
+        color: "555555",
+        size: 17,
+        spacingAfter: 85,
+      }));
+    });
+  } else {
+    pushPortfolioEmpty(blocks, "Курсы пока не добавлены.");
+  }
+
+  blocks.push(wordResumeSectionTitle("Научные достижения"));
+  if (achievements.length) {
+    achievements.slice(0, 6).forEach((achievement) => {
+      blocks.push(wordParagraph(achievement.name || "Достижение без названия", {
+        bold: true,
+        size: 19,
+        spacingAfter: 35,
+      }));
+      blocks.push(wordParagraph(`${achievementTypeLabel(achievement.type) || "Тип не указан"} | ${formatPortfolioDate(achievement.date)}`, {
+        color: "555555",
+        size: 17,
+        spacingAfter: 90,
+      }));
+    });
+  } else {
+    pushPortfolioEmpty(blocks, "Научные достижения пока не добавлены.");
+  }
+
+  blocks.push(wordResumeSectionTitle("Навыки"));
+  blocks.push(wordSkillsGrid(skills));
+  return blocks;
+}
+
+function pushPortfolioSection(paragraphs, title) {
+  paragraphs.push(wordParagraph(title, {
+    style: "Heading1",
+    spacingBefore: 260,
+    spacingAfter: 120,
+    keepNext: true,
+    shading: "EAF2FF",
+    borderBottom: "BFDBFE",
+  }));
+}
+
+function pushPortfolioEmpty(paragraphs, text) {
+  paragraphs.push(wordParagraph(text, { italic: true, color: "64748B", spacingAfter: 120 }));
+}
+
+function buildPortfolioDocumentXml(user, projects = []) {
+  const normalizedUser = normalizeProfileUser(user, user?.id || "");
+  const fullName = `${normalizedUser.first_name || ""} ${normalizedUser.last_name || ""} ${normalizedUser.patronymic || ""}`.trim() ||
+    normalizedUser.username;
+  const courses = getCourseItems(normalizedUser);
+  const achievements = Array.isArray(normalizedUser.scientific_achievements)
+    ? normalizedUser.scientific_achievements
+    : [];
+  const skills = collectPortfolioSkillNames(normalizedUser);
+  const roleLabel = normalizedUser.user_directions || "IT-специалист";
+  const sidebarContent = buildResumeSidebar(normalizedUser, achievements, projects);
+  const mainContent = buildResumeMain(normalizedUser, courses, achievements, projects, skills);
+  const blocks = [
+    wordResumeHeader(fullName, roleLabel),
+    wordTable(
+      [[
+        {
+          width: PORTFOLIO_SIDEBAR_WIDTH,
+          shading: "EEEEEE",
+          paddingTop: 260,
+          paddingBottom: 280,
+          paddingLeft: 220,
+          paddingRight: 220,
+          vAlign: "top",
+          content: sidebarContent,
+        },
+        {
+          width: PORTFOLIO_MAIN_WIDTH,
+          shading: "FFFFFF",
+          paddingTop: 240,
+          paddingBottom: 280,
+          paddingLeft: 260,
+          paddingRight: 260,
+          vAlign: "top",
+          content: mainContent,
+        },
+      ]],
+      { borders: "none", rowHeight: 13500 }
+    ),
+  ];
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:body>
+    ${blocks.join("\n")}
+    <w:sectPr>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="360" w:right="360" w:bottom="360" w:left="360" w:header="360" w:footer="360" w:gutter="0"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+}
+
+function buildPortfolioStylesXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:docDefaults>
+    <w:rPrDefault>
+      <w:rPr>
+        <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/>
+        <w:color w:val="172033"/>
+        <w:sz w:val="22"/>
+      </w:rPr>
+    </w:rPrDefault>
+    <w:pPrDefault>
+      <w:pPr>
+        <w:spacing w:after="120" w:line="276" w:lineRule="auto"/>
+      </w:pPr>
+    </w:pPrDefault>
+  </w:docDefaults>
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:qFormat/>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/>
+      <w:color w:val="172033"/>
+      <w:sz w:val="22"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Title">
+    <w:name w:val="Title"/>
+    <w:qFormat/>
+    <w:pPr>
+      <w:spacing w:before="0" w:after="80"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/>
+      <w:b/>
+      <w:color w:val="0B2B5C"/>
+      <w:sz w:val="44"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Subtitle">
+    <w:name w:val="Subtitle"/>
+    <w:qFormat/>
+    <w:pPr>
+      <w:spacing w:after="220"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/>
+      <w:color w:val="64748B"/>
+      <w:sz w:val="22"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr>
+      <w:keepNext/>
+      <w:spacing w:before="280" w:after="120"/>
+      <w:outlineLvl w:val="0"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/>
+      <w:b/>
+      <w:color w:val="0B2B5C"/>
+      <w:sz w:val="30"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr>
+      <w:keepNext/>
+      <w:spacing w:before="140" w:after="60"/>
+      <w:outlineLvl w:val="1"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/>
+      <w:b/>
+      <w:color w:val="172033"/>
+      <w:sz w:val="24"/>
+    </w:rPr>
+  </w:style>
+</w:styles>`;
+}
+
+function buildPortfolioDocx(user, projects = []) {
+  const normalizedUser = normalizeProfileUser(user, user?.id || "");
+  const fullName = `${normalizedUser.first_name || ""} ${normalizedUser.last_name || ""}`.trim() || normalizedUser.username;
+  const now = new Date().toISOString();
+  const documentXml = buildPortfolioDocumentXml(normalizedUser, projects);
+  const contentTypesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+  <Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+</Types>`;
+  const rootRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>`;
+  const documentRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>
+</Relationships>`;
+  const settingsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:defaultTabStop w:val="708"/>
+  <w:compat/>
+</w:settings>`;
+  const coreXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:title>${escapeXml(`Портфолио ${fullName}`)}</dc:title>
+  <dc:creator>Цифровое портфолио УрФУ</dc:creator>
+  <cp:lastModifiedBy>Цифровое портфолио УрФУ</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified>
+</cp:coreProperties>`;
+  const appXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Цифровое портфолио УрФУ</Application>
+  <DocSecurity>0</DocSecurity>
+  <ScaleCrop>false</ScaleCrop>
+  <Company>УрФУ</Company>
+</Properties>`;
+
+  return createStoredZip(
+    [
+      { name: "[Content_Types].xml", content: contentTypesXml },
+      { name: "_rels/.rels", content: rootRelsXml },
+      { name: "word/document.xml", content: documentXml },
+      { name: "word/_rels/document.xml.rels", content: documentRelsXml },
+      { name: "word/styles.xml", content: buildPortfolioStylesXml() },
+      { name: "word/settings.xml", content: settingsXml },
+      { name: "docProps/core.xml", content: coreXml },
+      { name: "docProps/app.xml", content: appXml },
+    ],
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  );
+}
+
+function downloadPortfolioDocument(user, docxBlob) {
+  const userPart = normalizePortfolioFilePart(user?.username || user?.id || "student");
+  const datePart = new Date().toISOString().slice(0, 10);
+  const url = URL.createObjectURL(docxBlob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `portfolio_${userPart}_${datePart}.docx`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function createPortfolio() {
+  if (!cachedUser) {
+    alert("Профиль ещё не загружен.");
+    return;
+  }
+
+  const button = document.getElementById("createPortfolioBtn");
+  const originalHtml = button?.innerHTML || "";
+  if (button) {
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Создание...';
+  }
+
+  try {
+    if (!profileReadOnly) {
+      await loadUserCourses(cachedUser);
+    }
+    const projects = await loadPortfolioProjects();
+    const docxBlob = buildPortfolioDocx(cachedUser, projects);
+    downloadPortfolioDocument(cachedUser, docxBlob);
+  } catch (error) {
+    console.error("Portfolio creation failed:", error);
+    alert(error.message || "Не удалось создать портфолио.");
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.innerHTML = originalHtml;
+    }
+  }
+}
+
+function setupCreatePortfolioButton() {
+  document.getElementById("createPortfolioBtn")?.addEventListener("click", createPortfolio);
+}
+
+window.createPortfolio = createPortfolio;
+
 function setupCoursesToggle() {
   if (!coursesAddBtn) {
     return;
@@ -1860,6 +2774,7 @@ async function initProfilePage() {
     }
 
     renderProfileCard(cachedUser, { editable: !profileReadOnly });
+    setupCreatePortfolioButton();
     if (profileReadOnly) {
       setupProjectInviteButton();
     } else {

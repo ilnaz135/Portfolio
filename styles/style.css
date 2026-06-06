@@ -1066,6 +1066,11 @@ body.dark-mode .download-resume {
     color: white;
 }
 
+.download-resume:disabled {
+    opacity: 0.72;
+    cursor: wait;
+}
+
 body.dark-mode .download-resume:hover {
     background-color: #3b82f6;
     border-color: #3b82f6;

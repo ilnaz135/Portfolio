@@ -355,6 +355,54 @@ async function saveProjectToApi(project) {
   return normalized;
 }
 
+async function saveProjectMemberRolesToApi(project, member, roles) {
+  if (!project?.id || !member?.userId) {
+    return project;
+  }
+
+  const updated = await window.AuthClient.fetchJsonWithAuth(
+    `/projects/${encodeURIComponent(project.id)}/members/${encodeURIComponent(member.userId)}/roles`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ roles }),
+    }
+  );
+  const normalized = normalizeProjectFromApi(updated);
+  const index = projects.findIndex((item) => sameUserId(item.id, project.id));
+  if (index >= 0) {
+    projects[index] = normalized;
+  }
+  saveProjectsSnapshot();
+  return normalized;
+}
+
+async function persistProjectMemberRoles(project, member, nextRoles) {
+  const previousRoles = getMemberRoles(member);
+  setMemberRoles(member, nextRoles);
+  normalizeProjectOwnerRole(project);
+  saveProjectsSnapshot();
+  renderAll();
+
+  try {
+    await saveProjectMemberRolesToApi(project, member, getMemberRoles(member));
+  } catch (error) {
+    console.warn("Project member roles API update failed:", error);
+    const currentProject = getProjectById(project.id);
+    const currentMember = currentProject?.members.find((item) => sameUserId(item.userId, member.userId));
+    if (currentProject && currentMember) {
+      setMemberRoles(currentMember, previousRoles);
+      normalizeProjectOwnerRole(currentProject);
+    } else {
+      setMemberRoles(member, previousRoles);
+      normalizeProjectOwnerRole(project);
+    }
+    saveProjectsSnapshot();
+    alert(error.message || "Не удалось сохранить роли участника.");
+  }
+
+  renderAll();
+}
+
 function getMyRole(project) {
   if (!currentUser) return "Участник";
   const member = project.members.find((m) => sameUserId(m.userId, currentUser.id));
@@ -2084,23 +2132,20 @@ function bindDetailEvents() {
     });
 
     document.querySelectorAll(".projects-role-option").forEach((button) => {
-      button.addEventListener("click", (event) => {
+      button.addEventListener("click", async (event) => {
         event.stopPropagation();
         const row = button.closest(".projects-member-row");
         const userId = Number(row?.dataset.memberId);
         const member = project.members.find((m) => m.userId === userId);
         const role = button.dataset.role;
         if (member && role && role !== OWNER_ROLE) {
-          setMemberRoles(member, [...getMemberRoles(member), role]);
-          normalizeProjectOwnerRole(project);
-          saveProjectsSnapshot();
-          renderAll();
+          await persistProjectMemberRoles(project, member, [...getMemberRoles(member), role]);
         }
       });
     });
 
     document.querySelectorAll(".projects-role-remove").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const row = btn.closest(".projects-member-row");
         const userId = Number(row?.dataset.memberId);
@@ -2110,10 +2155,11 @@ function bindDetailEvents() {
           if (role === OWNER_ROLE && isProjectOwnerMember(project, member)) {
             return;
           }
-          setMemberRoles(member, getMemberRoles(member).filter((memberRole) => memberRole !== role));
-          normalizeProjectOwnerRole(project);
-          saveProjectsSnapshot();
-          renderAll();
+          await persistProjectMemberRoles(
+            project,
+            member,
+            getMemberRoles(member).filter((memberRole) => memberRole !== role)
+          );
         }
       });
     });

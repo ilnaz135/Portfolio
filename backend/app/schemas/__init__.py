@@ -345,6 +345,24 @@ class ProjectMemberSchema(ProjectPersonSchema):
     roles: List[str] = Field(default_factory=list)
 
 
+class ProjectMemberRolesUpdateSchema(BaseModel):
+    roles: List[str] = Field(default_factory=list, max_length=10)
+
+    @field_validator("roles")
+    @classmethod
+    def normalize_roles(cls, roles: List[str]) -> List[str]:
+        unique_roles: list[str] = []
+        for role in roles:
+            normalized = trim_text(str(role))
+            if not normalized:
+                continue
+            if len(normalized) > 100:
+                raise ValueError("Role is too long")
+            if normalized not in unique_roles:
+                unique_roles.append(normalized)
+        return unique_roles
+
+
 class ProjectSchema(BaseModel):
     id: int
     slug: str

@@ -28,6 +28,7 @@ from app.schemas import (
     ProjectInvitationCreateSchema,
     ProjectInvitationSchema,
     ProjectListSchema,
+    ProjectMemberRolesUpdateSchema,
     ProjectSchema,
     ProjectUpdateSchema,
 )
@@ -173,6 +174,13 @@ def is_project_manager(project: ProjectModel, user_id: int) -> bool:
     return False
 
 
+def get_project_member(project: ProjectModel, user_id: int) -> ProjectMemberModel | None:
+    return next(
+        (member for member in project.members if member.user_id == user_id),
+        None,
+    )
+
+
 async def get_project_or_404(session: AsyncSession, project_id: int) -> ProjectModel:
     result = await session.execute(
         select(ProjectModel)
@@ -266,6 +274,42 @@ async def create_project(
         if cleaned:
             session.add(ProjectStackModel(project_id=project.id, stack=cleaned[:100]))
 
+    await session.commit()
+    return serialize_project(await get_project_or_404(session, project.id))
+
+
+@router.put("/{project_id}/members/{user_id}/roles", response_model=ProjectSchema)
+async def update_project_member_roles(
+    project_id: int,
+    user_id: int,
+    roles_data: ProjectMemberRolesUpdateSchema,
+    current_user: CurrentUserDep,
+    session: AsyncSession = SessionDep,
+) -> ProjectSchema:
+    project = await get_project_or_404(session, project_id)
+    if project.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only owner can edit project member roles",
+        )
+
+    member = get_project_member(project, user_id)
+    if member is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project member not found")
+
+    roles = list(roles_data.roles)
+    is_owner_member = project.owner_id == member.user_id
+    if not is_owner_member and OWNER_ROLE in roles:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Owner role can only belong to the project owner",
+        )
+
+    if is_owner_member:
+        roles = [OWNER_ROLE, *[role for role in roles if role != OWNER_ROLE]]
+
+    member.roles_json = dump_roles(roles)
+    project.updated_at = datetime.utcnow()
     await session.commit()
     return serialize_project(await get_project_or_404(session, project.id))
 
