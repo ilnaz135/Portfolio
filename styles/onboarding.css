@@ -1,0 +1,160 @@
+.onboarding-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  pointer-events: none;
+}
+
+.onboarding-spotlight {
+  position: fixed;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.55),
+    0 0 0 9999px rgba(30, 41, 59, 0.78);
+  pointer-events: none;
+  z-index: 1;
+  transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+body.dark-mode .onboarding-spotlight {
+  box-shadow:
+    0 0 0 2px rgba(148, 163, 184, 0.45),
+    0 0 0 9999px rgba(2, 6, 23, 0.85);
+}
+
+.onboarding-tooltip {
+  position: fixed;
+  z-index: 2;
+  width: min(360px, calc(100vw - 32px));
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+  pointer-events: auto;
+  transition: top 0.2s ease, left 0.2s ease;
+}
+
+body.dark-mode .onboarding-tooltip {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+.onboarding-tooltip-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+body.dark-mode .onboarding-tooltip-title {
+  color: #f8fafc;
+}
+
+.onboarding-tooltip-text {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #475569;
+}
+
+body.dark-mode .onboarding-tooltip-text {
+  color: #cbd5e1;
+}
+
+.onboarding-tooltip-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.onboarding-progress {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.onboarding-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.onboarding-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.onboarding-btn-skip {
+  background: transparent;
+  color: #64748b;
+}
+
+.onboarding-btn-skip:hover {
+  color: #334155;
+}
+
+body.dark-mode .onboarding-btn-skip {
+  color: #94a3b8;
+}
+
+body.dark-mode .onboarding-btn-skip:hover {
+  color: #e2e8f0;
+}
+
+.onboarding-btn-back {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.onboarding-btn-back:hover {
+  background: #e2e8f0;
+}
+
+body.dark-mode .onboarding-btn-back {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+body.dark-mode .onboarding-btn-back:hover {
+  background: #475569;
+}
+
+.onboarding-btn-next {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.onboarding-btn-next:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 640px) {
+  .onboarding-tooltip {
+    width: calc(100vw - 24px);
+    padding: 16px 18px;
+  }
+
+  .onboarding-tooltip-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .onboarding-actions {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+}

@@ -2790,6 +2790,10 @@ async function initProfilePage() {
     if (!profileReadOnly) {
       setupEditModal();
     }
+
+    if (!profileReadOnly && window.PortfolioOnboarding) {
+      window.PortfolioOnboarding.tryStart();
+    }
   } catch (error) {
     console.error("Profile page initialization failed:", error);
   }
