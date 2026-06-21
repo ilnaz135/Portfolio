@@ -1,8 +1,16 @@
 (function () {
   const STORAGE_KEY = "portfolio_onboarding_v1";
+  const SEQUENCE_STORAGE_KEY = "portfolio_onboarding_sequence_v1";
   const PADDING = 8;
   const TOOLTIP_GAP = 14;
   const VIEWPORT_MARGIN = 12;
+
+  const TOUR_SEQUENCE = [
+    { pageKey: "index.html", href: "index.html" },
+    { pageKey: "achievementsindex.html", href: "achievementsindex.html" },
+    { pageKey: "studentsindex.html", href: "studentsindex.html" },
+    { pageKey: "projectsindex.html", href: "projectsindex.html" },
+  ];
 
   const TOURS = {
     "index.html": [
@@ -132,6 +140,63 @@
 
   function resetAllState() {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(SEQUENCE_STORAGE_KEY);
+  }
+
+  function readSequenceState() {
+    try {
+      return JSON.parse(localStorage.getItem(SEQUENCE_STORAGE_KEY) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function writeSequenceState(pageKey) {
+    localStorage.setItem(SEQUENCE_STORAGE_KEY, JSON.stringify({
+      active: true,
+      pageKey,
+    }));
+  }
+
+  function clearSequenceState() {
+    localStorage.removeItem(SEQUENCE_STORAGE_KEY);
+  }
+
+  function getSequenceEntry(pageKey) {
+    return TOUR_SEQUENCE.find((entry) => entry.pageKey === pageKey) || null;
+  }
+
+  function getSequenceIndex(pageKey) {
+    return TOUR_SEQUENCE.findIndex((entry) => entry.pageKey === pageKey);
+  }
+
+  function getFirstSequenceEntry() {
+    return TOUR_SEQUENCE[0];
+  }
+
+  function getNextSequenceEntry(pageKey) {
+    const index = getSequenceIndex(pageKey);
+    return index >= 0 ? TOUR_SEQUENCE[index + 1] || null : null;
+  }
+
+  function navigateToSequenceEntry(entry) {
+    if (!entry) return;
+    window.location.href = entry.href;
+  }
+
+  function ensureExpectedSequencePage(pageKey) {
+    const state = readSequenceState();
+    if (!state.active) {
+      return true;
+    }
+
+    const expectedPageKey = state.pageKey || getFirstSequenceEntry()?.pageKey;
+    if (expectedPageKey && pageKey !== expectedPageKey) {
+      navigateToSequenceEntry(getSequenceEntry(expectedPageKey));
+      return false;
+    }
+
+    return true;
   }
 
   function isForeignProfileView() {
@@ -201,12 +266,35 @@
     if (options && options.force) return true;
     if (isForeignProfileView()) return false;
 
+    const pageKey = getPageKey();
     const currentUser = await getCurrentUserForOnboarding();
     if (hasOnboardingFlag(currentUser)) {
+      if (currentUser.onboarding_completed === true) {
+        clearSequenceState();
+        return false;
+      }
+
+      if (!getSequenceEntry(pageKey)) {
+        return false;
+      }
+
+      const state = readSequenceState();
+      if (state.active) {
+        return ensureExpectedSequencePage(pageKey);
+      }
+
+      const firstEntry = getFirstSequenceEntry();
+      if (firstEntry && pageKey !== firstEntry.pageKey) {
+        writeSequenceState(firstEntry.pageKey);
+        navigateToSequenceEntry(firstEntry);
+        return false;
+      }
+
+      writeSequenceState(pageKey);
       return currentUser.onboarding_completed !== true;
     }
 
-    return !isPageCompleted(getPageKey());
+    return !isPageCompleted(pageKey);
   }
 
   function wait(ms) {
@@ -277,6 +365,7 @@
   }
 
   function applyHoleLayout(rect) {
+    if (!spotlight) return;
     spotlight.style.top = `${rect.top}px`;
     spotlight.style.left = `${rect.left}px`;
     spotlight.style.width = `${rect.width}px`;
@@ -284,6 +373,7 @@
   }
 
   function positionTooltip(rect) {
+    if (!tooltip) return;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const tooltipRect = tooltip.getBoundingClientRect();
@@ -414,21 +504,42 @@
     document.body.style.overflow = "";
   }
 
-  function finishTour(pageKey) {
+  function finishFullOnboarding() {
+    clearSequenceState();
+    saveCurrentUserOnboardingCompleted(true);
+  }
+
+  function finishTour(pageKey, options = {}) {
     activeTour.forEach((step) => {
       if (typeof step.cleanup === "function") {
         step.cleanup();
       }
     });
     markPageCompleted(pageKey);
-    saveCurrentUserOnboardingCompleted(true);
     destroyOverlay();
+
+    if (options.skipAll) {
+      finishFullOnboarding();
+      return;
+    }
+
+    const nextEntry = getNextSequenceEntry(pageKey);
+    if (nextEntry && readSequenceState().active) {
+      writeSequenceState(nextEntry.pageKey);
+      navigateToSequenceEntry(nextEntry);
+      return;
+    }
+
+    finishFullOnboarding();
   }
 
   function renderTooltip(step, pageKey) {
+    if (!tooltip) return;
     const total = activeTour.length;
     const isFirst = activeStep === 0;
     const isLast = activeStep === total - 1;
+    const nextEntry = getNextSequenceEntry(pageKey);
+    const nextButtonLabel = isLast && nextEntry ? "Далее" : isLast ? "Готово" : "Далее";
 
     tooltip.innerHTML = `
       <h2 class="onboarding-tooltip-title">${escapeHtml(step.title)}</h2>
@@ -438,12 +549,12 @@
         <div class="onboarding-actions">
           <button type="button" class="onboarding-btn onboarding-btn-skip" data-onboarding-skip>Пропустить</button>
           ${isFirst ? "" : '<button type="button" class="onboarding-btn onboarding-btn-back" data-onboarding-back>Назад</button>'}
-          <button type="button" class="onboarding-btn onboarding-btn-next" data-onboarding-next>${isLast ? "Готово" : "Далее"}</button>
+          <button type="button" class="onboarding-btn onboarding-btn-next" data-onboarding-next>${nextButtonLabel}</button>
         </div>
       </div>
     `;
 
-    tooltip.querySelector("[data-onboarding-skip]")?.addEventListener("click", () => finishTour(pageKey));
+    tooltip.querySelector("[data-onboarding-skip]")?.addEventListener("click", () => finishTour(pageKey, { skipAll: true }));
     tooltip.querySelector("[data-onboarding-back]")?.addEventListener("click", () => {
       activeStep -= 1;
       showStep(pageKey);
@@ -459,6 +570,8 @@
   }
 
   async function showStep(pageKey) {
+    if (!root) return;
+
     const step = activeTour[activeStep];
     if (!step) {
       finishTour(pageKey);
@@ -475,6 +588,8 @@
       await Promise.resolve(step.prepare());
       await wait(typeof step.prepareDelay === "number" ? step.prepareDelay : 120);
     }
+
+    if (!root || !tooltip) return;
 
     const target = document.querySelector(step.selector);
     if (target) {
@@ -570,7 +685,16 @@
       }
       resetAllState();
       await setCurrentUserOnboardingCompleted(false);
-      await start(null, { force: true });
+      const firstEntry = getFirstSequenceEntry();
+      if (!firstEntry) {
+        return;
+      }
+      writeSequenceState(firstEntry.pageKey);
+      if (getPageKey() !== firstEntry.pageKey) {
+        navigateToSequenceEntry(firstEntry);
+        return;
+      }
+      await start(firstEntry.pageKey, { force: true });
     } catch (error) {
       console.warn("Failed to restart onboarding:", error);
       alert("Не удалось запустить онбординг. Проверьте подключение к бэкенду.");
