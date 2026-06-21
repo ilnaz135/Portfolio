@@ -103,6 +103,7 @@ class UserService:
                 class_=user_data.class_,
                 group=user_data.group.strip() or "unknown",
                 avg_score=user_data.avg_score,
+                onboarding_completed=user_data.onboarding_completed,
             )
 
             self.session.add(new_user)

@@ -863,6 +863,10 @@ async function initAchievementsPage() {
   
   // Показываем первую вкладку
   switchTab("publications");
+
+  if (!viewingForeignProfile && window.PortfolioOnboarding) {
+    window.PortfolioOnboarding.tryStart();
+  }
 }
 
 initAchievementsPage().catch(error => console.error("Achievements page initialization failed:", error));

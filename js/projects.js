@@ -2303,6 +2303,9 @@ async function initProjectsPage() {
     }
     applyRequestedProjectSelection();
     renderAll();
+    if (window.PortfolioOnboarding) {
+      window.PortfolioOnboarding.tryStart();
+    }
   } catch (error) {
     if (error.message !== "AUTH_REQUIRED") {
       console.error("Projects page init failed:", error);
@@ -2319,6 +2322,9 @@ async function initProjectsPage() {
       }
       applyRequestedProjectSelection();
       renderAll();
+      if (window.PortfolioOnboarding) {
+        window.PortfolioOnboarding.tryStart();
+      }
     }
   }
 }

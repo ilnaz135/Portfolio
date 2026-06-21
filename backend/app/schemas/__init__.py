@@ -240,6 +240,7 @@ class UserCreateSchema(BaseModel):
         max_length=50,
     )
     avg_score: float = Field(0.0, ge=0, le=100)
+    onboarding_completed: bool = False
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -262,6 +263,7 @@ class UserUpdateSchema(BaseModel):
         max_length=50,
     )
     avg_score: float | None = Field(None, ge=0, le=100)
+    onboarding_completed: bool | None = None
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -290,6 +292,7 @@ class UserSchema(UserAchievementCollectionsSchema):
     avg_score: float
     role: str
     is_active: bool
+    onboarding_completed: bool
     last_login_at: datetime | None
     created_at: datetime
     directions: List[UserDirectionSchema] = Field(default_factory=list)

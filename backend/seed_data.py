@@ -318,6 +318,7 @@ async def seed_database() -> None:
                     password="__legacy_hidden__",
                     password_hash=hash_password(plain_password),
                     role="admin" if index == 0 else "user",
+                    onboarding_completed=False,
                 )
                 session.add(user)
                 users.append(user)

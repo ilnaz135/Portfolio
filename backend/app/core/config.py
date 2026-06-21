@@ -15,6 +15,7 @@ from pydantic_settings.sources import (
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+FIXED_API_PORT = 8001
 
 
 class _CorsOriginsSourceMixin:
@@ -44,14 +45,18 @@ class Settings(BaseSettings):
     )
 
     host: str = "0.0.0.0"
-    port: int = 8001
     debug: bool = False
+
+    @property
+    def port(self) -> int:
+        return FIXED_API_PORT
 
     database_url: str = f"sqlite+aiosqlite:///{BASE_DIR / 'portfolio.db'}"
 
     cors_origins: list[str] = [
         "http://127.0.0.1:5500",
         "http://localhost:5500",
+        "null",
     ]
     cors_origin_regex: str | None = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
     cors_allow_credentials: bool = True
@@ -138,7 +143,7 @@ class Settings(BaseSettings):
         )
 
     class Config:
-        env_file = ".env"
+        env_file = str(BASE_DIR / ".env")
         case_sensitive = False
 
 

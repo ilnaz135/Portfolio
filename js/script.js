@@ -1989,9 +1989,8 @@ function buildPortfolioDocumentXml(user, projects = []) {
     : [];
   const skills = collectPortfolioSkillNames(normalizedUser);
   const roleLabel = getCustomProfileRole(normalizedUser.user_directions);
-  const publicProjects = getPublicPortfolioProjects(projects);
-  const sidebarContent = buildResumeSidebar(normalizedUser, achievements, publicProjects);
-  const mainContent = buildResumeMain(normalizedUser, courses, achievements, publicProjects, skills);
+  const sidebarContent = buildResumeSidebar(normalizedUser, achievements, projects);
+  const mainContent = buildResumeMain(normalizedUser, courses, achievements, projects, skills);
   const blocks = [
     wordResumeHeader(fullName, roleLabel),
     wordTable(
@@ -2834,6 +2833,10 @@ async function initProfilePage() {
 
     if (!profileReadOnly) {
       setupEditModal();
+    }
+
+    if (!profileReadOnly && window.PortfolioOnboarding) {
+      window.PortfolioOnboarding.tryStart();
     }
   } catch (error) {
     console.error("Profile page initialization failed:", error);
