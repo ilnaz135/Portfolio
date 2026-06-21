@@ -21,6 +21,14 @@ const PROFILE_PREVIEW_STORAGE_KEY = "portfolioProfilePreview";
 const PROFILE_AVATAR_CACHE_STORAGE_KEY = "portfolioProfileAvatarCache";
 const PROJECTS_STORAGE_KEY = "portfolioProjects";
 const PROJECT_INVITATIONS_STORAGE_KEY = "portfolioProjectInvitations";
+const PROFILE_ROLE_PLACEHOLDER = "В поисках себя...";
+const EMPTY_PROFILE_ROLE_LABELS = new Set([
+  "",
+  "user",
+  "в поиске себя",
+  "в поисках себя",
+  "в поисках себя...",
+]);
 const ACHIEVEMENT_TYPE_LABELS = {
   innovation: "Инновационная деятельность",
   scholarship: "Стипендия",
@@ -41,6 +49,23 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function normalizeProfileRoleToken(value) {
+  return String(value || "")
+    .trim()
+    .replace(/…/g, "...")
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase("ru-RU");
+}
+
+function getCustomProfileRole(value) {
+  const role = String(value || "").trim();
+  return EMPTY_PROFILE_ROLE_LABELS.has(normalizeProfileRoleToken(role)) ? "" : role;
+}
+
+function getProfileRoleDisplay(value) {
+  return getCustomProfileRole(value) || PROFILE_ROLE_PLACEHOLDER;
 }
 
 function updateProfileViewportHeight() {
@@ -403,7 +428,7 @@ function normalizeProfileUser(user, fallbackId = "") {
     first_name: user?.first_name || user?.firstName || "Студент",
     last_name: user?.last_name || user?.lastName || "",
     patronymic: user?.patronymic || "",
-    user_directions: user?.user_directions || user?.role || "В поиске себя",
+    user_directions: getProfileRoleDisplay(user?.user_directions),
     academic_direction: user?.academic_direction || "09.03.04 Программная инженерия",
     class_: user?.class_ || "3 курс",
     avg_score: user?.avg_score ?? "—",
@@ -605,7 +630,7 @@ function renderProfileCard(user, { editable = true } = {}) {
   const cloudValue = normalizeProfileCloudUrl(user.cloude_storage);
   const cloudDisabled = isProfileCloudUrlDisabled(cloudValue);
   const cloudUrl = cloudDisabled ? "#" : cloudValue;
-  const roleLabel = user.user_directions || "В поиске себя";
+  const roleLabel = getProfileRoleDisplay(user.user_directions);
   const avatarStyle = user.avatar_data_url
     ? ` style="${escapeHtml(`background:${getProfileAvatarBackground(user.avatar_data_url)};`)}"`
     : "";
@@ -623,7 +648,7 @@ function renderProfileCard(user, { editable = true } = {}) {
       <div class="full-name">${escapeHtml(user.first_name)} ${escapeHtml(user.last_name)}</div>
       <div class="username"><i class="fas fa-at"></i>${escapeHtml(user.username)}</div>
       <div class="role-badge">
-        <span class="badge" id="displayRole"><i class="fas fa-code"></i> ${escapeHtml(roleLabel)}</span>
+        <span class="badge" id="displayRole"><i class="fas fa-code"></i><span class="badge-text">${escapeHtml(roleLabel)}</span></span>
       </div>
       <a href="${escapeHtml(cloudUrl)}" class="github-link${cloudDisabled ? " github-link--disabled" : ""}" id="displayCloud"${cloudDisabled ? ' aria-disabled="true" tabindex="-1"' : ""}>
         <i class="fab fa-github"></i> ${escapeHtml(cloudValue || "Не указано")}
@@ -951,8 +976,8 @@ function renderScientificAchievements(user) {
           <div class="pub-content">
             <div class="pub-title"><a href="${escapeHtml(getAchievementsUrl())}">${escapeHtml(achievement.name)}</a></div>
             <div class="pub-meta">
-              <span><i class="far fa-calendar-alt"></i> ${escapeHtml(year)}</span>
-              <span><i class="fas fa-tag"></i> ${escapeHtml(achievementTypeLabel(achievement.type))}</span>
+              <span><i class="far fa-calendar-alt"></i>${escapeHtml(year)}</span>
+              <span><i class="fas fa-tag"></i>${escapeHtml(achievementTypeLabel(achievement.type))}</span>
             </div>
           </div>
         </div>
@@ -1373,6 +1398,14 @@ function getPortfolioProjectRole(project, user) {
   return getProjectMemberRoles(member).join(", ");
 }
 
+function isPublicPortfolioProject(project) {
+  return String(project?.visibility || "public").trim().toLowerCase() !== "private";
+}
+
+function getPublicPortfolioProjects(projects) {
+  return Array.isArray(projects) ? projects.filter(isPublicPortfolioProject) : [];
+}
+
 function escapeXml(value) {
   return escapeHtml(value);
 }
@@ -1686,6 +1719,26 @@ function wordCard(title, lines, options = {}) {
 }
 
 function wordResumeHeader(fullName, roleLabel) {
+  const customRole = getCustomProfileRole(roleLabel);
+  const headerContent = [
+    wordParagraph(fullName.toLocaleUpperCase("ru-RU"), {
+      align: "center",
+      color: "FFFFFF",
+      size: 42,
+      spacingAfter: customRole ? 120 : 0,
+    }),
+  ];
+
+  if (customRole) {
+    headerContent.push(wordParagraph(customRole, {
+      align: "center",
+      bold: true,
+      color: "FFFFFF",
+      size: 18,
+      spacingAfter: 0,
+    }));
+  }
+
   return wordTable(
     [[
       {
@@ -1695,21 +1748,7 @@ function wordResumeHeader(fullName, roleLabel) {
         paddingBottom: 360,
         paddingLeft: 300,
         paddingRight: 300,
-        content: [
-          wordParagraph(fullName.toLocaleUpperCase("ru-RU"), {
-            align: "center",
-            color: "FFFFFF",
-            size: 42,
-            spacingAfter: 120,
-          }),
-          wordParagraph(roleLabel || "IT-специалист", {
-            align: "center",
-            bold: true,
-            color: "FFFFFF",
-            size: 18,
-            spacingAfter: 0,
-          }),
-        ],
+        content: headerContent,
       },
     ]],
     { borders: "none" }
@@ -1761,8 +1800,9 @@ function wordSidebarText(text, options = {}) {
   });
 }
 
-function wordResumeSectionTitle(title) {
-  return wordParagraph(title.toLocaleUpperCase("ru-RU"), {
+function wordResumeSectionTitle(title, options = {}) {
+  const displayTitle = options.uppercase === false ? title : title.toLocaleUpperCase("ru-RU");
+  return wordParagraph(displayTitle, {
     color: "555555",
     size: 20,
     spacingBefore: 120,
@@ -1819,17 +1859,22 @@ function wordSkillsGrid(skills) {
 
 function buildResumeSidebar(user, achievements, projects) {
   const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim() || user.username;
+  const customRole = getCustomProfileRole(user.user_directions);
   const contactLines = [
     user.email ? `Email: ${user.email}` : "",
     user.username ? `Username: ${user.username}` : "",
     user.cloude_storage ? `Хранилище: ${user.cloude_storage}` : "",
   ].filter(Boolean);
   const aboutLines = [
-    `${fullName} - ${user.user_directions || "IT-специалист"}.`,
+    customRole ? `${fullName} - ${customRole}.` : "",
     `Направление: ${user.academic_direction || "не указано"}.`,
     `Курс: ${user.class_ || "не указан"}. Средний балл: ${user.avg_score ?? "не указан"}.`,
     achievements.length ? `Научных достижений: ${achievements.length}.` : "",
     projects.length ? `Проектов в портфолио: ${projects.length}.` : "",
+  ].filter(Boolean);
+  const profileLines = [
+    customRole ? wordSidebarText(customRole, { bold: true }) : null,
+    wordSidebarText(user.academic_direction || "Направление не указано"),
   ].filter(Boolean);
 
   return [
@@ -1837,15 +1882,14 @@ function buildResumeSidebar(user, achievements, projects) {
     wordSidebarTitle("Контакты"),
     ...contactLines.map((line) => wordSidebarText(line)),
     wordSidebarTitle("Профиль"),
-    wordSidebarText(user.user_directions || "IT-специалист", { bold: true }),
-    wordSidebarText(user.academic_direction || "Направление не указано"),
+    ...profileLines,
     wordSidebarTitle("О себе"),
     ...aboutLines.map((line) => wordSidebarText(line, { spacingAfter: 90 })),
   ];
 }
 
 function buildResumeMain(user, courses, achievements, projects, skills) {
-  const blocks = [wordResumeSectionTitle("Опыт и проекты")];
+  const blocks = [wordResumeSectionTitle("ОПЫТ И ПРОЕКТЫ в ct129305.tw1.ru", { uppercase: false })];
   if (projects.length) {
     projects.slice(0, 6).forEach((project) => {
       const statusLabel = PORTFOLIO_PROJECT_STATUS_LABELS[project.status] || project.status || "Статус не указан";
@@ -1944,9 +1988,10 @@ function buildPortfolioDocumentXml(user, projects = []) {
     ? normalizedUser.scientific_achievements
     : [];
   const skills = collectPortfolioSkillNames(normalizedUser);
-  const roleLabel = normalizedUser.user_directions || "IT-специалист";
-  const sidebarContent = buildResumeSidebar(normalizedUser, achievements, projects);
-  const mainContent = buildResumeMain(normalizedUser, courses, achievements, projects, skills);
+  const roleLabel = getCustomProfileRole(normalizedUser.user_directions);
+  const publicProjects = getPublicPortfolioProjects(projects);
+  const sidebarContent = buildResumeSidebar(normalizedUser, achievements, publicProjects);
+  const mainContent = buildResumeMain(normalizedUser, courses, achievements, publicProjects, skills);
   const blocks = [
     wordResumeHeader(fullName, roleLabel),
     wordTable(
@@ -2511,7 +2556,7 @@ function applyProfileUserToCard(user) {
   }
 
   if (displayRole) {
-    displayRole.innerHTML = `<i class="fas fa-code"></i> ${escapeHtml(normalizedUser.user_directions || "В поиске себя")}`;
+    displayRole.innerHTML = `<i class="fas fa-code"></i><span class="badge-text">${escapeHtml(getProfileRoleDisplay(normalizedUser.user_directions))}</span>`;
   }
 
   if (displayCloud) {
@@ -2551,7 +2596,7 @@ function setupEditModal() {
     avatarPreviewVersion += 1;
     resetAvatarCropPreview({ clearInput: true });
     if (usernameInput) usernameInput.value = cachedUser?.username || "";
-    if (roleInput) roleInput.value = cachedUser?.user_directions || "";
+    if (roleInput) roleInput.value = getCustomProfileRole(cachedUser?.user_directions);
     if (cloudInput) cloudInput.value = cachedUser?.cloude_storage || "";
     modal.classList.add("active");
   });
@@ -2699,7 +2744,7 @@ function setupEditModal() {
       const file = avatarInput?.files?.[0];
       const payload = {
         username: usernameValue,
-        user_directions: roleInput?.value.trim() || "",
+        user_directions: getCustomProfileRole(roleInput?.value),
         cloude_storage: cloudInput?.value.trim() || "",
       };
 
