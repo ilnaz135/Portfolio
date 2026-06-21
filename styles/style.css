@@ -966,6 +966,10 @@ body.dark-mode .username {
 }
 
 .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
     background-color: #e9eff9;
     color: #0b2b5c;
     font-weight: 600;
@@ -974,6 +978,15 @@ body.dark-mode .username {
     border-radius: 6px;
     border-left: 4px solid #f97316;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.badge i {
+    flex: 0 0 auto;
+}
+
+.badge-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 body.dark-mode .badge {
@@ -1411,7 +1424,14 @@ body.dark-mode .pub-title {
     color: #64748b;
     font-size: 12px;
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
+}
+
+.pub-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 body.dark-mode .pub-meta {

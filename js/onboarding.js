@@ -105,6 +105,7 @@
   let observedElement = null;
   let repositionHandler = null;
   let escapeHandler = null;
+  let isSavingCompletion = false;
 
   function getPageKey() {
     const segment = window.location.pathname.split("/").pop();
@@ -129,14 +130,82 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
+  function resetAllState() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
   function isForeignProfileView() {
     const params = new URLSearchParams(window.location.search);
     return Boolean(params.get("profileUserId") || params.get("user_id"));
   }
 
-  function shouldRun(options) {
+  function hasOnboardingFlag(user) {
+    return Object.prototype.hasOwnProperty.call(user || {}, "onboarding_completed");
+  }
+
+  async function getCurrentUserForOnboarding(options = {}) {
+    if (!window.AuthClient?.fetchCurrentUser) {
+      return null;
+    }
+
+    try {
+      return await window.AuthClient.fetchCurrentUser({ force: options.force === true });
+    } catch (error) {
+      console.warn("Failed to load onboarding state:", error);
+      return null;
+    }
+  }
+
+  async function setCurrentUserOnboardingCompleted(value) {
+    if (!window.AuthClient?.fetchCurrentUser || !window.AuthClient?.fetchJsonWithAuth) {
+      return null;
+    }
+
+    const currentUser = await window.AuthClient.fetchCurrentUser({ force: true });
+    if (!currentUser?.id) {
+      return null;
+    }
+
+    const optimisticUser = {
+      ...currentUser,
+      onboarding_completed: Boolean(value),
+    };
+    window.AuthClient.persistCurrentUser?.(optimisticUser);
+
+    const updatedUser = await window.AuthClient.fetchJsonWithAuth(`/users/${currentUser.id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        onboarding_completed: Boolean(value),
+      }),
+    });
+    window.AuthClient.persistCurrentUser?.(updatedUser);
+    return updatedUser;
+  }
+
+  function saveCurrentUserOnboardingCompleted(value) {
+    if (isSavingCompletion) {
+      return;
+    }
+
+    isSavingCompletion = true;
+    setCurrentUserOnboardingCompleted(value)
+      .catch((error) => {
+        console.warn("Failed to save onboarding state:", error);
+      })
+      .finally(() => {
+        isSavingCompletion = false;
+      });
+  }
+
+  async function shouldRun(options) {
     if (options && options.force) return true;
     if (isForeignProfileView()) return false;
+
+    const currentUser = await getCurrentUserForOnboarding();
+    if (hasOnboardingFlag(currentUser)) {
+      return currentUser.onboarding_completed !== true;
+    }
+
     return !isPageCompleted(getPageKey());
   }
 
@@ -352,6 +421,7 @@
       }
     });
     markPageCompleted(pageKey);
+    saveCurrentUserOnboardingCompleted(true);
     destroyOverlay();
   }
 
@@ -465,7 +535,7 @@
 
   async function start(pageKey, options) {
     const key = pageKey || getPageKey();
-    if (!shouldRun(options)) return;
+    if (!(await shouldRun(options))) return;
 
     const tour = await resolveTourSteps(key);
     if (!tour.length) return;
@@ -486,18 +556,70 @@
     });
   }
 
+  async function restartFromSettings(event) {
+    event.preventDefault();
+    const trigger = event.currentTarget;
+    if (trigger?.dataset.loading === "true") {
+      return;
+    }
+
+    try {
+      if (trigger) {
+        trigger.dataset.loading = "true";
+        trigger.setAttribute("aria-disabled", "true");
+      }
+      resetAllState();
+      await setCurrentUserOnboardingCompleted(false);
+      await start(null, { force: true });
+    } catch (error) {
+      console.warn("Failed to restart onboarding:", error);
+      alert("Не удалось запустить онбординг. Проверьте подключение к бэкенду.");
+    } finally {
+      if (trigger) {
+        delete trigger.dataset.loading;
+        trigger.removeAttribute("aria-disabled");
+      }
+    }
+  }
+
+  function setupSettingsButton() {
+    const menu = document.getElementById("settingsDropdown");
+    if (!menu || menu.querySelector("[data-onboarding-settings]")) {
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.href = "#";
+    link.dataset.onboardingSettings = "true";
+    link.innerHTML = '<i class="fas fa-route"></i> Онбординг';
+    link.addEventListener("click", restartFromSettings);
+
+    const logoutLink = menu.querySelector("#logoutBtn");
+    menu.insertBefore(link, logoutLink || null);
+  }
+
+  function setupWhenReady() {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setupSettingsButton, { once: true });
+      return;
+    }
+
+    setupSettingsButton();
+  }
+
   window.PortfolioOnboarding = {
     start,
     tryStart,
+    setCurrentUserOnboardingCompleted,
     markPageCompleted,
     isPageCompleted,
-    resetAll() {
-      localStorage.removeItem(STORAGE_KEY);
-    },
+    resetAll: resetAllState,
     resetPage(pageKey) {
       const state = readState();
       delete state[pageKey || getPageKey()];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     },
   };
+
+  setupWhenReady();
 })();

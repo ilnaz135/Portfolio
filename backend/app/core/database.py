@@ -168,6 +168,13 @@ async def ensure_users_auth_schema(conn: AsyncConnection) -> None:
             )
         )
 
+    if "onboarding_completed" not in columns:
+        await conn.execute(
+            text(
+                "ALTER TABLE users ADD COLUMN onboarding_completed BOOLEAN NOT NULL DEFAULT 0"
+            )
+        )
+
     if "last_login_at" not in columns:
         await conn.execute(
             text("ALTER TABLE users ADD COLUMN last_login_at DATETIME NULL")
@@ -211,6 +218,16 @@ async def ensure_users_auth_schema(conn: AsyncConnection) -> None:
             UPDATE users
             SET is_active = 1
             WHERE is_active IS NULL
+            """
+        )
+    )
+
+    await conn.execute(
+        text(
+            """
+            UPDATE users
+            SET onboarding_completed = 0
+            WHERE onboarding_completed IS NULL
             """
         )
     )
