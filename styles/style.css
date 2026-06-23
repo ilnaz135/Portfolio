@@ -476,6 +476,10 @@ body.dark-mode .profile-card {
     width: min(360px, calc(100vw - 32px));
     max-height: 460px;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     background: #ffffff;
@@ -486,6 +490,34 @@ body.dark-mode .profile-card {
 body.dark-mode .profile-notifications-menu {
     background: #1e293b;
     border-color: #334155;
+    scrollbar-color: #475569 transparent;
+}
+
+.profile-notifications-menu::-webkit-scrollbar {
+    width: 10px;
+}
+
+.profile-notifications-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.profile-notifications-menu::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+}
+
+.profile-notifications-menu::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+body.dark-mode .profile-notifications-menu::-webkit-scrollbar-thumb {
+    background-color: #475569;
+}
+
+body.dark-mode .profile-notifications-menu::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b;
 }
 
 .profile-notification-item {
@@ -3931,7 +3963,7 @@ body.dark-mode .score-reset-btn:hover {
     }
 
     .profile-card {
-        position: static;
+        position: relative;
         width: 100%;
     }
 
@@ -4116,8 +4148,10 @@ body.dark-mode .course-progress-label-value {
         flex: 0 0 auto;
         grid-template-rows: minmax(0, 1fr);
         min-height: 0;
-        height: calc(100vh - var(--profile-header-height, 96px));
-        max-height: calc(100vh - var(--profile-header-height, 96px));
+        height: calc(100vh - var(--app-header-height, var(--profile-header-height, 96px)));
+        height: calc(100dvh - var(--app-header-height, var(--profile-header-height, 96px)));
+        max-height: calc(100vh - var(--app-header-height, var(--profile-header-height, 96px)));
+        max-height: calc(100dvh - var(--app-header-height, var(--profile-header-height, 96px)));
         overflow: hidden;
     }
 
@@ -4183,6 +4217,8 @@ body.dark-mode .course-progress-label-value {
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
     padding: 12px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
@@ -4193,6 +4229,7 @@ body.dark-mode .specializations-scroll-window,
 body.dark-mode .courses-scroll-window {
     border-color: #334155;
     background: #111827;
+    scrollbar-color: #475569 transparent;
 }
 
 .specializations-scroll-window {
@@ -4267,5 +4304,235 @@ body.dark-mode .courses-scroll-window::-webkit-scrollbar-thumb:hover {
 
     .courses-scroll-window {
         max-height: 460px;
+    }
+}
+
+/* Mobile device layout refinements */
+@media (max-width: 640px) {
+    .header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        align-items: center;
+        gap: 10px 12px;
+    }
+
+    .logo-area {
+        grid-column: 1;
+        grid-row: 1;
+        min-width: 0;
+    }
+
+    .logo-svg {
+        width: 44px;
+        height: 44px;
+    }
+
+    .logo-text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .control-buttons {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        width: auto;
+        min-width: max-content;
+    }
+
+    .search-wrapper {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        margin-top: 0;
+        box-sizing: border-box;
+    }
+
+    .search-wrapper input {
+        width: auto;
+        min-width: 0;
+    }
+
+    .filter-btn {
+        flex: 0 0 auto;
+    }
+
+    .global-student-results {
+        right: 0;
+        width: 100%;
+        max-width: calc(100vw - 28px);
+    }
+}
+
+@media (max-width: 420px) {
+    .header {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .logo-svg {
+        width: 38px;
+        height: 38px;
+    }
+
+    .control-buttons {
+        width: auto;
+        justify-content: flex-end;
+    }
+
+    .search-wrapper {
+        padding-left: 12px;
+    }
+
+    .search-wrapper > .fa-search {
+        font-size: 13px;
+    }
+
+    .filter-btn {
+        padding: 8px 10px;
+        font-size: 0;
+        gap: 0;
+    }
+
+    .filter-btn i {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+@media (max-width: 360px) {
+    .header {
+        gap: 8px;
+    }
+
+    .logo-area {
+        gap: 0;
+    }
+
+    .logo-text {
+        display: none;
+    }
+
+    .search-wrapper {
+        gap: 6px;
+    }
+
+    .filter-btn {
+        width: auto;
+        height: 36px;
+    }
+}
+
+/* Mobile typography safety */
+@media (max-width: 640px) {
+    .filter-btn,
+    .add-button,
+    .more-button,
+    .github-link,
+    .download-resume,
+    .filters-apply-btn,
+    .filters-reset-btn,
+    .badge,
+    .role-badge,
+    .tag,
+    .stack-tag,
+    .course-stack-tag,
+    .specialization-filter-tag,
+    .course-specialization-tag,
+    .course-progress-label-value,
+    .pub-meta span {
+        line-height: 1.2;
+        word-break: normal;
+        overflow-wrap: normal;
+        hyphens: none;
+    }
+
+    .filter-btn,
+    .add-button,
+    .more-button,
+    .github-link,
+    .download-resume,
+    .filters-apply-btn,
+    .filters-reset-btn,
+    .badge,
+    .role-badge,
+    .course-progress-label-value,
+    .pub-meta span {
+        white-space: nowrap;
+    }
+
+    .filter-btn,
+    .add-button,
+    .more-button,
+    .github-link,
+    .download-resume,
+    .filters-apply-btn,
+    .filters-reset-btn {
+        font-size: 12px;
+    }
+
+    .badge,
+    .role-badge {
+        font-size: 12px;
+    }
+
+    .tag,
+    .stack-tag,
+    .course-stack-tag,
+    .specialization-filter-tag,
+    .course-specialization-tag {
+        font-size: 11px;
+    }
+
+    .pub-meta {
+        font-size: 10px;
+        line-height: 1.3;
+    }
+
+    .filters-actions {
+        flex-wrap: wrap;
+    }
+
+    .filters-apply-btn,
+    .filters-reset-btn {
+        flex: 1 1 132px;
+        min-width: 0;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 420px) {
+    .filter-btn {
+        font-size: 0;
+    }
+
+    .filter-btn i {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .badge,
+    .role-badge {
+        font-size: 11px;
+    }
+
+    .tag,
+    .stack-tag,
+    .course-stack-tag,
+    .specialization-filter-tag,
+    .course-specialization-tag {
+        font-size: 10.5px;
+    }
+
+    .pub-meta {
+        font-size: 9.5px;
+    }
+
+    .filters-apply-btn,
+    .filters-reset-btn {
+        flex-basis: 100%;
     }
 }

@@ -254,6 +254,19 @@ async def ensure_users_profile_schema(conn: AsyncConnection) -> None:
     if "avatar_data_url" not in columns:
         await conn.execute(text("ALTER TABLE users ADD COLUMN avatar_data_url TEXT NULL"))
 
+    telegram_columns = {
+        "telegram_username": "VARCHAR(32) NULL",
+        "telegram_chat_id": "VARCHAR(64) NULL",
+        "telegram_user_id": "VARCHAR(64) NULL",
+        "telegram_linked_at": "DATETIME NULL",
+    }
+
+    for column_name, definition in telegram_columns.items():
+        if column_name not in columns:
+            await conn.execute(
+                text(f"ALTER TABLE users ADD COLUMN {column_name} {definition}")
+            )
+
 
 def load_course_catalog_for_seed() -> list[dict]:
     try:

@@ -70,6 +70,12 @@ class Settings(BaseSettings):
     refresh_token_ttl_days: int = 7
     refresh_token_ttl_days_remember_me: int = 30
     password_pepper: str = "portfolio-pepper"
+    public_site_url: str = "https://ct129305.tw1.ru"
+    telegram_bot_token: str = ""
+    telegram_webhook_secret: str = ""
+    telegram_code_ttl_minutes: int = 10
+    telegram_max_code_attempts: int = 5
+    telegram_enable_polling: bool = True
 
     @field_validator("debug", mode="before")
     @classmethod

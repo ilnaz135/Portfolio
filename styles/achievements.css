@@ -93,6 +93,9 @@ body.dark-mode .achievements-back-btn:hover {
 
 .main-content {
   display: block;
+  flex: 0 0 auto;
+  min-height: calc(100vh - var(--app-header-height, 96px));
+  min-height: calc(100dvh - var(--app-header-height, 96px));
   padding: 20px 32px 40px;
 }
 
@@ -488,5 +491,163 @@ body.dark-mode .badge-status.review { background: #1e3a8a; color: #93c5fd; }
 
   .export-btn {
     flex-basis: 100%;
+  }
+}
+
+/* Mobile refinements */
+.table-card,
+.achievements-table-wrapper {
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.table-card::-webkit-scrollbar,
+.achievements-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-card::-webkit-scrollbar-track,
+.achievements-table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-card::-webkit-scrollbar-thumb,
+.achievements-table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.table-card::-webkit-scrollbar-thumb:hover,
+.achievements-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  background-clip: padding-box;
+}
+
+body.dark-mode .table-card,
+body.dark-mode .achievements-table-wrapper {
+  scrollbar-color: #475569 transparent;
+}
+
+body.dark-mode .table-card::-webkit-scrollbar-thumb,
+body.dark-mode .achievements-table-wrapper::-webkit-scrollbar-thumb {
+  background: #475569;
+  background-clip: padding-box;
+}
+
+body.dark-mode .table-card::-webkit-scrollbar-thumb:hover,
+body.dark-mode .achievements-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+  background-clip: padding-box;
+}
+
+@media (max-width: 768px) {
+  .tabs-container {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.dark-mode .tabs-container {
+    scrollbar-color: #475569 transparent;
+  }
+
+  .tabs-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .tabs-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .tabs-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+
+  .tabs-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+    background-clip: padding-box;
+  }
+
+  body.dark-mode .tabs-container::-webkit-scrollbar-thumb {
+    background: #475569;
+    background-clip: padding-box;
+  }
+
+  body.dark-mode .tabs-container::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+    background-clip: padding-box;
+  }
+
+  .tab-btn-achievement {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto;
+    align-items: center;
+  }
+
+  .search-wrapper {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    margin-top: 0;
+    order: initial;
+  }
+
+  .control-buttons {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    min-width: max-content;
+  }
+}
+
+/* Mobile typography safety */
+@media (max-width: 768px) {
+  .tab-btn-achievement,
+  .export-btn,
+  .achievements-back-btn,
+  .badge-status {
+    line-height: 1.2;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+  }
+
+  .tab-btn-achievement {
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+
+  .export-btn,
+  .achievements-back-btn,
+  .badge-status {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-btn-achievement {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }

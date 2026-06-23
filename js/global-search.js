@@ -71,6 +71,34 @@
       .replace(/"/g, "&quot;");
   }
 
+  const STUDENT_ROLE_PLACEHOLDER = "В поисках себя...";
+  const EMPTY_STUDENT_ROLE_LABELS = new Set([
+    "",
+    "user",
+    "в поиске себя",
+    "в поисках себя",
+    "в поиске себя...",
+    "в поисках себя...",
+  ]);
+
+  function normalizeStudentRoleToken(value) {
+    return String(value || "")
+      .trim()
+      .replace(/…/g, "...")
+      .replace(/вЂ¦/g, "...")
+      .replace(/\s+/g, " ")
+      .toLocaleLowerCase("ru-RU");
+  }
+
+  function getCustomStudentRole(value) {
+    const role = String(value || "").trim();
+    return EMPTY_STUDENT_ROLE_LABELS.has(normalizeStudentRoleToken(role)) ? "" : role;
+  }
+
+  function getStudentRoleDisplay(value) {
+    return getCustomStudentRole(value) || STUDENT_ROLE_PLACEHOLDER;
+  }
+
   function fullName(s) {
     return `${s.last_name || ""} ${s.first_name || ""} ${s.patronymic || ""}`.trim();
   }
@@ -97,7 +125,7 @@
 
   function normalizeStudentFromApi(user, index = 0) {
     const id = Number(user.id ?? index + 1);
-    const role = String(user.user_directions || user.role || "").trim() || "В поиске себя";
+    const role = getStudentRoleDisplay(user.user_directions || user.role);
     const score = Number(user.avg_score ?? 0);
 
     return {
@@ -211,7 +239,7 @@
       first_name: s.first_name,
       last_name: s.last_name,
       patronymic: s.patronymic,
-      user_directions: s.user_directions || s.role || "В поиске себя",
+      user_directions: getCustomStudentRole(s.user_directions || s.role),
       academic_direction: s.academic_direction,
       class_: s.class_,
       avg_score: s.avg_score,

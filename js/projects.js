@@ -2211,6 +2211,40 @@ function setupLogout() {
   });
 }
 
+function setupSettingsMenu() {
+  const settingsWrapper = document.getElementById("settingsMenuWrapper");
+  const settingsDropdown = document.getElementById("settingsDropdown");
+  if (!settingsWrapper || !settingsDropdown) {
+    return;
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!settingsWrapper.contains(event.target)) {
+      settingsDropdown.style.display = "none";
+      return;
+    }
+
+    if (event.target.closest("#settingsBtn") || event.target.closest("#settingsMenuWrapper .icon-btn")) {
+      const isVisible = settingsDropdown.style.display === "flex";
+      settingsDropdown.style.display = isVisible ? "none" : "flex";
+    }
+  });
+
+  let hoverTimeout;
+  settingsWrapper.addEventListener("mouseenter", () => {
+    clearTimeout(hoverTimeout);
+    settingsDropdown.style.display = "flex";
+  });
+
+  settingsWrapper.addEventListener("mouseleave", () => {
+    hoverTimeout = setTimeout(() => {
+      if (!settingsWrapper.matches(":hover")) {
+        settingsDropdown.style.display = "none";
+      }
+    }, 100);
+  });
+}
+
 document.addEventListener("click", (event) => {
   let shouldRenderWorkspace = false;
 
@@ -2282,6 +2316,7 @@ function applyRequestedProjectSelection() {
 
 async function initProjectsPage() {
   setupLogout();
+  setupSettingsMenu();
   setupSidebarNav();
 
   try {

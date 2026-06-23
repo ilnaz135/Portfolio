@@ -15,6 +15,7 @@ from sqlalchemy.orm import selectinload
 
 from app.core.exceptions import (
     EmailAlreadyExistsException,
+    TelegramUsernameAlreadyExistsException,
     UserNotFoundException,
     UsernameAlreadyExistsException,
 )
@@ -70,6 +71,14 @@ USER_RELATION_LOADS = (
 )
 
 
+def normalize_telegram_username(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    normalized = value.strip().lstrip("@").lower()
+    return normalized or None
+
+
 class UserService:
     """Business logic for user CRUD."""
 
@@ -79,6 +88,7 @@ class UserService:
     async def create_user(self, user_data: UserCreateSchema) -> UserModel:
         try:
             user_data = self._apply_generated_profile_defaults(user_data)
+            telegram_username = normalize_telegram_username(user_data.telegram_username)
 
             existing_user = await self.get_user_by_username(user_data.username)
             if existing_user:
@@ -87,6 +97,11 @@ class UserService:
             existing_email = await self.get_user_by_email(user_data.email)
             if existing_email:
                 raise EmailAlreadyExistsException(user_data.email)
+
+            if telegram_username:
+                existing_telegram_user = await self.get_user_by_telegram_username(telegram_username)
+                if existing_telegram_user:
+                    raise TelegramUsernameAlreadyExistsException(telegram_username)
 
             new_user = UserModel(
                 username=user_data.username,
@@ -104,6 +119,7 @@ class UserService:
                 group=user_data.group.strip() or "unknown",
                 avg_score=user_data.avg_score,
                 onboarding_completed=user_data.onboarding_completed,
+                telegram_username=telegram_username,
             )
 
             self.session.add(new_user)
@@ -196,6 +212,19 @@ class UserService:
             if "group" in update_data and update_data["group"] is not None:
                 update_data["group"] = update_data["group"].strip() or "unknown"
 
+            if "telegram_username" in update_data and update_data["telegram_username"] is not None:
+                telegram_username = normalize_telegram_username(update_data["telegram_username"])
+                if telegram_username:
+                    existing_telegram_user = await self.get_user_by_telegram_username(telegram_username)
+                    if existing_telegram_user and existing_telegram_user.id != user.id:
+                        raise TelegramUsernameAlreadyExistsException(telegram_username)
+
+                if telegram_username != user.telegram_username:
+                    user.telegram_chat_id = None
+                    user.telegram_user_id = None
+                    user.telegram_linked_at = None
+                update_data["telegram_username"] = telegram_username
+
             for field, value in update_data.items():
                 if value is not None:
                     setattr(user, field, value)
@@ -239,6 +268,11 @@ class UserService:
 
     async def get_user_by_email(self, email: str) -> UserModel | None:
         stmt = select(UserModel).where(UserModel.email == email.lower())
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
+    async def get_user_by_telegram_username(self, username: str) -> UserModel | None:
+        stmt = select(UserModel).where(UserModel.telegram_username == normalize_telegram_username(username))
         result = await self.session.execute(stmt)
         return result.scalars().first()
 

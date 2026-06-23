@@ -9,6 +9,7 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 
 USERNAME_PATTERN = r"^[A-Za-z0-9_]+$"
+TELEGRAM_USERNAME_PATTERN = r"^@?[A-Za-z0-9_]{5,32}$"
 
 
 def trim_text(value: str | None) -> str | None:
@@ -241,6 +242,11 @@ class UserCreateSchema(BaseModel):
     )
     avg_score: float = Field(0.0, ge=0, le=100)
     onboarding_completed: bool = False
+    telegram_username: str | None = Field(
+        None,
+        max_length=32,
+        pattern=TELEGRAM_USERNAME_PATTERN,
+    )
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -264,6 +270,11 @@ class UserUpdateSchema(BaseModel):
     )
     avg_score: float | None = Field(None, ge=0, le=100)
     onboarding_completed: bool | None = None
+    telegram_username: str | None = Field(
+        None,
+        max_length=32,
+        pattern=TELEGRAM_USERNAME_PATTERN,
+    )
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -293,6 +304,8 @@ class UserSchema(UserAchievementCollectionsSchema):
     role: str
     is_active: bool
     onboarding_completed: bool
+    telegram_username: str | None
+    telegram_linked_at: datetime | None
     last_login_at: datetime | None
     created_at: datetime
     directions: List[UserDirectionSchema] = Field(default_factory=list)

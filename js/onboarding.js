@@ -1,6 +1,7 @@
 (function () {
   const STORAGE_KEY = "portfolio_onboarding_v1";
   const SEQUENCE_STORAGE_KEY = "portfolio_onboarding_sequence_v1";
+  const TELEGRAM_MODAL_SESSION_KEY = "portfolio_telegram_link_modal_open";
   const PADDING = 8;
   const TOOLTIP_GAP = 14;
   const VIEWPORT_MARGIN = 12;
@@ -204,6 +205,17 @@
     return Boolean(params.get("profileUserId") || params.get("user_id"));
   }
 
+  function isTelegramLinkModalOpen() {
+    try {
+      if (sessionStorage.getItem(TELEGRAM_MODAL_SESSION_KEY) === "1") {
+        return true;
+      }
+    } catch (error) {
+      // sessionStorage can be unavailable in restricted browser modes.
+    }
+    return Boolean(window.PortfolioTelegramLink?.isOpen?.());
+  }
+
   function hasOnboardingFlag(user) {
     return Object.prototype.hasOwnProperty.call(user || {}, "onboarding_completed");
   }
@@ -265,6 +277,7 @@
   async function shouldRun(options) {
     if (options && options.force) return true;
     if (isForeignProfileView()) return false;
+    if (isTelegramLinkModalOpen()) return false;
 
     const pageKey = getPageKey();
     const currentUser = await getCurrentUserForOnboarding();

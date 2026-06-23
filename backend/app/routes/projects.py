@@ -32,6 +32,7 @@ from app.schemas import (
     ProjectSchema,
     ProjectUpdateSchema,
 )
+from app.services.telegram_service import send_user_notification_to_telegram
 
 router = APIRouter()
 SessionDep = Depends(get_db_session)
@@ -360,6 +361,7 @@ async def create_project_invitations(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invitee not found")
 
     created: list[ProjectInvitationModel] = []
+    telegram_messages: list[tuple[str, str]] = []
     for project_id in invitation_data.project_ids:
         project = await get_project_or_404(session, project_id)
         if not is_project_manager(project, current_user.id):
@@ -383,6 +385,7 @@ async def create_project_invitations(
             continue
 
         link = f"projectsindex.html?projectId={project.id}"
+        notification_text = f"\u0412\u0430\u0441 \u043f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u043b\u0438 \u0432 \u043f\u0440\u043e\u0435\u043a\u0442 «{project_full_name(project)}»"
         invitation = ProjectInvitationModel(
             project_id=project.id,
             inviter_id=current_user.id,
@@ -397,13 +400,16 @@ async def create_project_invitations(
                 user_id=invitee.id,
                 invitation_id=invitation.id,
                 type="project_invitation",
-                text=f"\u0412\u0430\u0441 \u043f\u0440\u0438\u0433\u043b\u0430\u0441\u0438\u043b\u0438 \u0432 \u043f\u0440\u043e\u0435\u043a\u0442 «{project_full_name(project)}»",
+                text=notification_text,
                 link=link,
             )
         )
+        telegram_messages.append((notification_text, link))
         created.append(invitation)
 
     await session.commit()
+    for text, link in telegram_messages:
+        await send_user_notification_to_telegram(invitee, text, link)
     return [serialize_invitation(await get_invitation_or_404(session, item.id)) for item in created]
 
 
@@ -433,6 +439,21 @@ def serialize_invitation(invitation: ProjectInvitationModel) -> ProjectInvitatio
     )
 
 
+async def mark_invitation_notifications_read(
+    session: AsyncSession,
+    invitation_id: int,
+    user_id: int,
+) -> None:
+    result = await session.execute(
+        select(NotificationModel).where(
+            NotificationModel.invitation_id == invitation_id,
+            NotificationModel.user_id == user_id,
+        )
+    )
+    for notification in result.scalars().all():
+        notification.is_read = True
+
+
 @router.post("/invitations/{invitation_id}/accept", response_model=ProjectInvitationSchema)
 async def accept_project_invitation(
     invitation_id: int,
@@ -443,6 +464,8 @@ async def accept_project_invitation(
     if invitation.invitee_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invitation belongs to another user")
     if invitation.status != "pending":
+        await mark_invitation_notifications_read(session, invitation.id, current_user.id)
+        await session.commit()
         return serialize_invitation(invitation)
 
     project = invitation.project
@@ -457,6 +480,7 @@ async def accept_project_invitation(
 
     invitation.status = "accepted"
     invitation.responded_at = datetime.utcnow()
+    await mark_invitation_notifications_read(session, invitation.id, current_user.id)
     await session.commit()
     return serialize_invitation(await get_invitation_or_404(session, invitation.id))
 
@@ -473,6 +497,10 @@ async def decline_project_invitation(
     if invitation.status == "pending":
         invitation.status = "declined"
         invitation.responded_at = datetime.utcnow()
+        await mark_invitation_notifications_read(session, invitation.id, current_user.id)
+        await session.commit()
+    else:
+        await mark_invitation_notifications_read(session, invitation.id, current_user.id)
         await session.commit()
     return serialize_invitation(await get_invitation_or_404(session, invitation.id))
 

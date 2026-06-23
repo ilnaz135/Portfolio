@@ -42,6 +42,13 @@ class EmailAlreadyExistsException(PortfolioException):
         super().__init__(f"Email '{email}' уже существует", 400)
 
 
+class TelegramUsernameAlreadyExistsException(PortfolioException):
+    """Raised when a Telegram username is already assigned to another user."""
+
+    def __init__(self, username: str):
+        super().__init__(f"Telegram username '{username}' уже привязан к другому пользователю", 400)
+
+
 class DirectionNotFoundException(PortfolioException):
     """Исключение, когда направление не найдено."""
 

@@ -51,6 +51,10 @@ class UserModel(Base):
     role: Mapped[str] = mapped_column(String(20), nullable=False, default="user")
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     onboarding_completed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    telegram_username: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    telegram_chat_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    telegram_user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    telegram_linked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -241,6 +245,62 @@ class AuthSessionModel(Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     user: Mapped["UserModel"] = relationship(back_populates="auth_sessions")
+
+
+class TelegramBotStateModel(Base):
+    """Current registration step for a Telegram chat."""
+
+    __tablename__ = "telegram_bot_states"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    chat_id: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    telegram_user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    telegram_username: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    state: Mapped[str] = mapped_column(String(40), nullable=False, default="idle")
+    site_username: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    pending_code_id: Mapped[int | None] = mapped_column(
+        ForeignKey("telegram_link_codes.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    pending_code: Mapped["TelegramLinkCodeModel | None"] = relationship()
+
+
+class TelegramLinkCodeModel(Base):
+    """Pending 6-digit Telegram binding code sent through site notifications."""
+
+    __tablename__ = "telegram_link_codes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    chat_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    telegram_user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    telegram_username: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    code: Mapped[str] = mapped_column(String(6), nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    user: Mapped["UserModel"] = relationship()
 
 
 class UserDirectionModel(Base):

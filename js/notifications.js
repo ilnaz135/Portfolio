@@ -4,9 +4,11 @@
   const COUNT_ID = "profileNotificationsCount";
   const MENU_ID = "profileNotificationsMenu";
   const STYLE_ID = "portfolioNotificationsStyles";
+  const REFRESH_INTERVAL_MS = 7000;
 
   let notifications = [];
   let initialized = false;
+  let refreshTimer = null;
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -67,6 +69,10 @@
         width: min(360px, calc(100vw - 24px));
         max-height: min(460px, calc(100vh - 120px));
         overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
         padding: 8px;
         border: 1px solid #e2e8f0;
         border-radius: 12px;
@@ -78,6 +84,34 @@
         background: #1e293b;
         border-color: #334155;
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        scrollbar-color: #475569 transparent;
+      }
+
+      .profile-notifications-menu::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      .profile-notifications-menu::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .profile-notifications-menu::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border: 3px solid transparent;
+        border-radius: 999px;
+        background-clip: content-box;
+      }
+
+      .profile-notifications-menu::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+      }
+
+      body.dark-mode .profile-notifications-menu::-webkit-scrollbar-thumb {
+        background-color: #475569;
+      }
+
+      body.dark-mode .profile-notifications-menu::-webkit-scrollbar-thumb:hover {
+        background-color: #64748b;
       }
 
       .profile-notification-item {
@@ -163,11 +197,14 @@
     document.head.appendChild(style);
   }
 
-  function pendingInviteNotifications() {
+  function countableNotifications() {
     return notifications.filter((item) =>
-      item?.type === "project_invitation" &&
-      item?.invitation &&
-      item.invitation.status === "pending"
+      item &&
+      !item.isRead &&
+      (
+        item.type !== "project_invitation" ||
+        (item.invitation && item.invitation.status === "pending")
+      )
     );
   }
 
@@ -178,9 +215,9 @@
       return;
     }
 
-    const pendingInvites = pendingInviteNotifications();
-    count.textContent = String(pendingInvites.length);
-    count.hidden = pendingInvites.length === 0;
+    const visibleCount = countableNotifications();
+    count.textContent = String(visibleCount.length);
+    count.hidden = visibleCount.length === 0;
 
     if (!notifications.length) {
       menu.innerHTML = '<div class="profile-notifications-empty">Уведомлений пока нет</div>';
@@ -189,14 +226,17 @@
 
     menu.innerHTML = notifications.map((notification) => {
       const invitation = notification.invitation;
-      const isPendingInvite = notification.type === "project_invitation" && invitation?.status === "pending";
+      const isProjectInvite = notification.type === "project_invitation";
+      const isPendingInvite = isProjectInvite && invitation?.status === "pending" && !notification.isRead;
+      const isViewedInvite = isProjectInvite && (!isPendingInvite || notification.isRead);
       const projectName = invitation?.project?.fullName || "проект";
       const projectLink = notification.link || invitation?.projectLink || "#";
+      const hasUsefulLink = projectLink && projectLink !== "#";
 
       return `
         <div class="profile-notification-item${notification.isRead ? "" : " unread"}">
           <div class="profile-notification-text">${escapeHtml(notification.text || `Вас пригласили в проект «${projectName}»`)}</div>
-          <a class="profile-notification-link" href="${escapeHtml(projectLink)}">${escapeHtml(projectName)}</a>
+          ${hasUsefulLink ? `<a class="profile-notification-link" href="${escapeHtml(projectLink)}">${escapeHtml(projectName)}</a>` : ""}
           ${
             isPendingInvite
               ? `
@@ -205,7 +245,15 @@
                   <button type="button" class="profile-notification-primary" data-invite-accept="${escapeHtml(invitation.id)}">Принять</button>
                 </div>
               `
-              : `<div class="profile-notification-status">${escapeHtml(invitation?.status || "Просмотрено")}</div>`
+              : isViewedInvite
+                ? `<div class="profile-notification-status">Просмотрено</div>`
+              : notification.isRead
+                ? `<div class="profile-notification-status">Просмотрено</div>`
+                : `
+                  <div class="profile-notification-actions">
+                    <button type="button" class="profile-notification-primary" data-notification-read="${escapeHtml(notification.id)}">Прочитано</button>
+                  </div>
+                `
           }
         </div>
       `;
@@ -226,8 +274,27 @@
     renderMenu();
   }
 
+  function startAutoRefresh() {
+    if (refreshTimer) {
+      return;
+    }
+
+    refreshTimer = window.setInterval(() => {
+      if (!document.hidden) {
+        loadNotifications();
+      }
+    }, REFRESH_INTERVAL_MS);
+  }
+
   async function respondToInvitation(invitationId, action) {
     await window.AuthClient.fetchJsonWithAuth(`/projects/invitations/${encodeURIComponent(invitationId)}/${action}`, {
+      method: "POST",
+    });
+    await loadNotifications();
+  }
+
+  async function markNotificationRead(notificationId) {
+    await window.AuthClient.fetchWithAuth(`/projects/notifications/${encodeURIComponent(notificationId)}/read`, {
       method: "POST",
     });
     await loadNotifications();
@@ -284,6 +351,18 @@
       menu.addEventListener("click", async (event) => {
         const acceptButton = event.target.closest("[data-invite-accept]");
         const declineButton = event.target.closest("[data-invite-decline]");
+        const readButton = event.target.closest("[data-notification-read]");
+        if (readButton) {
+          readButton.disabled = true;
+          try {
+            await markNotificationRead(readButton.dataset.notificationRead);
+          } catch (error) {
+            readButton.disabled = false;
+            alert(error.message || "Не удалось отметить уведомление.");
+          }
+          return;
+        }
+
         const actionButton = acceptButton || declineButton;
         if (!actionButton) {
           return;
@@ -310,6 +389,7 @@
       initialized = true;
     }
 
+    startAutoRefresh();
     loadNotifications();
   }
 

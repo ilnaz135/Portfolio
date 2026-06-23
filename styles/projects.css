@@ -1,8 +1,25 @@
 /* Projects page — overrides main-content grid from profile page */
+@font-face {
+  font-family: "Portfolio Compact";
+  src: url("../assets/fonts/roboto-condensed-cyrillic-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Portfolio Compact";
+  src: url("../assets/fonts/roboto-condensed-cyrillic-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 .portfolio-container.projects-page {
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .portfolio-container.projects-page .main-content.projects-main {
@@ -10,7 +27,11 @@
   grid-template-columns: 300px minmax(0, 1fr) !important;
   gap: 0;
   padding: 0 !important;
-  flex: 1;
+  flex: 0 0 auto;
+  height: calc(100vh - var(--app-header-height, 96px));
+  height: calc(100dvh - var(--app-header-height, 96px));
+  max-height: calc(100vh - var(--app-header-height, 96px));
+  max-height: calc(100dvh - var(--app-header-height, 96px));
   min-height: 0;
   overflow: hidden;
   align-items: stretch;
@@ -403,6 +424,14 @@ body.dark-mode .projects-pagination-section .page-btn {
 
 body.dark-mode .projects-pagination-section .page-info {
   color: #94a3b8;
+}
+
+@media (max-width: 1100px) {
+  .projects-pagination-section .page-size-selector,
+  .projects-pagination-section .page-size-btn {
+    font-family: "Portfolio Compact", "Inter", sans-serif;
+    font-size: 12px;
+  }
 }
 
 .project-card {
@@ -2264,6 +2293,8 @@ body.dark-mode .projects-panel:has(.projects-filters-section.open) .projects-lis
 
   .portfolio-container.projects-page .main-content.projects-main {
     grid-template-columns: 1fr !important;
+    height: auto;
+    max-height: none;
     min-height: 0;
     overflow: visible;
   }
@@ -2404,5 +2435,143 @@ body.dark-mode .projects-panel:has(.projects-filters-section.open) .projects-lis
   .projects-pagination-section .page-btn,
   .projects-pagination-section .page-size-btn {
     flex-shrink: 0;
+  }
+}
+
+/* Mobile refinements */
+@media (max-width: 900px) {
+  .projects-sidebar {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .projects-my-list-wrap,
+  .projects-my-list {
+    overflow: visible;
+    min-height: 0;
+  }
+
+  .projects-create-layout {
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .projects-create-left,
+  .projects-md-editor,
+  .projects-md-body {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto;
+    align-items: center;
+  }
+
+  .logo-area {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .control-buttons {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    width: auto;
+    min-width: max-content;
+  }
+
+  .search-wrapper {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    margin-top: 0;
+  }
+
+  .projects-sidebar-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .projects-nav-btn {
+    min-height: 42px;
+    padding: 10px 12px;
+  }
+
+  .projects-my-list-wrap {
+    padding: 12px;
+  }
+
+  .projects-my-list {
+    gap: 8px;
+  }
+
+  .projects-md-tabs {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .projects-md-tab {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-sidebar-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .project-card-actions,
+  .projects-create-actions,
+  .projects-import-actions {
+    width: 100%;
+  }
+
+  .project-card-actions .projects-btn,
+  .projects-create-actions .projects-btn,
+  .projects-import-actions .projects-btn {
+    flex: 1 1 140px;
+  }
+}
+
+/* Mobile typography safety */
+@media (max-width: 640px) {
+  .projects-nav-btn,
+  .projects-btn,
+  .projects-filter-stackbtn,
+  .projects-md-tab,
+  .status-badge,
+  .visibility-badge,
+  .stack-tag,
+  .projects-pagination-section .page-size-btn,
+  .projects-pagination-section .page-btn {
+    line-height: 1.2;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+  }
+
+  .projects-nav-btn,
+  .projects-btn,
+  .projects-filter-stackbtn,
+  .projects-md-tab {
+    font-size: 12px;
+  }
+
+  .status-badge,
+  .visibility-badge,
+  .stack-tag {
+    font-size: 11px;
   }
 }

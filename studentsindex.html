@@ -287,7 +287,9 @@
 
         /* ===== MAIN CONTENT ===== */
         .main-content {
-            flex: 1;
+            flex: 0 0 auto;
+            min-height: calc(100vh - var(--app-header-height, 96px));
+            min-height: calc(100dvh - var(--app-header-height, 96px));
             padding: 28px 32px 40px;
         }
 
@@ -791,6 +793,29 @@
 
             .empty-state i { font-size: 40px; }
             .empty-state p { font-size: 15px; }
+
+            .filter-btn,
+            .filters-apply-btn,
+            .filters-reset-btn,
+            .student-role,
+            .page-size-btn,
+            .page-btn {
+                line-height: 1.2;
+                white-space: nowrap;
+                word-break: normal;
+                overflow-wrap: normal;
+                hyphens: none;
+            }
+
+            .filter-btn,
+            .filters-apply-btn,
+            .filters-reset-btn {
+                font-size: 12px;
+            }
+
+            .student-role {
+                font-size: 10.5px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -927,8 +952,13 @@
                 gap: 6px;
             }
 
+            .logo-area {
+                gap: 0;
+                width: auto;
+            }
+
             .logo-text {
-                font-size: 13px;
+                display: none;
             }
         }
 
@@ -1314,8 +1344,9 @@
 
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
-<script src="js/notifications.js"></script>
-<script src="js/onboarding.js"></script>
+<script src="js/notifications.js?v=invite-viewed-status"></script>
+<script src="js/onboarding.js?v=telegram-modal-guard-restore"></script>
+<script src="js/telegram-link.js?v=modal-save-no-flicker"></script>
 <script>
 (async function () {
 try {
@@ -1398,6 +1429,18 @@ let pageSize    = 10;
 let currentPage = 1;
 let filtered    = [];
 let studentsLoadError = '';
+
+function updateAppHeaderHeight() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    const headerHeight = Math.ceil(header.getBoundingClientRect().height || 0);
+    document.documentElement.style.setProperty('--app-header-height', `${headerHeight}px`);
+}
+
+window.addEventListener('resize', updateAppHeaderHeight);
+window.addEventListener('load', updateAppHeaderHeight);
+document.fonts?.ready?.then(updateAppHeaderHeight).catch(() => {});
+updateAppHeaderHeight();
 
 // ===== THEME =====
 const themeToggle = document.getElementById('themeToggle');
@@ -1607,6 +1650,34 @@ function escapeHtml(v) {
     return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+const STUDENT_ROLE_PLACEHOLDER = 'В поисках себя...';
+const EMPTY_STUDENT_ROLE_LABELS = new Set([
+    '',
+    'user',
+    'в поиске себя',
+    'в поисках себя',
+    'в поиске себя...',
+    'в поисках себя...',
+]);
+
+function normalizeStudentRoleToken(value) {
+    return String(value || '')
+        .trim()
+        .replace(/…/g, '...')
+        .replace(/вЂ¦/g, '...')
+        .replace(/\s+/g, ' ')
+        .toLocaleLowerCase('ru-RU');
+}
+
+function getCustomStudentRole(value) {
+    const role = String(value || '').trim();
+    return EMPTY_STUDENT_ROLE_LABELS.has(normalizeStudentRoleToken(role)) ? '' : role;
+}
+
+function getStudentRoleDisplay(value) {
+    return getCustomStudentRole(value) || STUDENT_ROLE_PLACEHOLDER;
+}
+
 function uniqueValues(values) {
     return [...new Set(values.map(value => String(value || '').trim()).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, 'ru', { numeric: true, sensitivity: 'base' }));
@@ -1644,7 +1715,7 @@ function updateStudentFilterOptions() {
 
 function normalizeStudentFromApi(user, index = 0) {
     const id = Number(user.id ?? index + 1);
-    const role = String(user.user_directions || '').trim() || 'В поиске себя';
+    const role = getStudentRoleDisplay(user.user_directions || user.role);
     const score = Number(user.avg_score ?? 0);
     return {
         id,
@@ -1704,7 +1775,7 @@ function buildStudentProfilePreview(s) {
         first_name: s.first_name,
         last_name: s.last_name,
         patronymic: s.patronymic,
-        user_directions: s.role || 'В поиске себя',
+        user_directions: getCustomStudentRole(s.role),
         academic_direction: s.academic_direction,
         class_: s.class_,
         avg_score: s.avg_score,
@@ -1749,7 +1820,7 @@ function renderCard(s) {
     <a class="student-card" href="${escapeHtml(studentProfileUrl(s))}" onclick="saveStudentProfilePreview(${Number(s.id)})">
         <div class="student-avatar" style="${avatarStyle}">${avatarContent}</div>
         <div class="student-name">${escapeHtml(s.last_name)} ${escapeHtml(s.first_name)}<br><span class="patronymic">${escapeHtml(s.patronymic)}</span></div>
-        <div class="student-role"><i class="fas fa-code"></i>${escapeHtml(s.role)}</div>
+        <div class="student-role"><i class="fas fa-code"></i>${escapeHtml(getStudentRoleDisplay(s.role))}</div>
         <div class="student-meta">
             <div class="student-meta-row">
                 <i class="fas fa-users"></i>

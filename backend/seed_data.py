@@ -319,6 +319,10 @@ async def seed_database() -> None:
                     password_hash=hash_password(plain_password),
                     role="admin" if index == 0 else "user",
                     onboarding_completed=False,
+                    telegram_username=None,
+                    telegram_chat_id=None,
+                    telegram_user_id=None,
+                    telegram_linked_at=None,
                 )
                 session.add(user)
                 users.append(user)

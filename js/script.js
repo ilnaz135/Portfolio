@@ -75,6 +75,7 @@ function updateProfileViewportHeight() {
 
   const headerHeight = Math.ceil(profileHeader?.getBoundingClientRect().height || 0);
   document.documentElement.style.setProperty("--profile-header-height", `${headerHeight}px`);
+  document.documentElement.style.setProperty("--app-header-height", `${headerHeight}px`);
 }
 
 window.addEventListener("resize", updateProfileViewportHeight);
@@ -1010,6 +1011,11 @@ function difficultyToProgress(value) {
   return Math.max(5, Math.min(100, Math.round((numberValue / 10) * 100)));
 }
 
+function isCatalogCourse(course) {
+  const catalogId = course?.catalog_id ?? course?.catalogId;
+  return catalogId !== null && catalogId !== undefined && String(catalogId).trim() !== "";
+}
+
 function normalizeCourseCatalogItem(item, index = 0) {
   const specializations = Array.isArray(item?.specializations)
     ? item.specializations.map((name) => String(name || "").trim()).filter(Boolean)
@@ -1308,13 +1314,23 @@ function renderCourses(user) {
 
   coursesCard.classList.remove("centred-text");
   courses.forEach((course) => {
-    const progress = difficultyToProgress(course.difficulty);
-    const difficulty = formatDifficulty(course.difficulty);
+    const isVerifiedCourse = isCatalogCourse(course);
+    const progress = isVerifiedCourse ? difficultyToProgress(course.difficulty) : 0;
+    const progressLabel = isVerifiedCourse ? `${progress}%` : "-";
+    const difficulty = isVerifiedCourse ? formatDifficulty(course.difficulty) : "-";
     const courseName = course.course || course.name_course || "Курс без названия";
     const courseUrl = course.url_course || "";
+    const itemClass = `course-progress-item${isVerifiedCourse ? "" : " course-progress-item--manual"}`;
+    const verifiedBadgeHtml = isVerifiedCourse
+      ? `
+            <div class="verified-tooltip">
+              <i class="fas fa-check-circle verified-icon"></i>
+              <span class="tooltip-text">Данные о прохождении курса подтверждены</span>
+            </div>`
+      : "";
     const openTag = courseUrl
-      ? `<a href="${escapeHtml(courseUrl)}" class="course-progress-item" target="_blank" rel="noopener">`
-      : '<div class="course-progress-item">';
+      ? `<a href="${escapeHtml(courseUrl)}" class="${itemClass}" target="_blank" rel="noopener">`
+      : `<div class="${itemClass}">`;
     const closeTag = courseUrl ? "</a>" : "</div>";
 
     coursesCard.insertAdjacentHTML(
@@ -1323,12 +1339,9 @@ function renderCourses(user) {
         ${openTag}
           <div class="course-progress-header">
             <span class="course-progress-name"><i class="fas fa-database"></i> ${escapeHtml(courseName)}</span>
-            <div class="verified-tooltip">
-              <i class="fas fa-check-circle verified-icon"></i>
-              <span class="tooltip-text">Данные о прохождении курса подтверждены</span>
-            </div>
+${verifiedBadgeHtml}
           </div>
-          <div class="course-progress-bar-wrapper" data-percentage="${progress}%">
+          <div class="course-progress-bar-wrapper" data-percentage="${escapeHtml(progressLabel)}">
             <div class="course-progress-bar-fill" style="width: ${progress}%"></div>
           </div>
           ${renderCourseSpecializationTags(course.specializations)}

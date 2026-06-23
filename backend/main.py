@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -10,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import settings
-from app.core.database import ensure_database_schema
+from app.core.database import async_session_maker, ensure_database_schema
 from app.core.exceptions import (
     PortfolioException,
     general_exception_handler,
@@ -19,6 +20,7 @@ from app.core.exceptions import (
 )
 from app.core.logging import setup_logging
 from app.routes import api_router
+from app.services.telegram_service import poll_telegram_updates
 
 
 @asynccontextmanager
@@ -26,7 +28,19 @@ async def lifespan(_: FastAPI):
     """Ensure the database schema is ready before serving requests."""
 
     await ensure_database_schema()
-    yield
+    telegram_polling_task = None
+    if settings.telegram_bot_token and settings.telegram_enable_polling:
+        telegram_polling_task = asyncio.create_task(poll_telegram_updates(async_session_maker))
+
+    try:
+        yield
+    finally:
+        if telegram_polling_task:
+            telegram_polling_task.cancel()
+            try:
+                await telegram_polling_task
+            except asyncio.CancelledError:
+                pass
 
 
 def create_application() -> FastAPI:
